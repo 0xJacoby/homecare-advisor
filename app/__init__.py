@@ -7,10 +7,48 @@ import os
 
 db = SQLAlchemy()
 
+"""
+Utkast:
+Application håller i config och databasen -- (Bör db variabeln också ligga där?)
+
+1:
+Kommer in en GET request
+
+2:
+Hämtar ssn:s
+
+3: För varje ssn
+
+    1:
+    database.search_db(ssn) ger information:
+        - om personen (det som inte ligger i journalen)
+        - Alla relevanta categories
+
+    2: För varje category
+        
+        1:
+        config.category_parameters(self, category_name) ger namnen
+            och vikterna på parametrarna
+
+        2:
+        parameter_from_name(person_info, database, name)
+            vet vilken parameter som ska skapas och vilka 
+            fält som tas ut ur person_info och databasen 
+            baserat på namnet .
+
+        3: 
+        category.combined_score() räknar ut score för specifika
+        category. 
+
+    3:
+    Minsta score returneras
+"""
+
 class PersonInfo:
     age: Optional[int]
     municipality: Optional[str]
     has_homecare: Optional[bool]
+    # m.m
 
 class Parameter:
     """Interface for parameters"""
@@ -24,7 +62,7 @@ class Parameter:
         pass
 
 class Accessibility(Parameter):
-    age: Optional[int]
+    age: Optional[int] # Optional ifall informationen inte finns, ksk inte så troligt för just age dock
     municipality: Optional[str]
     has_home_care: Optional[bool]
     def __init__(self, age: Optional[int], municipality: Optional[str], has_home_care: Optional[bool]):
@@ -100,6 +138,8 @@ class DB(Flask):
         pass
 
 class Config:
+    """Innehållet i config.json"""
+
     @classmethod
     def category_parameters(self, category_name: str) -> List[Tuple[str, float]]: # list of parameter name and weight
         pass 
@@ -116,11 +156,16 @@ class Application:
     @classmethod
     def person_score(self, ssn: int):
         (person_info, category_names) = self.database.search_db(ssn)
-        min_score = 1
+        min_score = 1.0
         for category_name in category_names:
             parameter_names = self.config.category_parameters(self, category_name)
-            parameters = list(map(lambda name: Application.parameter_from_name(person_info, self.database, name), parameter_names))
-            
+            parameters = list(map(
+                lambda name: Application.parameter_from_name(person_info, self.database, name), 
+                parameter_names
+            ))
+            category = Category(category_name, parameters)
+            min_score = min(category.combined_score(), min_score)
+        return min_score
 
     @staticmethod
     def parameter_from_name(person_info: PersonInfo, database: DB, parameter_name: Tuple[str, float]) -> Tuple[Parameter, float]:
