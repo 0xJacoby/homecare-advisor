@@ -1,9 +1,9 @@
-from app import create_app, db
+from app import db, Application
 
-app = create_app()
+app = Application()
 
-with app.app_context():
+with app.db.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.db.run(debug=True)
