@@ -100,7 +100,7 @@
       <div class="list-title">Bör stanna</div>
       <div id="list1" class="list-box"></div>
     </div>
-    <button id="configButton" onclick="window.location='configuration.html'">Konfiguration</button>
+    <button id="configButton" onclick="window.location='test_konfiguration_ui.html'">Konfiguration</button>
   </div>
 
   <div>
@@ -131,22 +131,18 @@
       });
     }
 
-    function updateInfo(itemName) {
-      const panel = document.getElementById("infoPanel");
-      document.getElementById("infoContent").textContent = "Information about: " + itemName;
-      panel.style.display = "flex";
-      panel.classList.remove("collapsed");
-    }(itemName) =>{
-      document.getElementById("infoContent").textContent = "Information about: " + itemName;
-    }
+ function updateInfo(itemName) {
+  const panel = document.getElementById("infoPanel");
+  document.getElementById("infoContent").textContent = "Information about: " + itemName;
+  panel.style.display = "flex";
+  panel.classList.remove("collapsed");
+}
 
-    function toggleCollapse() {
-      const panel = document.getElementById("infoPanel");
-      panel.style.display = "none";
-    }() =>{
-      const panel = document.getElementById("infoPanel");
-      panel.classList.toggle("collapsed");
-    }
+function toggleCollapse() {
+  const panel = document.getElementById("infoPanel");
+  panel.style.display = "none"; 
+}
+
 
     renderList(document.getElementById("list1"), dataList1);
     renderList(document.getElementById("list2"), dataList2);
