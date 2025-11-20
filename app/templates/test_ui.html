@@ -117,44 +117,85 @@
   </div>
 
   <script>
-    const dataList1 = ["Patient S1", "Patient S2"];    
-    const dataList2 = ["Patient L1"];  
+   const API_URL = "http://127.0.0.1:5000/test";
 
-    function renderList(listElement, dataArray) {
-      listElement.innerHTML = "";
-      dataArray.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.textContent = item;
-        div.onclick = () => updateInfo(item);
-        listElement.appendChild(div);
-      });
+  // 2. Internal patient storage
+  let patients = [];
+
+  // 3. Fetch from API
+  async function fetchPatientsFromApi() {
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        console.error("Failed to fetch patients:", response.status);
+        return;
+      }
+
+      // Your server returns a list (array)
+      const data = await response.json();
+
+      // Normalize to a consistent structure
+      patients = data.map(p => ({
+        name: p.firstname,
+        lastName: p.surname,
+        ssn: p.ssn,
+        age: p.age,
+        score: Number(p.score)
+      }));
+
+      updateLists();
+    } catch (err) {
+      console.error("Error fetching patients:", err);
     }
+  }
 
- function updateInfo(itemName) {
-  const panel = document.getElementById("infoPanel");
-  document.getElementById("infoContent").textContent = "Information about: " + itemName;
-  panel.style.display = "flex";
-  panel.classList.remove("collapsed");
-}
+  // 4. Split into two groups based on score
+  function updateLists() {
+    const stay = patients.filter(p => p.score >= 0.5);   // Bör stanna
+    const maybeLeave = patients.filter(p => p.score < 0.5); // Möjligtvis lämna
 
-function toggleCollapse() {
-  const panel = document.getElementById("infoPanel");
-  panel.style.display = "none"; 
-}
+    renderList(document.getElementById("list1"), stay);
+    renderList(document.getElementById("list2"), maybeLeave);
+  }
 
+  // 5. Render one list (Bör stanna / Möjligtvis lämna)
+  function renderList(listElement, arr) {
+    listElement.innerHTML = "";
+    arr.forEach(patient => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent =
+        div.textContent = `${patient.name} ${patient.lastName}`;
+      div.onclick = () => updateInfo(patient);
+      listElement.appendChild(div);
+    });
+  }
 
-    renderList(document.getElementById("list1"), dataList1);
-    renderList(document.getElementById("list2"), dataList2);
+  // 6. Info panel
+  function updateInfo(patient) {
+    const panel = document.getElementById("infoPanel");
+    document.getElementById("infoContent").innerHTML = `
+      <p><strong>Personnummer:</strong> ${patient.ssn}</p>
+      <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
+      <p><strong>Ålder:</strong> ${patient.age}</p>
+      <p><strong>Score:</strong> ${patient.score.toFixed(3)}</p>
+    `;
+    panel.style.display = "flex";
+    panel.classList.remove("collapsed");
+  }
 
-    function simulateIncomingData() {
-      dataList1.push("Patient S" + (dataList1.length + 1));
-      renderList(document.getElementById("list1"), dataList1);
-      dataList2.push("Patient L" + (dataList2.length + 1));
-      renderList(document.getElementById("list2"), dataList2);
-    }
+  function toggleCollapse() {
+    document.getElementById("infoPanel").style.display = "none";
+  }
 
-    setInterval(simulateIncomingData, 6000);
+  // 7. Load patients when page opens
+  window.addEventListener("load", () => {
+    fetchPatientsFromApi();
+
+    // Optional: auto-refresh from server every 10s
+    // setInterval(fetchPatientsFromApi, 10000);
+  });
   </script>
 
 </body>
