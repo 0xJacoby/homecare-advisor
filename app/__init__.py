@@ -1,6 +1,7 @@
 from random import random
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import cross_origin
 import os
 
 db = SQLAlchemy()
@@ -27,6 +28,7 @@ def create_app():
     def index():
         return render_template("test_ui.html")
     @app.route("/test", methods=["GET"])
+    @cross_origin()
     def get_test_patients():
         resp = []
         for i in range(100):
