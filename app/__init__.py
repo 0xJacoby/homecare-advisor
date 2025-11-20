@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from random import random
+from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -25,5 +26,23 @@ def create_app():
     @app.route("/")
     def index():
         return render_template("test_ui.html")
+    @app.route("/test", methods=["GET"])
+    def get_test_patients():
+        resp = []
+        for i in range(100):
+            year = int(100 * random()) + 1920
+            month = int(12 * random()) + 1
+            date = int(30 * random()) + 1
+            fyra_sista = int(10000 * random())
+            dct = {
+                "ssn": str(year)+str(month)+str(date)+str(fyra_sista),
+                "age": 2025 - year,
+                "firstname": "Johan",
+                "surname": "Johansson",
+                "score": random()
+            }
+            resp.append(dct)
+
+        return jsonify(resp)
 
     return app
