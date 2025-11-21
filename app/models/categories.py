@@ -19,3 +19,7 @@ class Categories(db.Model):
     @staticmethod
     def from_id(id):
         return Categories.query.get(id)
+
+    @staticmethod
+    def get_all():
+        return Categories.query.all()

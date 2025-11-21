@@ -7,7 +7,7 @@ class JournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ssn = db.Column(db.String(13), db.ForeignKey("patients.ssn"), nullable=False)
     entry_date = db.Column(db.DateTime(timezone=True), nullable=False)
-    test_id = db.Column(db.Integer, nullable=False)
+    test_id = db.Column(db.Integer, db.ForeignKey("tests.id"), nullable=False)
     test_value = db.Column(db.Double, nullable=False)
 
     def __init__(self, patient_ssn, entry_date, test_id, test_value):

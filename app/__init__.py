@@ -136,9 +136,11 @@ class DB(Flask):
         db.init_app(self)
 
         # Import and register routes
-        from .api import patients, journals
+        from .api import patients, journals, categories, tests
         self.register_blueprint(patients, url_prefix="/api/patients")
         self.register_blueprint(journals, url_prefix="/api/journals")
+        self.register_blueprint(categories, url_prefix="/api/categories")
+        self.register_blueprint(tests, url_prefix="/api/tests")
 
         # Serve test gui
         @self.route("/")

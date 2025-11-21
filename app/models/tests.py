@@ -19,3 +19,7 @@ class Tests(db.Model):
     @staticmethod
     def from_id(id):
         return Tests.query.get(id)
+
+    @staticmethod
+    def get_all():
+        return Tests.query.all()
