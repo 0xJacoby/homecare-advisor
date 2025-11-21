@@ -9,6 +9,7 @@ class Patient(db.Model):
     surname = db.Column(db.Text, nullable=False)
     date_of_birth = db.Column(db.DateTime(timezone=True), nullable=False)
     municipality = db.Column(db.Text, nullable=False)
+    has_homecare = db.Column(db.Boolean, nullable=False)
 
     journal_entries = db.relationship(
         "JournalEntry",
@@ -16,12 +17,13 @@ class Patient(db.Model):
         lazy=True
     )
 
-    def __init__(self, ssn, firstname, surname, date_of_birth, municipality):
+    def __init__(self, ssn, firstname, surname, date_of_birth, municipality, has_homecare):
         self.ssn = ssn
         self.firstname = firstname
         self.surname = surname
         self.date_of_birth = date_of_birth
         self.municipality = municipality
+        self.has_homecare = has_homecare
 
     def to_dict(self):
         return {
@@ -30,8 +32,9 @@ class Patient(db.Model):
             "firstname": self.firstname,
             "surname": self.surname,
             "municipality": self.municipality,
+            "has_homecare": self.has_homecare,
         }
 
     @staticmethod
-    def from_ssn(ssn):
+    def from_ssn(ssn) -> "Patient":
         return Patient.query.filter_by(ssn=ssn).first()

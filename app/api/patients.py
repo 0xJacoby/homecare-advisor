@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .. import db
+from .. import db, DB
 from ..models.patient import Patient
 from datetime import datetime
 
@@ -13,11 +13,13 @@ def add_patient():
     surname = request.form.get("surname")
     date_of_birth = request.form.get("date_of_birth")
     municipality = request.form.get("municipality")
+    has_homecare = request.form.get("has_homecare")
 
     patient = Patient.from_ssn(ssn)
 
     if patient is None:
         # TODO: Add more validation
+        homecare = has_homecare.lower() == "true"
         dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
         patient = Patient(ssn, firstname, surname, dob, municipality)
         db.session.add(patient)

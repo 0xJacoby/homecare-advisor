@@ -3,6 +3,7 @@ import operator
 from typing import List, Optional, Tuple
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import os
 
 db = SQLAlchemy()
@@ -48,6 +49,14 @@ class PersonInfo:
     age: Optional[int]
     municipality: Optional[str]
     has_homecare: Optional[bool]
+
+    def __init__(self, age, municipality, has_homecare):
+        self.age = age
+        self.municipality = municipality
+        self.has_homecare = has_homecare
+
+    def __repr__(self):
+        return f"PersonInfo({self.age=}, {self.municipality=}, {self.has_homecare=})"
     # m.m
 
 class Parameter:
@@ -156,7 +165,25 @@ class DB(Flask):
 
     @classmethod
     def search_db(self, ssn: int) -> Tuple[PersonInfo, List[str]]: # List of category names
-        pass
+        from app.models.patient import Patient
+        from app.models.categories import Categories
+        from app.models.journal_entry import JournalEntry
+
+        patient = Patient.from_ssn(ssn)
+        person_info = PersonInfo(
+            age=divmod((datetime.now() - patient.date_of_birth).total_seconds(), 31536000)[0],
+            municipality=patient.municipality,
+            has_homecare=patient.has_homecare,
+        )
+
+        data = (db.session.query(JournalEntry, Categories)
+                .filter_by(ssn=ssn)
+                .filter_by(test_id = 1)
+                .join(Categories, Categories.id == JournalEntry.test_value, isouter=True)
+                .all())
+
+        categories = [c.name for _, c in data]
+        return (person_info, categories)
 
 class Config:
     """Innehållet i config.json"""
