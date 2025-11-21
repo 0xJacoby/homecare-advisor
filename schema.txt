@@ -1,0 +1,4 @@
+Patients(_ssn_, first_name, last_name, date_of_birth, kommun)
+
+JournalEntries(_id_, date, ssn, parameter_id, value):
+    ssn -> Patients.ssn

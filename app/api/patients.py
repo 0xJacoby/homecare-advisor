@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from .. import db
 from ..models.patient import Patient
+from datetime import datetime
 
 bp = Blueprint("patients", __name__)
 
@@ -10,11 +11,15 @@ def add_patient():
     ssn = request.form.get("ssn")
     firstname = request.form.get("firstname")
     surname = request.form.get("surname")
+    date_of_birth = request.form.get("date_of_birth")
+    municipality = request.form.get("municipality")
 
     patient = Patient.from_ssn(ssn)
 
     if patient is None:
-        patient = Patient(ssn, firstname, surname)
+        # TODO: Add more validation
+        dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
+        patient = Patient(ssn, firstname, surname, dob, municipality)
         db.session.add(patient)
         db.session.commit()
 
