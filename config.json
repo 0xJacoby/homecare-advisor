@@ -1,22 +1,22 @@
 {
-    "Categories": [
+    "categories": [
         {
             "name": "Cancer",
-            "parameters": [{
-                "name": "Accessibility",
-                "weight": 3
-            }]
+            "parameters": [
+                {
+                    "name": "Accessibility",
+                    "weight": 50
+                }
+            ]
         },
         {
             "name": "Diabetes",
-            "parameters": [{
-                "name": "Accessibility",
-                "weight": 2
-            }]
+            "parameters": [
+                {
+                    "name": "Accessibility",
+                    "weight": 2
+                }
+            ]
         }
-    ],
-    "TestId": {
-        "Blodtryck": null,
-        "NEWS": 5
-    }
+    ]
 }
