@@ -1,4 +1,4 @@
-from .. import db
+from app.db import db
 
 
 class Tests(db.Model):

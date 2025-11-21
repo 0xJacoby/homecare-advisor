@@ -1,5 +1,6 @@
-from app import db, Application
+from app import Application
 from app.models import Tests
+from app.db import db
 
 app = Application()
 
