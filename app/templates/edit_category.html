@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Konfiguration</title>
+  <title>Redigera befintliga kategorier</title>
   <style>
     body {
       margin: 0;
@@ -145,11 +145,11 @@
   <!-- Back to main page -->
   <a href="test_ui.html" class="back-link">← Tillbaka</a>
 
-  <h1>Konfiguration av diagnoskategorier</h1>
+  <h1>Redigera befintliga kategorier</h1>
 
   <div class="config-container">
     <!-- ========== CATEGORY SECTION ========== -->
-    <div class="section-title">1. Välj eller skapa diagnoskategori</div>
+    <div class="section-title">1. Välj diagnoskategori</div>
 
     <div class="row">
       <div>
@@ -159,14 +159,8 @@
         </select>
       </div>
 
-      <div>
-        <label for="newCategoryName">Ny kategori:</label>
-        <input type="text" id="newCategoryName"
-               placeholder="t.ex. Lung- och andningssjukdomar">
-      </div>
-
       <div style="align-self:flex-end;">
-        <button id="addCategoryBtn">Lägg till kategori</button>
+        <button id="deleteCategoryBtn" class="danger">Ta bort kategori</button>
       </div>
     </div>
 
@@ -176,7 +170,7 @@
     <!-- Add new parameter -->
     <div class="row">
       <div style="flex: 2;">
-        <label for="newParamSelect">Ny parameter (fördefinierad):</label>
+        <label for="newParamSelect">Ny parameter:</label>
         <select id="newParamSelect">
           <option value="">– Välj parameter –</option>
           <option value="Blodtryck">Blodtryck</option>
@@ -212,33 +206,21 @@
   </div>
 
   <script>
-    // Data in localStorage:
-    // [
-    //   {
-    //     id: "cat_1",
-    //     name: "Lung- och andningssjukdomar",
-    //     parameters: [
-    //       { id: "p1", name: "Blodtryck", weight: 7, ignored: false },
-    //       { id: "p2", name: "Hb",        weight: 3, ignored: true  }
-    //     ]
-    //   },
-    //   ...
-    // ]
+    // Just now: localStorage. Later you can swap these two functions
+    // with your API-based versions using fetch().
 
     const STORAGE_KEY = "diagnosisCategories";
 
     // DOM elements
     const categorySelect   = document.getElementById("categorySelect");
-    const newCategoryName  = document.getElementById("newCategoryName");
-    const addCategoryBtn   = document.getElementById("addCategoryBtn");
-
+    const deleteCategoryBtn = document.getElementById("deleteCategoryBtn");
     const paramList        = document.getElementById("paramList");
     const newParamSelect   = document.getElementById("newParamSelect");
     const newParamWeight   = document.getElementById("newParamWeight");
     const newParamWeightLabel = document.getElementById("newParamWeightLabel");
     const addParamBtn      = document.getElementById("addParamBtn");
 
-    // Load/save helpers
+    // -------- Load/save helpers (localStorage for now) --------
     function loadCategories() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) return [];
@@ -254,11 +236,8 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
     }
 
-
-    
     /*
-    --- Här är functionerna som hämtar befintliga kategorier samt skickar ny/updaterade kategorier till API:n ---
-
+    // Senare kan du ersätta ovanstående två med API-versionerna, t.ex.:
 
     async function loadCategories() {
       try {
@@ -270,7 +249,6 @@
       }
     }
 
-    
     async function saveCategories(categories) {
       try {
         await fetch("http://127.0.0.1:8000/categories", {
@@ -283,24 +261,56 @@
       }
     }
     */
-    // State
-    let categories = loadCategories();
-    let currentCategoryId = null;
 
-    // Render category dropdown
+    // -------- State --------
+    let categories = loadCategories();
+    let currentCategoryId = null; // "natural mode": ingenting valt
+
+    // --- Hard-coded categories for initial testing ---
+if (categories.length === 0) {
+  categories = [
+    {
+      id: "cat_lung",
+      name: "Lung- och andningssjukdomar",
+      parameters: [
+        { id: "p1", name: "Andningsfrekvens", weight: 7, ignored: false },
+        { id: "p2", name: "SpO₂",             weight: 9, ignored: false }
+      ]
+    },
+    {
+      id: "cat_heart",
+      name: "Hjärt- och kärlsjukdomar",
+      parameters: [
+        { id: "p3", name: "Blodtryck", weight: 8, ignored: false },
+        { id: "p4", name: "Puls",      weight: 6, ignored: false }
+      ]
+    },
+    {
+      id: "cat_general",
+      name: "Allmän riskbedömning",
+      parameters: [
+        { id: "p5", name: "Ålder", weight: 5, ignored: false },
+        { id: "p6", name: "BMI",   weight: 3, ignored: true  }
+      ]
+    }
+  ];
+
+  saveCategories(categories);
+}
+
+    
+
+    // -------- Render category dropdown --------
     function renderCategorySelect() {
       categorySelect.innerHTML = "";
 
-      if (categories.length === 0) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "Inga kategorier ännu";
-        categorySelect.appendChild(opt);
-        currentCategoryId = null;
-        renderParamList();
-        return;
-      }
+      // Placeholder "natural mode"
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "– Välj kategori –";
+      categorySelect.appendChild(placeholder);
 
+      // Add all categories
       categories.forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat.id;
@@ -308,22 +318,35 @@
         categorySelect.appendChild(opt);
       });
 
-      if (!currentCategoryId || !categories.find(c => c.id === currentCategoryId)) {
-        currentCategoryId = categories[0].id;
+      // Keep selection if still valid
+      if (currentCategoryId && categories.find(c => c.id === currentCategoryId)) {
+        categorySelect.value = currentCategoryId;
+      } else {
+        currentCategoryId = null;
+        categorySelect.value = "";
       }
-      categorySelect.value = currentCategoryId;
+
       renderParamList();
     }
 
-    // Render parameters for selected category
+    // -------- Render parameters for selected category --------
     function renderParamList() {
       paramList.innerHTML = "";
+
+      // No category selected
+      if (!currentCategoryId) {
+        const p = document.createElement("div");
+        p.className = "empty-text";
+        p.textContent = "Välj en kategori för att se eller ändra parametrar.";
+        paramList.appendChild(p);
+        return;
+      }
 
       const cat = categories.find(c => c.id === currentCategoryId);
       if (!cat) {
         const p = document.createElement("div");
         p.className = "empty-text";
-        p.textContent = "Välj eller skapa en kategori för att lägga till parametrar.";
+        p.textContent = "Kategorin kunde inte hittas.";
         paramList.appendChild(p);
         return;
       }
@@ -354,12 +377,10 @@
           row.classList.add("ignored");
         }
 
-        // Parameter name (read-only label)
         const nameLabel = document.createElement("div");
         nameLabel.className = "param-name-label";
         nameLabel.textContent = param.name;
 
-        // Weight slider
         const sliderWrapper = document.createElement("div");
         sliderWrapper.className = "slider-wrapper";
 
@@ -385,7 +406,6 @@
         sliderWrapper.appendChild(slider);
         sliderWrapper.appendChild(sliderVal);
 
-        // Ignore toggle
         const ignoreBtn = document.createElement("button");
         ignoreBtn.className = "small";
         ignoreBtn.textContent = param.ignored ? "Sluta ignorera" : "Ignorera";
@@ -395,7 +415,6 @@
           renderParamList();
         };
 
-        // Remove button
         const removeBtn = document.createElement("button");
         removeBtn.className = "small danger";
         removeBtn.textContent = "Ta bort";
@@ -414,33 +433,11 @@
       });
     }
 
-    // Add new category
-    function addCategory() {
-      const name = newCategoryName.value.trim();
-      if (!name) {
-        alert("Ange ett kategorinamn (t.ex. Lung- och andningssjukdomar).");
-        return;
-      }
-
-      const newCat = {
-        id: "cat_" + Date.now(),
-        name,
-        parameters: []
-      };
-
-      categories.push(newCat);
-      saveCategories(categories);
-
-      newCategoryName.value = "";
-      currentCategoryId = newCat.id;
-      renderCategorySelect();
-    }
-
-    // Add new parameter (from dropdown)
+    // -------- Add new parameter to selected category --------
     function addParameter() {
       const cat = categories.find(c => c.id === currentCategoryId);
       if (!cat) {
-        alert("Skapa eller välj en kategori först.");
+        alert("Välj en kategori först.");
         return;
       }
 
@@ -465,14 +462,38 @@
       cat.parameters.push(newParam);
       saveCategories(categories);
 
-      // Reset selection (optional)
       newParamSelect.value = "";
       renderParamList();
     }
 
-    // Event listeners
-    addCategoryBtn.addEventListener("click", addCategory);
+    // -------- Delete current category --------
+    function deleteCurrentCategory() {
+      if (!currentCategoryId) {
+        alert("Välj en kategori att ta bort.");
+        return;
+      }
+
+      const cat = categories.find(c => c.id === currentCategoryId);
+      if (!cat) {
+        currentCategoryId = null;
+        renderCategorySelect();
+        return;
+      }
+
+      const confirmed = confirm(`Är du säker på att du vill ta bort kategorin "${cat.name}"?`);
+      if (!confirmed) return;
+
+      categories = categories.filter(c => c.id !== currentCategoryId);
+      saveCategories(categories);
+
+      // Back to “natural mode”
+      currentCategoryId = null;
+      renderCategorySelect();
+    }
+
+    // -------- Event listeners --------
     addParamBtn.addEventListener("click", addParameter);
+    deleteCategoryBtn.addEventListener("click", deleteCurrentCategory);
 
     categorySelect.addEventListener("change", () => {
       currentCategoryId = categorySelect.value || null;
@@ -483,20 +504,7 @@
       newParamWeightLabel.textContent = newParamWeight.value;
     });
 
-    // Initial setup: create example category if none exist
-    if (categories.length === 0) {
-      categories.push({
-        id: "cat_example",
-        name: "Exempel: Lung- och andningssjukdomar",
-        parameters: [
-          { id: "p_example1", name: "Blodtryck",    weight: 7, ignored: false },
-          { id: "p_example2", name: "Andningsfrekvens", weight: 6, ignored: false }
-        ]
-      });
-      saveCategories(categories);
-    }
-
-    currentCategoryId = categories[0]?.id || null;
+    // -------- Initial render --------
     renderCategorySelect();
   </script>
 
