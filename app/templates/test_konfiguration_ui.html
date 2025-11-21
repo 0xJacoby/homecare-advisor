@@ -254,6 +254,35 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
     }
 
+
+    
+    /*
+    --- Här är functionerna som hämtar befintliga kategorier samt skickar ny/updaterade kategorier till API:n ---
+
+
+    async function loadCategories() {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/categories");
+        return await res.json();
+      } catch (err) {
+        console.error("Could not load categories:", err);
+        return [];
+      }
+    }
+
+    
+    async function saveCategories(categories) {
+      try {
+        await fetch("http://127.0.0.1:8000/categories", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(categories)
+        });
+      } catch (err) {
+        console.error("Could not save categories:", err);
+      }
+    }
+    */
     // State
     let categories = loadCategories();
     let currentCategoryId = null;
