@@ -1,0 +1,84 @@
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+      }
+
+      .container {
+        background: #ffffff;
+        margin-top: 50px;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2f3640;
+        margin-bottom: 25px;
+      }
+
+      label {
+        font-weight: 600;
+        color: #2f3640;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 1px solid #dcdde1;
+        margin-bottom: 20px;
+        font-size: 1rem;
+      }
+
+      button {
+        width: 100%;
+        background-color: #4cd137;
+        color: #ffffff;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #44bd32;
+      }
+
+      .response {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f1f2f6;
+        border-radius: 6px;
+        color: #2f3640;
+        min-height: 50px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .list-container {
+        width: 300px;
+        max-height: 200px; /* makes it scrollable */
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .list-item {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+      }
