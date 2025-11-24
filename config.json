@@ -1,1 +1,1 @@
-{"categories": [{"name": "Cancer", "parameters": [{"name": "Accessibility", "weight": 30}]}]}
+{"categories": [{"name": "TEA", "parameters": [{"name": "Hej", "weight": 6}]}, {"name": "Feber", "parameters": []}, {"name": "f\u00f6rkylning", "parameters": [{"name": "Puls", "weight": 6}]}, {"name": "Bb", "parameters": [{"name": "SpO\u2082", "weight": 8}]}, {"name": "Cancer2", "parameters": [{"name": "Hej", "weight": "10"}]}, {"name": "Diabetes", "parameters": [{"name": "SpO\u2082", "weight": 7}]}]}

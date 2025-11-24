@@ -120,6 +120,11 @@
         border-radius: 10px;
         cursor: pointer;
       }
+
+      .empty-text {
+        font-style: italic;
+        color: #666;
+      }
     </style>
   </head>
   <body>
@@ -149,6 +154,7 @@
           <label for="newParamSelect">Ny parameter:</label>
           <select id="newParamSelect">
             <option value="">– Välj parameter –</option>
+            <!-- Värdena här är de namn som backend får, texten är det användaren ser -->
             <option value="Blodtryck">Blodtryck</option>
             <option value="Puls">Puls</option>
             <option value="Andningsfrekvens">Andningsfrekvens</option>
@@ -191,7 +197,8 @@
     </div>
 
     <script>
-      const STORAGE_KEY = "diagnosisCategories";
+      // API URL for categories
+      const API_URL = "http://127.0.0.1:5000/api/categories";
 
       const newCategoryName = document.getElementById("newCategoryName");
       const newParamSelect = document.getElementById("newParamSelect");
@@ -203,7 +210,7 @@
       const createCategoryBtn = document.getElementById("createCategoryBtn");
       const paramList = document.getElementById("paramList");
 
-      let categories = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      // Temporär lista med parametrar för den nya kategorin
       let tempParameters = [];
 
       // Render parameter list
@@ -221,9 +228,9 @@
           row.className = "param-item";
 
           row.innerHTML = `
-        <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
-        <button class="remove-btn" data-id="${p.id}">Ta bort</button>
-      `;
+            <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
+            <button class="remove-btn" data-id="${p.id}">Ta bort</button>
+          `;
 
           paramList.appendChild(row);
         });
@@ -256,22 +263,56 @@
         newParamWeightLabel.textContent = newParamWeight.value;
       });
 
-      // Create category
-      createCategoryBtn.addEventListener("click", () => {
+      // Create category -> POST to API
+      createCategoryBtn.addEventListener("click", async () => {
         const name = newCategoryName.value.trim();
         if (!name) return alert("Ange ett kategorinamn.");
+        if (tempParameters.length === 0) {
+          const proceed = confirm(
+            "Inga parametrar är tillagda. Vill du skapa kategorin ändå?",
+          );
+          if (!proceed) return;
+        }
 
-        categories.push({
-          id: "cat_" + Date.now(),
+        // Payload that backend expects
+        const payload = {
           name,
-          parameters: tempParameters,
-        });
+          parameters: tempParameters.map((p) => ({
+            name: p.name,
+            weight: p.weight,
+          })),
+        };
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-        alert("Kategori skapad!");
-        window.location.href = "/";
+          if (!res.ok) {
+            const text = await res.text();
+            console.error("API error:", res.status, text);
+            alert(
+              "Kunde inte skapa kategorin. Status: " +
+                res.status +
+                "\n" +
+                text,
+            );
+            return;
+          }
+
+          alert("Kategori skapad!");
+          // Gå tillbaka till startsidan eller konfigurationssidan
+          window.location.href = "/";
+        } catch (err) {
+          console.error("Network error creating category:", err);
+          alert("Något gick fel när kategorin skulle skapas (nätverksfel?).");
+        }
       });
+
+      // Initial render
+      renderParamList();
     </script>
   </body>
 </html>

@@ -142,7 +142,7 @@
 
 
   <script>
-   const API_URL = "http://127.0.0.1:5000/test";
+   const API_URL = "http://127.0.0.1:5000/api/patients";
 
   // 2. Internal patient storage
   let patients = [];
@@ -150,7 +150,7 @@
   // 3. Fetch from API
   async function fetchPatientsFromApi() {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL,{method: "GET"});
 
       if (!response.ok) {
         console.error("Failed to fetch patients:", response.status);
@@ -165,8 +165,8 @@
         name: p.firstname,
         lastName: p.surname,
         ssn: p.ssn,
-        age: p.age,
-        score: Number(p.score)
+        municipality: p.municipality,
+        has_homecare: p.has_homecare
       }));
 
       updateLists();
@@ -203,8 +203,8 @@
     document.getElementById("infoContent").innerHTML = `
       <p><strong>Personnummer:</strong> ${patient.ssn}</p>
       <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
-      <p><strong>Ålder:</strong> ${patient.age}</p>
-      <p><strong>Score:</strong> ${patient.score.toFixed(3)}</p>
+      <p><strong>Kommun:</strong> ${patient.municipality}</p> 
+      <p><strong>Hemtjänst:</strong> ${patient.has_homecare}</p>
     `;
     panel.style.display = "flex";
     panel.classList.remove("collapsed");

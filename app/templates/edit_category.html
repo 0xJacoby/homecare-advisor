@@ -103,15 +103,11 @@
 
       .param-row {
         display: grid;
-        grid-template-columns: 1.5fr 1.5fr 0.7fr 0.7fr;
+        grid-template-columns: 1.5fr 1.5fr 0.7fr; /* 3 kolumner: namn, vikt, ta bort */
         gap: 8px;
         align-items: center;
         padding: 6px 0;
         border-bottom: 1px solid #eee;
-      }
-
-      .param-row.ignored {
-        opacity: 0.5;
       }
 
       .param-name-label {
@@ -218,10 +214,10 @@
     </div>
 
     <script>
-      // Just now: localStorage. Later you can swap these two functions
-      // with your API-based versions using fetch().
-
-      const STORAGE_KEY = "diagnosisCategories";
+      // ==============================
+      //  API CONFIG
+      // ==============================
+      const API_URL = "http://127.0.0.1:5000/api/categories";
 
       // DOM elements
       const categorySelect = document.getElementById("categorySelect");
@@ -234,85 +230,92 @@
       );
       const addParamBtn = document.getElementById("addParamBtn");
 
-      // -------- Load/save helpers (localStorage for now) --------
-      function loadCategories() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) return [];
+      // ==============================
+      //  API HELPERS
+      // ==============================
+
+      // GET all categories from backend
+      async function loadCategoriesFromAPI() {
         try {
-          return JSON.parse(stored);
+          const res = await fetch(API_URL, { method: "GET" });
+          if (!res.ok) {
+            console.error("Could not load categories:", res.status);
+            return [];
+          }
+          const data = await res.json();
+
+          // Expecting: [{ name, parameters: [{name, weight, ...}, ...] }, ...]
+          return (data || []).map((cat) => ({
+            id: cat.name, // use name as id
+            name: cat.name,
+            parameters: (cat.parameters || []).map((p) => ({
+              id: p.name,
+              name: p.name,
+              weight: Number(p.weight ?? 0),
+            })),
+          }));
         } catch (err) {
-          console.error("Kunde inte läsa categories från localStorage:", err);
+          console.error("Could not load categories:", err);
           return [];
         }
       }
 
-      function saveCategories(categories) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+      // PATCH one category in backend
+      async function saveCategoryToAPI(category) {
+        try {
+          const payload = {
+            name: category.name,
+            parameters: category.parameters.map((p) => ({
+              name: p.name,
+              weight: p.weight,
+            })),
+          };
+
+          const res = await fetch(API_URL, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            console.error(
+              "Could not save category:",
+              res.status,
+              await res.text(),
+            );
+          }
+        } catch (err) {
+          console.error("Could not save category:", err);
+        }
       }
 
-      /*
-    // Senare kan du ersätta ovanstående två med API-versionerna, t.ex.:
-
-    async function loadCategories() {
-      try {
-        const res = await fetch("http://127.0.0.1:8000/categories");
-        return await res.json();
-      } catch (err) {
-        console.error("Could not load categories:", err);
-        return [];
+      // DELETE category by name
+      async function deleteCategoryFromAPI(name) {
+        try {
+          const url = API_URL + "?name=" + encodeURIComponent(name);
+          const res = await fetch(url, { method: "DELETE" });
+          if (!res.ok) {
+            console.error(
+              "Could not delete category:",
+              res.status,
+              await res.text(),
+            );
+          }
+        } catch (err) {
+          console.error("Could not delete category:", err);
+        }
       }
-    }
 
-    async function saveCategories(categories) {
-      try {
-        await fetch("http://127.0.0.1:8000/categories", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(categories)
-        });
-      } catch (err) {
-        console.error("Could not save categories:", err);
-      }
-    }
-    */
-
-      // -------- State --------
-      let categories = loadCategories();
+      // ==============================
+      //  STATE
+      // ==============================
+      let categories = [];
       let currentCategoryId = null; // "natural mode": ingenting valt
 
-      // --- Hard-coded categories for initial testing ---
-      if (categories.length === 0) {
-        categories = [
-          {
-            id: "cat_lung",
-            name: "Lung- och andningssjukdomar",
-            parameters: [
-              { id: "p1", name: "Andningsfrekvens", weight: 7, ignored: false },
-              { id: "p2", name: "SpO₂", weight: 9, ignored: false },
-            ],
-          },
-          {
-            id: "cat_heart",
-            name: "Hjärt- och kärlsjukdomar",
-            parameters: [
-              { id: "p3", name: "Blodtryck", weight: 8, ignored: false },
-              { id: "p4", name: "Puls", weight: 6, ignored: false },
-            ],
-          },
-          {
-            id: "cat_general",
-            name: "Allmän riskbedömning",
-            parameters: [
-              { id: "p5", name: "Ålder", weight: 5, ignored: false },
-              { id: "p6", name: "BMI", weight: 3, ignored: true },
-            ],
-          },
-        ];
+      // ==============================
+      //  UI RENDERING
+      // ==============================
 
-        saveCategories(categories);
-      }
-
-      // -------- Render category dropdown --------
       function renderCategorySelect() {
         categorySelect.innerHTML = "";
 
@@ -344,7 +347,6 @@
         renderParamList();
       }
 
-      // -------- Render parameters for selected category --------
       function renderParamList() {
         paramList.innerHTML = "";
 
@@ -352,7 +354,8 @@
         if (!currentCategoryId) {
           const p = document.createElement("div");
           p.className = "empty-text";
-          p.textContent = "Välj en kategori för att se eller ändra parametrar.";
+          p.textContent =
+            "Välj en kategori för att se eller ändra parametrar.";
           paramList.appendChild(p);
           return;
         }
@@ -378,19 +381,15 @@
         header.className = "param-row";
         header.style.fontWeight = "bold";
         header.innerHTML = `
-        <div>Parameter</div>
-        <div>Vikt (0–10)</div>
-        <div>Ignorera</div>
-        <div>Ta bort</div>
-      `;
+          <div>Parameter</div>
+          <div>Vikt (0–10)</div>
+          <div>Ta bort</div>
+        `;
         paramList.appendChild(header);
 
         cat.parameters.forEach((param) => {
           const row = document.createElement("div");
           row.className = "param-row";
-          if (param.ignored) {
-            row.classList.add("ignored");
-          }
 
           const nameLabel = document.createElement("div");
           nameLabel.className = "param-name-label";
@@ -404,7 +403,6 @@
           slider.min = "0";
           slider.max = "10";
           slider.value = param.weight;
-          slider.disabled = param.ignored;
 
           const sliderVal = document.createElement("span");
           sliderVal.className = "slider-value";
@@ -413,43 +411,36 @@
           slider.oninput = () => {
             sliderVal.textContent = slider.value;
           };
-          slider.onchange = () => {
+          slider.onchange = async () => {
             param.weight = Number(slider.value);
-            saveCategories(categories);
+            await saveCategoryToAPI(cat);
           };
 
           sliderWrapper.appendChild(slider);
           sliderWrapper.appendChild(sliderVal);
 
-          const ignoreBtn = document.createElement("button");
-          ignoreBtn.className = "small";
-          ignoreBtn.textContent = param.ignored ? "Sluta ignorera" : "Ignorera";
-          ignoreBtn.onclick = () => {
-            param.ignored = !param.ignored;
-            saveCategories(categories);
-            renderParamList();
-          };
-
           const removeBtn = document.createElement("button");
           removeBtn.className = "small danger";
           removeBtn.textContent = "Ta bort";
-          removeBtn.onclick = () => {
+          removeBtn.onclick = async () => {
             cat.parameters = cat.parameters.filter((p) => p.id !== param.id);
-            saveCategories(categories);
+            await saveCategoryToAPI(cat);
             renderParamList();
           };
 
           row.appendChild(nameLabel);
           row.appendChild(sliderWrapper);
-          row.appendChild(ignoreBtn);
           row.appendChild(removeBtn);
 
           paramList.appendChild(row);
         });
       }
 
-      // -------- Add new parameter to selected category --------
-      function addParameter() {
+      // ==============================
+      //  ACTIONS
+      // ==============================
+
+      async function addParameter() {
         const cat = categories.find((c) => c.id === currentCategoryId);
         if (!cat) {
           alert("Välj en kategori först.");
@@ -468,21 +459,19 @@
           id: "param_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
           name: paramName,
           weight,
-          ignored: false,
         };
 
         if (!cat.parameters) {
           cat.parameters = [];
         }
         cat.parameters.push(newParam);
-        saveCategories(categories);
+        await saveCategoryToAPI(cat);
 
         newParamSelect.value = "";
         renderParamList();
       }
 
-      // -------- Delete current category --------
-      function deleteCurrentCategory() {
+      async function deleteCurrentCategory() {
         if (!currentCategoryId) {
           alert("Välj en kategori att ta bort.");
           return;
@@ -500,15 +489,16 @@
         );
         if (!confirmed) return;
 
-        categories = categories.filter((c) => c.id !== currentCategoryId);
-        saveCategories(categories);
+        await deleteCategoryFromAPI(cat.name);
 
-        // Back to “natural mode”
+        categories = categories.filter((c) => c.id !== currentCategoryId);
         currentCategoryId = null;
         renderCategorySelect();
       }
 
-      // -------- Event listeners --------
+      // ==============================
+      //  EVENT LISTENERS
+      // ==============================
       addParamBtn.addEventListener("click", addParameter);
       deleteCategoryBtn.addEventListener("click", deleteCurrentCategory);
 
@@ -521,8 +511,50 @@
         newParamWeightLabel.textContent = newParamWeight.value;
       });
 
-      // -------- Initial render --------
-      renderCategorySelect();
+      // ==============================
+      //  INIT
+      // ==============================
+      async function init() {
+        categories = await loadCategoriesFromAPI();
+
+        // Optional fallback test data if API is empty:
+        if (categories.length === 0) {
+          categories = [
+            {
+              id: "cat_lung",
+              name: "Lung- och andningssjukdomar",
+              parameters: [
+                {
+                  id: "p1",
+                  name: "Andningsfrekvens",
+                  weight: 7,
+                },
+                { id: "p2", name: "SpO₂", weight: 9 },
+              ],
+            },
+            {
+              id: "cat_heart",
+              name: "Hjärt- och kärlsjukdomar",
+              parameters: [
+                { id: "p3", name: "Blodtryck", weight: 8 },
+                { id: "p4", name: "Puls", weight: 6 },
+              ],
+            },
+            {
+              id: "cat_general",
+              name: "Allmän riskbedömning",
+              parameters: [
+                { id: "p5", name: "Ålder", weight: 5 },
+                { id: "p6", name: "BMI", weight: 3 },
+              ],
+            },
+          ];
+        }
+
+        renderCategorySelect();
+      }
+
+      init();
     </script>
   </body>
 </html>
