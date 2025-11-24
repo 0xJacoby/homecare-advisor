@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from app.parameter import Parameter
 from app.person_info import PersonInfo
 import os
+import copy
 
 root = os.getcwd()
 config_path = root + "/config.json"
@@ -45,14 +46,15 @@ class CategoryConfig:
     def all_parameters(self) -> List[ParameterConfig]:
         return self.parameters.values()
 
-    def get_json(self):
-        return self.json["parameters"]
+    def to_dict(self):
+        return copy.deepcopy(self.json)
 
     def add_parameter(self, parameter: str, weight: float):
         if parameter in self.parameters:
             self.remove_parameter(parameter)
         self.json["parameters"].append({"name": parameter, "weight": weight})
-        self.parameters[parameter] = ParameterConfig(self.json["parameters"][-1])
+        self.parameters[parameter] = ParameterConfig(
+            self.json["parameters"][-1])
 
     def set_parameters(self, parameters: Dict[str, float]):
         self.json["parameters"] = []
@@ -96,7 +98,6 @@ class Config:
                 self.categories[category.name()] = category
 
     # list of parameter name and weight
-    @classmethod
     def category_parameters(
         self, category_name: str, pi: PersonInfo
     ) -> List[Tuple[Parameter, float]]:
@@ -123,8 +124,11 @@ class Config:
         self.categories[category].set_parameters(parameters)
         self.sync()
 
+    def get_category(self, category: str):
+        return copy.deepcopy(self.categories[category])
+
     def all_categories(self):
-        return self.json["categories"]
+        return copy.deepcopy(self.json["categories"])
 
     def add_category(self, category: str):
         if category in self.categories:

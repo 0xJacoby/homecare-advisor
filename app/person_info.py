@@ -10,7 +10,7 @@ class PersonInfo:
     municipality: Optional[str]
     has_homecare: Optional[bool]
 
-    def __init__(self, ssn: int):
+    def __init__(self, ssn: str):
         from app.models.patient import Patient
 
         patient = Patient.from_ssn(ssn)

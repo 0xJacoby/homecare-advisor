@@ -21,12 +21,21 @@ class NEWS:
         systolic_id = Tests.id_from_name("systolic")
         pulse_frequency_id = Tests.id_from_name("pulse_frequency")
         temperature_id = Tests.id_from_name("temperature")
-        self.respiratory_rate = JournalEntry.latest_test_from_ssn(pi.ssn, respiratory_rate_id)
-        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(pi.ssn, oxygen_saturation_id)
-        self.supplied_oxygen = JournalEntry.latest_test_from_ssn(pi.ssn, supplied_oxygen_id)
+        self.respiratory_rate = JournalEntry.latest_test_from_ssn(
+            pi.ssn, respiratory_rate_id
+        )
+        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(
+            pi.ssn, oxygen_saturation_id
+        )
+        self.supplied_oxygen = JournalEntry.latest_test_from_ssn(
+            pi.ssn, supplied_oxygen_id
+        )
         self.systolic = JournalEntry.latest_test_from_ssn(pi.ssn, systolic_id)
-        self.pulse_frequency = JournalEntry.latest_test_from_ssn(pi.ssn, pulse_frequency_id)
-        self.temperature = JournalEntry.latest_test_from_ssn(pi.ssn, temperature_id)
+        self.pulse_frequency = JournalEntry.latest_test_from_ssn(
+            pi.ssn, pulse_frequency_id
+        )
+        self.temperature = JournalEntry.latest_test_from_ssn(
+            pi.ssn, temperature_id)
 
     def calculate_score(self) -> float:
         """
@@ -34,13 +43,23 @@ class NEWS:
         Returns a score in range [0, 1]
         """
 
+        if None in [
+            self.respiratory_rate,
+            self.oxygen_saturation,
+            self.supplied_oxygen,
+            self.systolic,
+            self.pulse_frequency,
+            self.temperature,
+        ]:
+            return 0
+
         individual = [
             self.respiratory_rate_score(),
             self.oxygen_saturation_score(),
             self.supplied_oxygen_score(),
             self.systolic_score(),
             self.pulse_frequency_score(),
-            self.temperature_score()
+            self.temperature_score(),
         ]
 
         news_score = sum(individual)

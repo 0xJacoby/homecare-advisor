@@ -78,10 +78,10 @@ class Application(Flask):
             return render_template("add_category.html")
 
     @staticmethod
-    def person_score(ssn: int):
+    def person_score(ssn: str):
         from app.models.categories import Categories
 
-        categories = Categories.from_ssn(ssn)
+        categories = Categories.all_from_ssn(ssn)
 
         min_score = 1.0
         for category in categories:

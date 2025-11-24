@@ -1,18 +1,22 @@
 {
-  "categories": [
-    {
-      "name": "Blodtryck",
-      "parameters": []
-    },
-    {
-      "name": "Diabetes",
-      "parameters": [
+    "categories": [
         {
-          "name": "NEWS",
-          "weight": 2.5
+            "name": "Diabetes",
+            "parameters": [
+                {
+                    "name": "NEWS",
+                    "weight": 2.5
+                }
+            ]
+        },
+        {
+            "name": "Cancer",
+            "parameters": [
+                {
+                    "name": "BloodPressure",
+                    "weight": 5
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
-{"categories": [{"name": "TEA", "parameters": [{"name": "Hej", "weight": 6}]}, {"name": "Feber", "parameters": []}, {"name": "f\u00f6rkylning", "parameters": [{"name": "Puls", "weight": 6}]}, {"name": "Bb", "parameters": [{"name": "SpO\u2082", "weight": 8}]}, {"name": "Cancer2", "parameters": [{"name": "Hej", "weight": "10"}]}, {"name": "Diabetes", "parameters": [{"name": "SpO\u2082", "weight": 7}]}]}

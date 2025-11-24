@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from .. import db, config
 from ..models.categories import Categories
 from ..category import Category
+from ..models.patient import Patient
 
 bp = Blueprint("categories", __name__)
 
@@ -35,6 +36,16 @@ def add_category():
 
 @bp.route("/", methods=["GET"])
 def get_categories():
+    ssn = request.args.get("ssn")
+
+    if ssn:
+        if Patient.from_ssn(ssn):
+            categories = Categories.all_from_ssn(ssn)
+
+            return jsonify([c.to_dict() for c in categories])
+        else:
+            return "user not found", 404
+
     return config.all_categories()
 
 

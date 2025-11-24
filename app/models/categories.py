@@ -28,11 +28,11 @@ class Categories(db.Model):
         return Categories.query.all()
 
     @staticmethod
-    def all_from_ssn(ssn: int) -> [str]:
+    def all_from_ssn(ssn: str) -> [Category]:
         pi = PersonInfo(ssn)
         data = (
             db.session.query(JournalEntry, Categories)
-            .filter_by(ssn=ssn)
+            .filter_by(patient_ssn=ssn)
             .filter_by(test_id=1)
             .join(Categories, Categories.id == JournalEntry.test_value, isouter=True)
             .all()

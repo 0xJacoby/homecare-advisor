@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .. import db
+from .. import db, Application
 from ..models.patient import Patient
 
 bp = Blueprint("patients", __name__)
@@ -41,8 +41,16 @@ def get_patient():
         patient = Patient.from_ssn(ssn)
 
         if patient:
-            return jsonify(patient.to_dict())
+            return jsonify(add_score(patient.to_dict(), ssn))
         else:
             return "user not found", 404
 
-    return jsonify([patient.to_dict() for patient in Patient.query.all()])
+    return jsonify(
+        [add_score(patient.to_dict(), patient.ssn)
+         for patient in Patient.query.all()]
+    )
+
+
+def add_score(dict, ssn):
+    dict["score"] = Application.person_score(ssn)
+    return dict

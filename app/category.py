@@ -8,20 +8,21 @@ from app.person_info import PersonInfo
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from app.config import Config
-from app import db
+from app import config
 import os
 
 
 class Category:
+    name: str
     parameters: List[Tuple[Parameter, float]]  # float is weight
 
-    def __init__(self, parameters: List[Tuple[Parameter, float]]):
+    def __init__(self, name: str, parameters: List[Tuple[Parameter, float]]):
+        self.name = name
         self.parameters = parameters
 
     def combined_score(self) -> float:
         """Returns a score in the range [0, 1]"""
-        reduce(operator.mul, map(Category.parameter_score, self.parameters))
+        return reduce(operator.mul, map(Category.parameter_score, self.parameters), 1)
 
     def parameter_score(parameter: Tuple[Parameter, float]):
         """Possible formula: Outputs a float in range [0, 1]\n
@@ -47,8 +48,8 @@ class Category:
         parameter[0].calculate_score() * parameter[1]
 
     def to_dict(self):
-        return self.parameters
+        return config.get_category(self.name).to_dict()
 
     @staticmethod
     def from_name(name: str, pi: PersonInfo):
-        return Category(Config.category_parameters(name, pi))
+        return Category(name, config.category_parameters(name, pi))
