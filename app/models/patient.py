@@ -1,4 +1,4 @@
-from app.db import db
+from .. import db
 
 
 class Patient(db.Model):
@@ -7,28 +7,21 @@ class Patient(db.Model):
     ssn = db.Column(db.String(13), primary_key=True)
     firstname = db.Column(db.Text, nullable=False)
     surname = db.Column(db.Text, nullable=False)
-    date_of_birth = db.Column(db.DateTime(timezone=True), nullable=False)
     municipality = db.Column(db.Text, nullable=False)
     has_homecare = db.Column(db.Boolean, nullable=False)
 
-    journal_entries = db.relationship(
-        "JournalEntry",
-        backref="patient",
-        lazy=True
-    )
+    journal_entries = db.relationship("JournalEntry", backref="patient", lazy=True)
 
-    def __init__(self, ssn, firstname, surname, date_of_birth, municipality, has_homecare):
+    def __init__(self, ssn, firstname, surname, municipality, has_homecare):
         self.ssn = ssn
         self.firstname = firstname
         self.surname = surname
-        self.date_of_birth = date_of_birth
         self.municipality = municipality
         self.has_homecare = has_homecare
 
     def to_dict(self):
         return {
             "ssn": self.ssn,
-            "date_of_birth": self.date_of_birth,
             "firstname": self.firstname,
             "surname": self.surname,
             "municipality": self.municipality,

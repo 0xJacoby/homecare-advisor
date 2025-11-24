@@ -1,15 +1,7 @@
 from __future__ import annotations
-from functools import reduce
-import json
-import operator
 from typing import Any, Dict, List, Optional, Tuple
-from app.category import Category
-from app.db import DB
-from app.parameter import Parameter
-from app.person_info import PersonInfo
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 from app.config import Config
 import os
 
@@ -31,49 +23,68 @@ Hämtar ssn:s
         - Alla relevanta categories
 
     2: För varje category
-        
+
         1:
         config.category_parameters(self, category_name) ger namnen
             och vikterna på parametrarna
 
         2:
         parameter_from_name(person_info, database, name)
-            vet vilken parameter som ska skapas och vilka 
-            fält som tas ut ur person_info och databasen 
+            vet vilken parameter som ska skapas och vilka
+            fält som tas ut ur person_info och databasen
             baserat på namnet .
 
-        3: 
+        3:
         category.combined_score() räknar ut score för specifika
-        category. 
+        category.
 
     3:
     Minsta score returneras
 """
 
-class Application:
-    database: DB
-    config: Config
+db = SQLAlchemy()
+config = Config()
+
+
+class Application(Flask):
 
     def __init__(self):
-        self.db = DB()
-        self.config = Config()
+        super().__init__(__name__)
 
-    @classmethod
-    def person_score(self, ssn: int):
-        (person_info, category_names) = self.database.search_db(ssn)
-        min_score = 1.0
-        for category_name in category_names:
-            parameter_names = self.config.category_parameters(self, category_name)
-            parameters = list(map(
-                lambda name: Application.parameter_from_name(person_info, self.database, name), 
-                parameter_names
-            ))
-            category = Category(category_name, parameters)
-            min_score = min(category.combined_score(), min_score)
-        return min_score
+        # Initilize database
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        self.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+            basedir, "database.db"
+        )
+        self.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        db.init_app(self)
+
+        from app.api import register_routes
+
+        # Register API routes
+        register_routes(self)
+
+        # Define non-API routes
+        @self.route("/")
+        def index():
+            return render_template("test_ui.html")
+
+        @self.route("/edit_category")
+        def edit_category():
+            return render_template("edit_category.html")
+
+        @self.route("/add_category")
+        def add_category():
+            return render_template("add_category.html")
 
     @staticmethod
-    def parameter_from_name(person_info: PersonInfo, database: DB, parameter_name: Tuple[str, float]) -> Tuple[Parameter, float]:
-        parameter = database.get_parameter(parameter_name[0], person_info)
-        return (parameter, parameter_name[1])
+    def person_score(ssn: int):
+        from app.models.categories import Categories
 
+        categories = Categories.from_ssn(ssn)
+
+        min_score = 1.0
+        for category in categories:
+            min_score = min(category.combined_score(), min_score)
+
+        return min_score

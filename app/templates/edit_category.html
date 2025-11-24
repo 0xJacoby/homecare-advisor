@@ -1,242 +1,256 @@
 <!doctype html>
 <html lang="sv">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Redigera befintliga kategorier</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f6f6;
-      padding: 20px;
-    }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redigera befintliga kategorier</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f6f6f6;
+        padding: 20px;
+      }
 
-    h1 {
-      margin-bottom: 20px;
-    }
+      h1 {
+        margin-bottom: 20px;
+      }
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #000;
-      background: #fff;
-      cursor: pointer;
-      text-decoration: none;
-      color: #000;
-    }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #000;
+        background: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000;
+      }
 
-    .config-container {
-      background: #fff;
-      border: 2px solid #000;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 900px;
-    }
+      .config-container {
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 900px;
+      }
 
-    .section-title {
-      font-weight: bold;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 18px;
-    }
+      .section-title {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
 
-    .row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
+      .row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 4px;
-    }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+      }
 
-    input[type="text"], select {
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid #aaa;
-    }
+      input[type="text"],
+      select {
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+      }
 
-    input[type="text"] {
-      min-width: 240px;
-      flex: 1;
-    }
+      input[type="text"] {
+        min-width: 240px;
+        flex: 1;
+      }
 
-    select {
-      min-width: 240px;
-    }
+      select {
+        min-width: 240px;
+      }
 
-    button {
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 2px solid #000;
-      background: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
+      button {
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 2px solid #000;
+        background: #fff;
+        cursor: pointer;
+        font-weight: bold;
+      }
 
-    button.small {
-      padding: 4px 8px;
-      font-size: 12px;
-    }
+      button.small {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
 
-    button.danger {
-      border-color: #b00020;
-      color: #b00020;
-    }
+      button.danger {
+        border-color: #b00020;
+        color: #b00020;
+      }
 
-    button:hover {
-      opacity: 0.9;
-    }
+      button:hover {
+        opacity: 0.9;
+      }
 
-    .param-list {
-      margin-top: 10px;
-      border-top: 1px solid #ddd;
-      padding-top: 10px;
-    }
+      .param-list {
+        margin-top: 10px;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+      }
 
-    .param-row {
-      display: grid;
-      grid-template-columns: 1.5fr 1.5fr 0.7fr 0.7fr;
-      gap: 8px;
-      align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
-    }
+      .param-row {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 0.7fr 0.7fr;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #eee;
+      }
 
-    .param-row.ignored {
-      opacity: 0.5;
-    }
+      .param-row.ignored {
+        opacity: 0.5;
+      }
 
-    .param-name-label {
-      padding: 4px 0;
-    }
+      .param-name-label {
+        padding: 4px 0;
+      }
 
-    .slider-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .slider-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    .slider-wrapper input[type="range"] {
-      flex: 1;
-    }
+      .slider-wrapper input[type="range"] {
+        flex: 1;
+      }
 
-    .slider-value {
-      min-width: 24px;
-      text-align: right;
-      font-weight: bold;
-    }
+      .slider-value {
+        min-width: 24px;
+        text-align: right;
+        font-weight: bold;
+      }
 
-    .empty-text {
-      font-style: italic;
-      color: #666;
-      padding: 6px 0;
-    }
-  </style>
-</head>
-<body>
+      .empty-text {
+        font-style: italic;
+        color: #666;
+        padding: 6px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Back to main page -->
+    <a href="/" class="back-link">← Tillbaka</a>
 
-  <!-- Back to main page -->
-  <a href="test_ui.html" class="back-link">← Tillbaka</a>
+    <h1>Redigera befintliga kategorier</h1>
 
-  <h1>Redigera befintliga kategorier</h1>
+    <div class="config-container">
+      <!-- ========== CATEGORY SECTION ========== -->
+      <div class="section-title">1. Välj diagnoskategori</div>
 
-  <div class="config-container">
-    <!-- ========== CATEGORY SECTION ========== -->
-    <div class="section-title">1. Välj diagnoskategori</div>
+      <div class="row">
+        <div>
+          <label for="categorySelect">Befintlig kategori:</label>
+          <select id="categorySelect">
+            <!-- Fylls med JS -->
+          </select>
+        </div>
 
-    <div class="row">
-      <div>
-        <label for="categorySelect">Befintlig kategori:</label>
-        <select id="categorySelect">
-          <!-- Fylls med JS -->
-        </select>
-      </div>
-
-      <div style="align-self:flex-end;">
-        <button id="deleteCategoryBtn" class="danger">Ta bort kategori</button>
-      </div>
-    </div>
-
-    <!-- ========== PARAMETER SECTION ========== -->
-    <div class="section-title">2. Parametrar och vikter för vald kategori</div>
-
-    <!-- Add new parameter -->
-    <div class="row">
-      <div style="flex: 2;">
-        <label for="newParamSelect">Ny parameter:</label>
-        <select id="newParamSelect">
-          <option value="">– Välj parameter –</option>
-          <option value="Blodtryck">Blodtryck</option>
-          <option value="Puls">Puls</option>
-          <option value="Andningsfrekvens">Andningsfrekvens</option>
-          <option value="SpO₂">SpO₂ (syremättnad)</option>
-          <option value="Hb">Hb</option>
-          <option value="CRP">CRP</option>
-          <option value="Temperatur">Temperatur</option>
-          <option value="Kreatinin">Kreatinin</option>
-          <option value="BMI">BMI</option>
-          <option value="Ålder">Ålder</option>
-        </select>
-      </div>
-
-      <div style="flex: 1;">
-        <label for="newParamWeight">Vikt (0 = inte relevant, 10 = mycket viktig):</label>
-        <div class="slider-wrapper">
-          <input type="range" id="newParamWeight" min="0" max="10" value="5">
-          <span class="slider-value" id="newParamWeightLabel">5</span>
+        <div style="align-self: flex-end">
+          <button id="deleteCategoryBtn" class="danger">
+            Ta bort kategori
+          </button>
         </div>
       </div>
 
-      <div style="align-self:flex-end;">
-        <button id="addParamBtn">Lägg till parameter</button>
+      <!-- ========== PARAMETER SECTION ========== -->
+      <div class="section-title">
+        2. Parametrar och vikter för vald kategori
+      </div>
+
+      <!-- Add new parameter -->
+      <div class="row">
+        <div style="flex: 2">
+          <label for="newParamSelect">Ny parameter:</label>
+          <select id="newParamSelect">
+            <option value="">– Välj parameter –</option>
+            <option value="Blodtryck">Blodtryck</option>
+            <option value="Puls">Puls</option>
+            <option value="Andningsfrekvens">Andningsfrekvens</option>
+            <option value="SpO₂">SpO₂ (syremättnad)</option>
+            <option value="Hb">Hb</option>
+            <option value="CRP">CRP</option>
+            <option value="Temperatur">Temperatur</option>
+            <option value="Kreatinin">Kreatinin</option>
+            <option value="BMI">BMI</option>
+            <option value="Ålder">Ålder</option>
+          </select>
+        </div>
+
+        <div style="flex: 1">
+          <label for="newParamWeight"
+            >Vikt (0 = inte relevant, 10 = mycket viktig):</label
+          >
+          <div class="slider-wrapper">
+            <input
+              type="range"
+              id="newParamWeight"
+              min="0"
+              max="10"
+              value="5"
+            />
+            <span class="slider-value" id="newParamWeightLabel">5</span>
+          </div>
+        </div>
+
+        <div style="align-self: flex-end">
+          <button id="addParamBtn">Lägg till parameter</button>
+        </div>
+      </div>
+
+      <!-- List of parameters for selected category -->
+      <div class="param-list" id="paramList">
+        <!-- Fylls med JS -->
       </div>
     </div>
 
-    <!-- List of parameters for selected category -->
-    <div class="param-list" id="paramList">
-      <!-- Fylls med JS -->
-    </div>
-  </div>
+    <script>
+      // Just now: localStorage. Later you can swap these two functions
+      // with your API-based versions using fetch().
 
-  <script>
-    // Just now: localStorage. Later you can swap these two functions
-    // with your API-based versions using fetch().
+      const STORAGE_KEY = "diagnosisCategories";
 
-    const STORAGE_KEY = "diagnosisCategories";
+      // DOM elements
+      const categorySelect = document.getElementById("categorySelect");
+      const deleteCategoryBtn = document.getElementById("deleteCategoryBtn");
+      const paramList = document.getElementById("paramList");
+      const newParamSelect = document.getElementById("newParamSelect");
+      const newParamWeight = document.getElementById("newParamWeight");
+      const newParamWeightLabel = document.getElementById(
+        "newParamWeightLabel",
+      );
+      const addParamBtn = document.getElementById("addParamBtn");
 
-    // DOM elements
-    const categorySelect   = document.getElementById("categorySelect");
-    const deleteCategoryBtn = document.getElementById("deleteCategoryBtn");
-    const paramList        = document.getElementById("paramList");
-    const newParamSelect   = document.getElementById("newParamSelect");
-    const newParamWeight   = document.getElementById("newParamWeight");
-    const newParamWeightLabel = document.getElementById("newParamWeightLabel");
-    const addParamBtn      = document.getElementById("addParamBtn");
-
-    // -------- Load/save helpers (localStorage for now) --------
-    function loadCategories() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return [];
-      try {
-        return JSON.parse(stored);
-      } catch (err) {
-        console.error("Kunde inte läsa categories från localStorage:", err);
-        return [];
+      // -------- Load/save helpers (localStorage for now) --------
+      function loadCategories() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) return [];
+        try {
+          return JSON.parse(stored);
+        } catch (err) {
+          console.error("Kunde inte läsa categories från localStorage:", err);
+          return [];
+        }
       }
-    }
 
-    function saveCategories(categories) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-    }
+      function saveCategories(categories) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+      }
 
-    /*
+      /*
     // Senare kan du ersätta ovanstående två med API-versionerna, t.ex.:
 
     async function loadCategories() {
@@ -262,251 +276,253 @@
     }
     */
 
-    // -------- State --------
-    let categories = loadCategories();
-    let currentCategoryId = null; // "natural mode": ingenting valt
+      // -------- State --------
+      let categories = loadCategories();
+      let currentCategoryId = null; // "natural mode": ingenting valt
 
-    // --- Hard-coded categories for initial testing ---
-if (categories.length === 0) {
-  categories = [
-    {
-      id: "cat_lung",
-      name: "Lung- och andningssjukdomar",
-      parameters: [
-        { id: "p1", name: "Andningsfrekvens", weight: 7, ignored: false },
-        { id: "p2", name: "SpO₂",             weight: 9, ignored: false }
-      ]
-    },
-    {
-      id: "cat_heart",
-      name: "Hjärt- och kärlsjukdomar",
-      parameters: [
-        { id: "p3", name: "Blodtryck", weight: 8, ignored: false },
-        { id: "p4", name: "Puls",      weight: 6, ignored: false }
-      ]
-    },
-    {
-      id: "cat_general",
-      name: "Allmän riskbedömning",
-      parameters: [
-        { id: "p5", name: "Ålder", weight: 5, ignored: false },
-        { id: "p6", name: "BMI",   weight: 3, ignored: true  }
-      ]
-    }
-  ];
+      // --- Hard-coded categories for initial testing ---
+      if (categories.length === 0) {
+        categories = [
+          {
+            id: "cat_lung",
+            name: "Lung- och andningssjukdomar",
+            parameters: [
+              { id: "p1", name: "Andningsfrekvens", weight: 7, ignored: false },
+              { id: "p2", name: "SpO₂", weight: 9, ignored: false },
+            ],
+          },
+          {
+            id: "cat_heart",
+            name: "Hjärt- och kärlsjukdomar",
+            parameters: [
+              { id: "p3", name: "Blodtryck", weight: 8, ignored: false },
+              { id: "p4", name: "Puls", weight: 6, ignored: false },
+            ],
+          },
+          {
+            id: "cat_general",
+            name: "Allmän riskbedömning",
+            parameters: [
+              { id: "p5", name: "Ålder", weight: 5, ignored: false },
+              { id: "p6", name: "BMI", weight: 3, ignored: true },
+            ],
+          },
+        ];
 
-  saveCategories(categories);
-}
-
-    
-
-    // -------- Render category dropdown --------
-    function renderCategorySelect() {
-      categorySelect.innerHTML = "";
-
-      // Placeholder "natural mode"
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = "– Välj kategori –";
-      categorySelect.appendChild(placeholder);
-
-      // Add all categories
-      categories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat.id;
-        opt.textContent = cat.name;
-        categorySelect.appendChild(opt);
-      });
-
-      // Keep selection if still valid
-      if (currentCategoryId && categories.find(c => c.id === currentCategoryId)) {
-        categorySelect.value = currentCategoryId;
-      } else {
-        currentCategoryId = null;
-        categorySelect.value = "";
+        saveCategories(categories);
       }
 
-      renderParamList();
-    }
+      // -------- Render category dropdown --------
+      function renderCategorySelect() {
+        categorySelect.innerHTML = "";
 
-    // -------- Render parameters for selected category --------
-    function renderParamList() {
-      paramList.innerHTML = "";
+        // Placeholder "natural mode"
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "– Välj kategori –";
+        categorySelect.appendChild(placeholder);
 
-      // No category selected
-      if (!currentCategoryId) {
-        const p = document.createElement("div");
-        p.className = "empty-text";
-        p.textContent = "Välj en kategori för att se eller ändra parametrar.";
-        paramList.appendChild(p);
-        return;
+        // Add all categories
+        categories.forEach((cat) => {
+          const opt = document.createElement("option");
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          categorySelect.appendChild(opt);
+        });
+
+        // Keep selection if still valid
+        if (
+          currentCategoryId &&
+          categories.find((c) => c.id === currentCategoryId)
+        ) {
+          categorySelect.value = currentCategoryId;
+        } else {
+          currentCategoryId = null;
+          categorySelect.value = "";
+        }
+
+        renderParamList();
       }
 
-      const cat = categories.find(c => c.id === currentCategoryId);
-      if (!cat) {
-        const p = document.createElement("div");
-        p.className = "empty-text";
-        p.textContent = "Kategorin kunde inte hittas.";
-        paramList.appendChild(p);
-        return;
-      }
+      // -------- Render parameters for selected category --------
+      function renderParamList() {
+        paramList.innerHTML = "";
 
-      if (!cat.parameters || cat.parameters.length === 0) {
-        const p = document.createElement("div");
-        p.className = "empty-text";
-        p.textContent = "Inga parametrar ännu för denna kategori.";
-        paramList.appendChild(p);
-        return;
-      }
+        // No category selected
+        if (!currentCategoryId) {
+          const p = document.createElement("div");
+          p.className = "empty-text";
+          p.textContent = "Välj en kategori för att se eller ändra parametrar.";
+          paramList.appendChild(p);
+          return;
+        }
 
-      const header = document.createElement("div");
-      header.className = "param-row";
-      header.style.fontWeight = "bold";
-      header.innerHTML = `
+        const cat = categories.find((c) => c.id === currentCategoryId);
+        if (!cat) {
+          const p = document.createElement("div");
+          p.className = "empty-text";
+          p.textContent = "Kategorin kunde inte hittas.";
+          paramList.appendChild(p);
+          return;
+        }
+
+        if (!cat.parameters || cat.parameters.length === 0) {
+          const p = document.createElement("div");
+          p.className = "empty-text";
+          p.textContent = "Inga parametrar ännu för denna kategori.";
+          paramList.appendChild(p);
+          return;
+        }
+
+        const header = document.createElement("div");
+        header.className = "param-row";
+        header.style.fontWeight = "bold";
+        header.innerHTML = `
         <div>Parameter</div>
         <div>Vikt (0–10)</div>
         <div>Ignorera</div>
         <div>Ta bort</div>
       `;
-      paramList.appendChild(header);
+        paramList.appendChild(header);
 
-      cat.parameters.forEach(param => {
-        const row = document.createElement("div");
-        row.className = "param-row";
-        if (param.ignored) {
-          row.classList.add("ignored");
+        cat.parameters.forEach((param) => {
+          const row = document.createElement("div");
+          row.className = "param-row";
+          if (param.ignored) {
+            row.classList.add("ignored");
+          }
+
+          const nameLabel = document.createElement("div");
+          nameLabel.className = "param-name-label";
+          nameLabel.textContent = param.name;
+
+          const sliderWrapper = document.createElement("div");
+          sliderWrapper.className = "slider-wrapper";
+
+          const slider = document.createElement("input");
+          slider.type = "range";
+          slider.min = "0";
+          slider.max = "10";
+          slider.value = param.weight;
+          slider.disabled = param.ignored;
+
+          const sliderVal = document.createElement("span");
+          sliderVal.className = "slider-value";
+          sliderVal.textContent = param.weight;
+
+          slider.oninput = () => {
+            sliderVal.textContent = slider.value;
+          };
+          slider.onchange = () => {
+            param.weight = Number(slider.value);
+            saveCategories(categories);
+          };
+
+          sliderWrapper.appendChild(slider);
+          sliderWrapper.appendChild(sliderVal);
+
+          const ignoreBtn = document.createElement("button");
+          ignoreBtn.className = "small";
+          ignoreBtn.textContent = param.ignored ? "Sluta ignorera" : "Ignorera";
+          ignoreBtn.onclick = () => {
+            param.ignored = !param.ignored;
+            saveCategories(categories);
+            renderParamList();
+          };
+
+          const removeBtn = document.createElement("button");
+          removeBtn.className = "small danger";
+          removeBtn.textContent = "Ta bort";
+          removeBtn.onclick = () => {
+            cat.parameters = cat.parameters.filter((p) => p.id !== param.id);
+            saveCategories(categories);
+            renderParamList();
+          };
+
+          row.appendChild(nameLabel);
+          row.appendChild(sliderWrapper);
+          row.appendChild(ignoreBtn);
+          row.appendChild(removeBtn);
+
+          paramList.appendChild(row);
+        });
+      }
+
+      // -------- Add new parameter to selected category --------
+      function addParameter() {
+        const cat = categories.find((c) => c.id === currentCategoryId);
+        if (!cat) {
+          alert("Välj en kategori först.");
+          return;
         }
 
-        const nameLabel = document.createElement("div");
-        nameLabel.className = "param-name-label";
-        nameLabel.textContent = param.name;
+        const paramName = newParamSelect.value;
+        if (!paramName) {
+          alert("Välj en parameter från listan.");
+          return;
+        }
 
-        const sliderWrapper = document.createElement("div");
-        sliderWrapper.className = "slider-wrapper";
+        const weight = Number(newParamWeight.value);
 
-        const slider = document.createElement("input");
-        slider.type = "range";
-        slider.min = "0";
-        slider.max = "10";
-        slider.value = param.weight;
-        slider.disabled = param.ignored;
-
-        const sliderVal = document.createElement("span");
-        sliderVal.className = "slider-value";
-        sliderVal.textContent = param.weight;
-
-        slider.oninput = () => {
-          sliderVal.textContent = slider.value;
-        };
-        slider.onchange = () => {
-          param.weight = Number(slider.value);
-          saveCategories(categories);
+        const newParam = {
+          id: "param_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+          name: paramName,
+          weight,
+          ignored: false,
         };
 
-        sliderWrapper.appendChild(slider);
-        sliderWrapper.appendChild(sliderVal);
+        if (!cat.parameters) {
+          cat.parameters = [];
+        }
+        cat.parameters.push(newParam);
+        saveCategories(categories);
 
-        const ignoreBtn = document.createElement("button");
-        ignoreBtn.className = "small";
-        ignoreBtn.textContent = param.ignored ? "Sluta ignorera" : "Ignorera";
-        ignoreBtn.onclick = () => {
-          param.ignored = !param.ignored;
-          saveCategories(categories);
-          renderParamList();
-        };
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "small danger";
-        removeBtn.textContent = "Ta bort";
-        removeBtn.onclick = () => {
-          cat.parameters = cat.parameters.filter(p => p.id !== param.id);
-          saveCategories(categories);
-          renderParamList();
-        };
-
-        row.appendChild(nameLabel);
-        row.appendChild(sliderWrapper);
-        row.appendChild(ignoreBtn);
-        row.appendChild(removeBtn);
-
-        paramList.appendChild(row);
-      });
-    }
-
-    // -------- Add new parameter to selected category --------
-    function addParameter() {
-      const cat = categories.find(c => c.id === currentCategoryId);
-      if (!cat) {
-        alert("Välj en kategori först.");
-        return;
+        newParamSelect.value = "";
+        renderParamList();
       }
 
-      const paramName = newParamSelect.value;
-      if (!paramName) {
-        alert("Välj en parameter från listan.");
-        return;
-      }
+      // -------- Delete current category --------
+      function deleteCurrentCategory() {
+        if (!currentCategoryId) {
+          alert("Välj en kategori att ta bort.");
+          return;
+        }
 
-      const weight = Number(newParamWeight.value);
+        const cat = categories.find((c) => c.id === currentCategoryId);
+        if (!cat) {
+          currentCategoryId = null;
+          renderCategorySelect();
+          return;
+        }
 
-      const newParam = {
-        id: "param_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-        name: paramName,
-        weight,
-        ignored: false
-      };
+        const confirmed = confirm(
+          `Är du säker på att du vill ta bort kategorin "${cat.name}"?`,
+        );
+        if (!confirmed) return;
 
-      if (!cat.parameters) {
-        cat.parameters = [];
-      }
-      cat.parameters.push(newParam);
-      saveCategories(categories);
+        categories = categories.filter((c) => c.id !== currentCategoryId);
+        saveCategories(categories);
 
-      newParamSelect.value = "";
-      renderParamList();
-    }
-
-    // -------- Delete current category --------
-    function deleteCurrentCategory() {
-      if (!currentCategoryId) {
-        alert("Välj en kategori att ta bort.");
-        return;
-      }
-
-      const cat = categories.find(c => c.id === currentCategoryId);
-      if (!cat) {
+        // Back to “natural mode”
         currentCategoryId = null;
         renderCategorySelect();
-        return;
       }
 
-      const confirmed = confirm(`Är du säker på att du vill ta bort kategorin "${cat.name}"?`);
-      if (!confirmed) return;
+      // -------- Event listeners --------
+      addParamBtn.addEventListener("click", addParameter);
+      deleteCategoryBtn.addEventListener("click", deleteCurrentCategory);
 
-      categories = categories.filter(c => c.id !== currentCategoryId);
-      saveCategories(categories);
+      categorySelect.addEventListener("change", () => {
+        currentCategoryId = categorySelect.value || null;
+        renderParamList();
+      });
 
-      // Back to “natural mode”
-      currentCategoryId = null;
+      newParamWeight.addEventListener("input", () => {
+        newParamWeightLabel.textContent = newParamWeight.value;
+      });
+
+      // -------- Initial render --------
       renderCategorySelect();
-    }
-
-    // -------- Event listeners --------
-    addParamBtn.addEventListener("click", addParameter);
-    deleteCategoryBtn.addEventListener("click", deleteCurrentCategory);
-
-    categorySelect.addEventListener("change", () => {
-      currentCategoryId = categorySelect.value || null;
-      renderParamList();
-    });
-
-    newParamWeight.addEventListener("input", () => {
-      newParamWeightLabel.textContent = newParamWeight.value;
-    });
-
-    // -------- Initial render --------
-    renderCategorySelect();
-  </script>
-
-</body>
+    </script>
+  </body>
 </html>

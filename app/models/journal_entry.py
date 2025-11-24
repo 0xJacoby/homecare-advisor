@@ -1,8 +1,9 @@
-from app.db import db
+from .. import db
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class JournalEntry(db.Model):
-    __tablename__ = 'journal_entries'
+    __tablename__ = "journal_entries"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ssn = db.Column(db.String(13), db.ForeignKey("patients.ssn"), nullable=False)
@@ -11,7 +12,7 @@ class JournalEntry(db.Model):
     test_value = db.Column(db.Double, nullable=False)
 
     def __init__(self, patient_ssn, entry_date, test_id, test_value):
-        self.patient_ssn = patient_ssn
+        self.ssn = patient_ssn
         self.entry_date = entry_date
         self.test_id = test_id
         self.test_value = test_value
@@ -26,5 +27,13 @@ class JournalEntry(db.Model):
         }
 
     @staticmethod
-    def from_ssn(ssn):
+    def all_from_ssn(ssn):
         return JournalEntry.query.filter_by(patient_ssn=ssn).all()
+
+    @staticmethod
+    def latest_test_from_ssn(ssn, test_id) -> Optional[float]:
+        return (
+            JournalEntry.query.filter_by(patient_ssn=ssn, test_id=test_id)
+            .order_by(JournalEntry.entry_date.desc())
+            .first()
+        )

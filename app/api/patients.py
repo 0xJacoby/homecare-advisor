@@ -1,17 +1,15 @@
 from flask import Blueprint, request, jsonify
-from .. import db, DB
+from .. import db
 from ..models.patient import Patient
-from datetime import datetime
 
 bp = Blueprint("patients", __name__)
 
 
-@bp.route("/", methods=["PUT"])
+@bp.route("/", methods=["POST"])
 def add_patient():
     ssn = request.form.get("ssn")
     firstname = request.form.get("firstname")
     surname = request.form.get("surname")
-    date_of_birth = request.form.get("date_of_birth")
     municipality = request.form.get("municipality")
     has_homecare = request.form.get("has_homecare")
 
@@ -19,9 +17,15 @@ def add_patient():
 
     if patient is None:
         # TODO: Add more validation
+        if (
+            has_homecare.lower() not in ["true", "false"]
+            or len(ssn) != 13
+            or ssn[8] != "-"
+        ):
+            return "Invalid values in form fields", 400
+
         homecare = has_homecare.lower() == "true"
-        dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
-        patient = Patient(ssn, firstname, surname, dob, municipality)
+        patient = Patient(ssn, firstname, surname, municipality, homecare)
         db.session.add(patient)
         db.session.commit()
 
@@ -36,8 +40,8 @@ def get_patient():
         patient = Patient.from_ssn(ssn)
 
         if patient:
-            return jsonify(patient.to_dict()), 302
+            return jsonify(patient.to_dict())
         else:
             return "user not found", 404
 
-    return jsonify([patient.to_dict() for patient in Patient.query.all()]), 302
+    return jsonify([patient.to_dict() for patient in Patient.query.all()])

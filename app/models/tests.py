@@ -1,8 +1,9 @@
-from app.db import db
+from .. import db
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class Tests(db.Model):
-    __tablename__ = 'tests'
+    __tablename__ = "tests"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
@@ -10,15 +11,14 @@ class Tests(db.Model):
     def __init__(self, name):
         self.name = name
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-        }
-
     @staticmethod
-    def from_id(id):
-        return Tests.query.get(id)
+    def id_from_name(name: str) -> Optional[int]:
+        test = Tests.query.filter_by(name=name).first()
+
+        if test:
+            return test.id
+        else:
+            return None
 
     @staticmethod
     def get_all():
