@@ -207,8 +207,9 @@
       <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
       <p><strong>Kommun:</strong> ${patient.municipality}</p> 
       <p><strong>Hemtjänst:</strong> ${patient.has_homecare ? "JA" : "NEJ"}</p>
-      <p><strong>Motivering:</strong> Förklaring till varför patienten bör stanna/lämna </p>
     `;
+
+    //<p><strong>Motivering:</strong> Förklaring till varför patienten bör stanna/lämna </p>
     panel.style.display = "flex";
     panel.classList.remove("collapsed");
   }
