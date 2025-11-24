@@ -135,8 +135,8 @@ class Config:
 
     def remove_category(self, category: str):
         self.categories.pop(category)
-        for i in range(len(self.json["categories"])):
-            if self.json["categories"][i]["name"] == category:
+        for i, cat in enumerate(self.json["categories"]):
+            if cat["name"] == category:
                 self.json["categories"].pop(i)
         self.sync()
 

@@ -5,6 +5,7 @@ from datetime import datetime
 
 
 class PersonInfo:
+    ssn: int
     age: Optional[int]
     municipality: Optional[str]
     has_homecare: Optional[bool]
@@ -14,6 +15,7 @@ class PersonInfo:
 
         patient = Patient.from_ssn(ssn)
 
+        self.ssn = ssn
         self.age = datetime.now().year - int(ssn[0:4])
         self.municipality = patient.municipality
         self.has_homecare = patient.has_homecare

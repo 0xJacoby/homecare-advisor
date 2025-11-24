@@ -28,7 +28,7 @@ def add_category():
         for param in data.get("parameters", []):
             config.add_parameter(name, param["name"], param["weight"])
 
-            return jsonify(data)
+        return jsonify(data), 201
     except (KeyError, TypeError):
         return "Bad format for POST request", 400
 
@@ -40,15 +40,14 @@ def get_categories():
 
 @bp.route("/", methods=["DELETE"])
 def del_categories():
-    name = request.args.name
-
-    category = Category.from_name(name).to_dict()
+    name = request.args.get("name", "")
 
     if not name:
         return "Bad format for POST request", 400
 
+    config.remove_category(name)
     Categories.del_from_name(name)
-    return jsonify(category)
+    return "Removed", 200
 
 
 @bp.route("/", methods=["PATCH"])

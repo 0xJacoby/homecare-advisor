@@ -16,7 +16,6 @@ def add_patient():
     patient = Patient.from_ssn(ssn)
 
     if patient is None:
-        # TODO: Add more validation
         if (
             has_homecare.lower() not in ["true", "false"]
             or len(ssn) != 13
@@ -29,7 +28,9 @@ def add_patient():
         db.session.add(patient)
         db.session.commit()
 
-    return jsonify(patient.to_dict()), 201
+        return jsonify(patient.to_dict()), 201
+    else:
+        return jsonify({"error": "Person already exists"}), 409
 
 
 @bp.route("/", methods=["GET"])
