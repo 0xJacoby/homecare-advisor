@@ -142,7 +142,7 @@
 
 
   <script>
-   const API_URL = "http://127.0.0.1:5000/api/patients";
+   const PATIENTS_URL = "http://127.0.0.1:5000/api/patients";
 
   // 2. Internal patient storage
   let patients = [];
@@ -150,7 +150,9 @@
   // 3. Fetch from API
   async function fetchPatientsFromApi() {
     try {
-      const response = await fetch(API_URL,{method: "GET"});
+      const response = await fetch(PATIENTS_URL, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         console.error("Failed to fetch patients:", response.status);
@@ -177,8 +179,8 @@
 
   // 4. Split into two groups based on score
   function updateLists() {
-    const stay = patients.filter(p => p.score >= 0.5);   // Bör stanna
-    const maybeLeave = patients.filter(p => p.score < 0.5); // Möjligtvis lämna
+    const stay = patients;//patients.filter(p => p.score >= 0.5);   // Bör stanna
+    const maybeLeave = patients;//patients.filter(p => p.score < 0.5); // Möjligtvis lämna
 
     renderList(document.getElementById("list1"), stay);
     renderList(document.getElementById("list2"), maybeLeave);
@@ -204,8 +206,10 @@
       <p><strong>Personnummer:</strong> ${patient.ssn}</p>
       <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
       <p><strong>Kommun:</strong> ${patient.municipality}</p> 
-      <p><strong>Hemtjänst:</strong> ${patient.has_homecare}</p>
+      <p><strong>Hemtjänst:</strong> ${patient.has_homecare ? "JA" : "NEJ"}</p>
     `;
+
+    //<p><strong>Motivering:</strong> Förklaring till varför patienten bör stanna/lämna </p>
     panel.style.display = "flex";
     panel.classList.remove("collapsed");
   }
