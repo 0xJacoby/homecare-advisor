@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import os
 from app.parameter.Accessibility import Accessibility
 from app.parameter.BloodPressure import BloodPressure
+from app.parameter.NEWS import NEWS
 from app.parameter.RespiratoryRate import RespiratoryRate
 
 from app.person_info import PersonInfo
@@ -27,6 +28,8 @@ class Parameter:
                 return BloodPressure(pi)
             case "RespiratoryRate":
                 return RespiratoryRate(pi)
+            case "NEWS":
+                return NEWS(pi)
 
         return None
 
