@@ -35,8 +35,7 @@ def add_category():
 
 @bp.route("/", methods=["GET"])
 def get_categories():
-    categories = [c.name for c in Categories.get_all()]
-    return config.all_parameters(categories)
+    return config.all_categories()
 
 
 @bp.route("/", methods=["DELETE"])

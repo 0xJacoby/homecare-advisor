@@ -123,8 +123,8 @@ class Config:
         self.categories[category].set_parameters(parameters)
         self.sync()
 
-    def all_parameters(self, category: str):
-        return self.categories[category].get_json()
+    def all_categories(self):
+        return self.json["categories"]
 
     def add_category(self, category: str):
         if category in self.categories:
