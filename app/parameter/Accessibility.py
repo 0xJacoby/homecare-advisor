@@ -1,31 +1,8 @@
-from __future__ import annotations
-from typing import Any, Dict, List, Optional, Tuple
-import os
-
+from typing import Optional
 
 from app.person_info import PersonInfo
 
-
-class Parameter:
-    """Interface for parameters"""
-
-    def calculate_score(self) -> float:
-        """
-        Calculates score based on personal information and test values
-        Returns a score in range [0, 1]
-        """
-        pass
-
-    @staticmethod
-    def from_name(name: str, pi: PersonInfo) -> Optional[Parameter]:
-        match name:
-            case "Accessibility":
-                return Accessibility(pi)
-
-        return None
-
-
-class Accessibility(Parameter):
+class Accessibility:
     # Optional ifall informationen inte finns, ksk inte så troligt för just age dock
     age: Optional[int]
     municipality: Optional[str]
