@@ -35,10 +35,35 @@ def add_category():
 
 @bp.route("/", methods=["GET"])
 def get_categories():
-    categories = Categories.get_all()
-    return jsonify([Category.from_name(c.name).to_dict() for c in categories])
+    categories = [c.name for c in Categories.get_all()]
+    return config.all_parameters(categories)
 
 
 @bp.route("/", methods=["DELETE"])
 def del_categories():
     name = request.args.name
+
+    category = Category.from_name(name).to_dict()
+
+    if not name:
+        return "Bad format for POST request", 400
+
+    Categories.del_from_name(name)
+    return jsonify(category)
+
+
+@bp.route("/", methods=["PATCH"])
+def upt_categories():
+    data = request.get_json()
+    name = data.get("name", "")
+    if not name:
+        return "Bad format for POST request", 400
+
+    try:
+        updated_params = data.get("parameters", [])
+
+        config.set_parameters(name, updated_params)
+
+        return data
+    except (KeyError, TypeError):
+        return "Bad format for POST request", 400

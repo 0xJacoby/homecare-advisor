@@ -45,11 +45,21 @@ class CategoryConfig:
     def all_parameters(self) -> List[ParameterConfig]:
         return self.parameters.values()
 
+    def get_json(self):
+        return self.json["parameters"]
+
     def add_parameter(self, parameter: str, weight: float):
         if parameter in self.parameters:
             self.remove_parameter(parameter)
         self.json["parameters"].append({"name": parameter, "weight": weight})
         self.parameters[parameter] = ParameterConfig(self.json["parameters"][-1])
+
+    def set_parameters(self, parameters: Dict[str, float]):
+        self.json["parameters"] = []
+        self.parameters = {}
+
+        for param in parameters:
+            self.add_parameter(param["name"], param["weight"])
 
     def remove_parameter(self, parameter: str):
         self.parameters.pop(parameter)
@@ -108,6 +118,13 @@ class Config:
     def remove_parameter(self, category: str, parameter: str):
         self.categories[category].remove_parameter(parameter)
         self.sync()
+
+    def set_parameters(self, category: str, parameters: Dict[str, float]):
+        self.categories[category].set_parameters(parameters)
+        self.sync()
+
+    def all_parameters(self, category: str):
+        return self.categories[category].get_json()
 
     def add_category(self, category: str):
         if category in self.categories:

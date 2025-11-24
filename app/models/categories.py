@@ -25,8 +25,7 @@ class Categories(db.Model):
 
     @staticmethod
     def get_all():
-        data = Categories.query.all()
-        return [c.name for _, c in data]
+        return Categories.query.all()
 
     @staticmethod
     def all_from_ssn(ssn: int) -> [str]:
@@ -40,3 +39,13 @@ class Categories(db.Model):
         )
 
         return [Category.from_name(c.name, pi) for _, c in data]
+
+    @staticmethod
+    def del_from_name(name: str):
+        category = Categories.query.filter_by(name=name).first()
+        if not category:
+            return False
+
+        db.session.delete(category)
+        db.session.commit()
+        return True
