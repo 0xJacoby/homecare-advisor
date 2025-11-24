@@ -1,7 +1,5 @@
-
 from typing import Optional
 
-from sympy import Float
 from app.person_info import PersonInfo
 
 
@@ -9,57 +7,53 @@ class RespiratoryRate:
     """Interface for parameters"""
 
     age: int
-    respiratory_rate: Optional[Float] # breaths per min
+    respiratory_rate: Optional[float]  # breaths per min
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
-        
+
         self.age = pi.age
         respiratory_rate_id = Tests.id_from_name("respiratory_rate")
         self.respiratory_rate = JournalEntry.latest_test_from_ssn(pi.ssn, respiratory_rate_id)
 
-    def calculate_score(self) -> Float:
+    def calculate_score(self) -> float:
         """
         Calculates score based on personal information and test values
         Returns a score in range [0, 1]
         """
-        
+
         if self.respiratory_rate is None:
             return 0
 
         if self.age < 10:
-            if 18 < self.respiratory_rate and self.respiratory_rate < 25:
+            if 18 < self.respiratory_rate < 25:
                 return 1
             else:
                 return 0
-        elif 10 <= self.age and self.age < 18:
-            if 17 < self.respiratory_rate and self.respiratory_rate < 23:
+        elif 10 <= self.age < 18:
+            if 17 < self.respiratory_rate < 23:
                 return 1
             else:
                 return 0
-        elif 18 <= self.age and self.age < 50:
-            if 15 < self.respiratory_rate and self.respiratory_rate < 18:
+        elif 18 <= self.age < 50:
+            if 15 < self.respiratory_rate < 18:
                 return 1
             else:
                 return 0
-        elif 50 <= self.age and self.age < 65:
-            if 18 < self.respiratory_rate and self.respiratory_rate < 25:
+        elif 50 <= self.age < 65:
+            if 18 < self.respiratory_rate < 25:
                 return 1
             else:
                 return 0
-        elif 65 <= self.age and self.age < 80:
-            if 12 < self.respiratory_rate and self.respiratory_rate < 28:
+        elif 65 <= self.age < 80:
+            if 12 < self.respiratory_rate < 28:
                 return 1
             else:
                 return 0
         elif 80 <= self.age:
-            if 10 < self.respiratory_rate and self.respiratory_rate < 30:
+            if 10 < self.respiratory_rate < 30:
                 return 1
             else:
                 return 0
-
-
-
-
-
+        return None

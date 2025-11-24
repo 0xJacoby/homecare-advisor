@@ -2,16 +2,14 @@ from typing import Optional
 
 from app.person_info import PersonInfo
 
+
 class Accessibility:
     # Optional ifall informationen inte finns, ksk inte så troligt för just age dock
     age: Optional[int]
     municipality: Optional[str]
     has_home_care: Optional[bool]
 
-    def __init__(
-        self,
-        pi: PersonInfo,
-    ):
+    def __init__(self, pi: PersonInfo):
         self.age = pi.age
         self.municipality = pi.municipality
         self.has_home_care = pi.has_home_care

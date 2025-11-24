@@ -1,25 +1,20 @@
-
 from typing import Optional
 
-from sympy import Float
 from app.person_info import PersonInfo
 
 
 class NEWS:
-    respiratory_rate: Optional[Float]
-    oxygen_saturation: Optional[Float]
-    supplied_oxygen: Optional[Float]
-    systolic: Optional[Float]
-    pulse_frequency: Optional[Float]
-    temperature: Optional[Float]
+    respiratory_rate: Optional[float]
+    oxygen_saturation: Optional[float]
+    supplied_oxygen: Optional[float]
+    systolic: Optional[float]
+    pulse_frequency: Optional[float]
+    temperature: Optional[float]
 
-    def __init__(
-        self,
-        pi: PersonInfo,
-    ):
+    def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
-        
+
         respiratory_rate_id = Tests.id_from_name("respiratory_rate")
         oxygen_saturation_id = Tests.id_from_name("oxygen_saturation")
         supplied_oxygen_id = Tests.id_from_name("supplied_oxygen")
@@ -38,7 +33,7 @@ class NEWS:
         Calculates score based on personal information and test values
         Returns a score in range [0, 1]
         """
-        
+
         individual = [
             self.respiratory_rate_score(),
             self.oxygen_saturation_score(),
@@ -51,7 +46,7 @@ class NEWS:
         news_score = sum(individual)
         if 3 in individual:
             return 0.5
-        
+
         if news_score == 0:
             return 1
         if news_score <= 4:
@@ -60,7 +55,7 @@ class NEWS:
             return 0.25
         return 0
 
-    def respiratory_rate_score(self) -> Float:
+    def respiratory_rate_score(self) -> float:
         if self.respiratory_rate <= 8:
             return 3
         if self.respiratory_rate <= 11:
@@ -70,10 +65,8 @@ class NEWS:
         if self.respiratory_rate <= 24:
             return 2
         return 3
-        
 
-
-    def oxygen_saturation_score(self) -> Float:
+    def oxygen_saturation_score(self) -> float:
         if self.oxygen_saturation >= 96:
             return 0
         if self.oxygen_saturation >= 94:
@@ -82,15 +75,13 @@ class NEWS:
             return 2
         if self.oxygen_saturation >= 91:
             return 3
-        
 
-    def supplied_oxygen_score(self) -> Float:
+    def supplied_oxygen_score(self) -> float:
         if self.supplied_oxygen == 0:
             return 0
         return 2
 
-
-    def systolic_score(self) -> Float:
+    def systolic_score(self) -> float:
         if self.systolic <= 90:
             return 3
         if self.systolic <= 100:
@@ -101,8 +92,7 @@ class NEWS:
             return 0
         return 3
 
-
-    def pulse_frequency_score(self) -> Float:
+    def pulse_frequency_score(self) -> float:
         if self.pulse_frequency <= 40:
             return 3
         if self.pulse_frequency <= 50:
@@ -114,9 +104,8 @@ class NEWS:
         if self.pulse_frequency <= 130:
             return 2
         return 3
-    
 
-    def temperature_score(self) -> Float:
+    def temperature_score(self) -> float:
         if self.temperature <= 35:
             return 3
         if self.temperature <= 36:
