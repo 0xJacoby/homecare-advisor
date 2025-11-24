@@ -1,1 +1,17 @@
-{"categories": [{"name": "Cancer", "parameters": [{"name": "Accessibility", "weight": 30}]}]}
+{
+  "categories": [
+    {
+      "name": "Blodtryck",
+      "parameters": []
+    },
+    {
+      "name": "Diabetes",
+      "parameters": [
+        {
+          "name": "NEWS",
+          "weight": 2.5
+        }
+      ]
+    }
+  ]
+}
