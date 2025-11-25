@@ -52,5 +52,7 @@ def get_patient():
 
 
 def add_score(dict, ssn):
-    dict["score"] = Application.person_score(ssn)
+    person_score = Application.person_score(ssn)
+    dict["score"] = person_score["total"]
+    dict["categories"] = person_score["categories"]
     return dict

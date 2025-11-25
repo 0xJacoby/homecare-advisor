@@ -87,10 +87,21 @@ class Application(Flask):
         weights = []
         for category in categories:
             combined = category.combined_score()
+
+            params = []
+            for parameter, weight in config.categories[category.name].all_parameters().items():
+                params.append(
+                    {
+                        "param": parameter,
+                        "weight": weight.weight(),
+                    }
+                )
+
             weights.append(
                 {
                     "name": category.name,
                     "value": combined,
+                    "params": params,
                 }
             )
             min_score = min(combined, min_score)

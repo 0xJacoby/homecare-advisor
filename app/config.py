@@ -43,8 +43,8 @@ class CategoryConfig:
     def name(self):
         return self.json["name"]
 
-    def all_parameters(self) -> List[ParameterConfig]:
-        return self.parameters.values()
+    def all_parameters(self) -> dict[str, ParameterConfig]:
+        return self.parameters
 
     def to_dict(self):
         return copy.deepcopy(self.json)
@@ -104,7 +104,7 @@ class Config:
         return list(
             map(
                 lambda c: (Parameter.from_name(c.name(), pi), c.weight()),
-                self.categories[category_name].all_parameters(),
+                self.categories[category_name].all_parameters().values(),
             )
         )
 
