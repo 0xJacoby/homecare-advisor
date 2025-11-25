@@ -97,9 +97,21 @@ class Config:
                 category = CategoryConfig(category_obj)
                 self.categories[category.name()] = category
 
+    def category_index(
+            self, category_name: str
+    ) -> Optional[int]:
+        categories = self.all_categories()
+        for i in range(len(categories)):
+            if categories[i]["name"] == category_name:
+                return i
+
+        return None
+
     # list of parameter name and weight
     def category_parameters(
-        self, category_name: str, pi: PersonInfo
+        self, 
+        category_name: str, 
+        pi: PersonInfo
     ) -> List[Tuple[Parameter, float]]:
         return list(
             map(

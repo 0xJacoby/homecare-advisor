@@ -40,7 +40,7 @@ def get_categories():
 
     if ssn:
         if Patient.from_ssn(ssn):
-            categories = Categories.all_from_ssn(ssn)
+            categories = list(Categories.all_from_ssn(ssn))
 
             return jsonify([c.to_dict() for c in categories])
         else:

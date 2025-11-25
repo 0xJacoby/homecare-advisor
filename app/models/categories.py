@@ -1,3 +1,6 @@
+from typing import Generator, List
+
+from app import config
 from .. import db
 from app.models.journal_entry import JournalEntry
 from app.person_info import PersonInfo
@@ -28,7 +31,10 @@ class Categories(db.Model):
         return Categories.query.all()
 
     @staticmethod
-    def all_from_ssn(ssn: str) -> [Category]:
+    def all_from_ssn(
+        ssn: str, 
+        error_missing_categories = lambda category_name: category_name, 
+    ) -> Generator[Category, None, None]:
         pi = PersonInfo(ssn)
         data = (
             db.session.query(JournalEntry, Categories)
@@ -38,7 +44,12 @@ class Categories(db.Model):
             .all()
         )
 
-        return [Category.from_name(c.name, pi) for _, c in data]
+        for _, c in data:
+            if c and config.category_index(c.name):
+                yield Category.from_name(c.name, pi)
+            elif c:
+                error_missing_categories(c.name)
+
 
     @staticmethod
     def del_from_name(name: str):

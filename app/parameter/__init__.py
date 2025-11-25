@@ -11,6 +11,8 @@ from app.person_info import PersonInfo
 
 class Parameter:
     """Interface for parameters"""
+    name: str
+    score: float
 
     def calculate_score(self) -> float:
         """
@@ -18,6 +20,24 @@ class Parameter:
         Returns a score in range [0, 1]
         """
         pass
+
+    @staticmethod
+    def to_display_dict(cls: Parameter): # Static method to avoid having to implement for every class
+        """
+        Constructs a dict with the name, tests and score
+        """
+        
+        return {
+            "name": cls.name,
+            "score": cls.score,
+            "tests": [{
+                    "name": name,
+                    "value": value
+                }
+                for (name, value) in cls.tests()
+            ]
+        }
+
 
     @staticmethod
     def from_name(name: str, pi: PersonInfo) -> Optional[Parameter]:
@@ -33,4 +53,10 @@ class Parameter:
 
         return None
 
+
+    def tests(self) -> List[Tuple[str, str]]:
+        """
+        List of all test fields and their value (representation in str)
+        If value is missing the it will be \"Missing\"
+        """
 

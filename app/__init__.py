@@ -78,35 +78,38 @@ class Application(Flask):
             return render_template("add_category.html")
 
     @staticmethod
-    def person_score(ssn: str):
+    def person_score(ssn: str, extend_me={}):
+        """
+        If errors are encountered they will be put into error field
+        Possible error:
+            missing_category - Occurrs if a patient's category is not configured
+            missing_tests - Tests that do not have a recorded value in the journal
+        """
+
         from app.models.categories import Categories
 
-        categories = Categories.all_from_ssn(ssn)
+        if not "errors" in extend_me:
+            extend_me["errors"] = {}
+        if not "missing_categories" in extend_me["errors"]:
+            extend_me["errors"]["missing_categories"] = []
+        if not "missing_tests" in extend_me["errors"]:
+            extend_me["errors"]["missing_tests"] = []
+        extend_me["score"] = 1.0
+        extend_me["categories"] = []
 
-        min_score = 1.0
-        weights = []
-        for category in categories:
-            combined = category.combined_score()
+        for category in Categories.all_from_ssn(ssn, extend_me["errors"]["missing_categories"].append):
 
-            params = []
-            for parameter, weight in config.categories[category.name].all_parameters().items():
-                params.append(
-                    {
-                        "param": parameter,
-                        "weight": weight.weight(),
-                    }
-                )
+            # Check for missing tests
+            missing_tests_set = set(extend_me["errors"]["missing_tests"]) # Avoiding duplicates
+            for parameter, _ in category.parameters:
+                for test_name, _ in filter(lambda t: t[1] == "Missing", parameter.tests()):
+                    missing_tests_set.add(test_name)
 
-            weights.append(
-                {
-                    "name": category.name,
-                    "value": combined,
-                    "params": params,
-                }
+            extend_me["errors"]["missing_tests"] = list(missing_tests_set)
+
+            extend_me["categories"].append(
+                category.to_display_dict()
             )
-            min_score = min(combined, min_score)
+            extend_me["score"] = min(category.score, extend_me["score"])
 
-        return {
-            "total": min_score,
-            "categories": weights,
-        }
+        return extend_me
