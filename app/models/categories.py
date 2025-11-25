@@ -33,7 +33,7 @@ class Categories(db.Model):
     @staticmethod
     def all_from_ssn(
         ssn: str, 
-        error_missing_categories = lambda category_name: category_name, 
+        missing_categories_err = lambda category_name: category_name, 
     ) -> Generator[Category, None, None]:
         pi = PersonInfo(ssn)
         data = (
@@ -48,7 +48,7 @@ class Categories(db.Model):
             if c and config.category_index(c.name):
                 yield Category.from_name(c.name, pi)
             elif c:
-                error_missing_categories(c.name)
+                missing_categories_err(c.name)
 
 
     @staticmethod
