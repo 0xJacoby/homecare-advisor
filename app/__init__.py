@@ -84,7 +84,18 @@ class Application(Flask):
         categories = Categories.all_from_ssn(ssn)
 
         min_score = 1.0
+        weights = []
         for category in categories:
-            min_score = min(category.combined_score(), min_score)
+            combined = category.combined_score()
+            weights.append(
+                {
+                    "name": category.name,
+                    "value": combined,
+                }
+            )
+            min_score = min(combined, min_score)
 
-        return min_score
+        return {
+            "total": min_score,
+            "categories": weights,
+        }
