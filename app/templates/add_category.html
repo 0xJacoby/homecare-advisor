@@ -279,7 +279,8 @@
           name,
           parameters: tempParameters.map((p) => ({
             name: p.name,
-            weight: p.weight,
+            // skalan from 0 till 10 blir 0 till 2
+            weight: p.weight/5,
           })),
         };
 
