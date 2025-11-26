@@ -251,7 +251,7 @@
             parameters: (cat.parameters || []).map((p) => ({
               id: p.name,
               name: p.name,
-              weight: Number(p.weight ?? 0),
+              weight: Number(p.weight ?? 0) *5, // Från 0-2 till 0-10
             })),
           }));
         } catch (err) {
@@ -267,7 +267,7 @@
             name: category.name,
             parameters: category.parameters.map((p) => ({
               name: p.name,
-              weight: p.weight,
+              weight: p.weight/5, //Från 0-10 till 0-2
             })),
           };
 

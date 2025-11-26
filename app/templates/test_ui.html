@@ -99,7 +99,7 @@
       bottom: 20px;
       right: 20px;
       display: flex;
-      gap: 15px; /* space between the two buttons */
+      gap: 15px; /* space between the buttons */
     }
 
     .action-btn {
@@ -110,6 +110,41 @@
       background: white;
       border: 2px solid black;
       border-radius: 10px;
+    }
+
+    /* Panel for editing the threshold */
+    .threshold-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 260px;
+      background: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 14px;
+      z-index: 1000;
+    }
+
+    .threshold-panel h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .threshold-panel input[type="range"] {
+      width: 100%;
+    }
+
+    .threshold-panel .close-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid black;
+      background: #f0f0f0;
     }
   </style>
 </head>
@@ -132,22 +167,41 @@
     <h2>Patient information</h2>
     <div id="infoContent">Select an item to view its details.</div>
   </div>
+
+  <!-- New threshold panel -->
+  <div id="thresholdPanel" class="threshold-panel" style="display:none;">
+    <h3>Redigera gränsen</h3>
+    <p>
+      Gräns mellan <strong>"Bör stanna"</strong> och <strong>"Möjligtvis lämna"</strong>:
+      <span id="thresholdLabel">50</span>
+    </p>
+    <input
+      id="thresholdSlider"
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+    />
+    <button class="close-btn" onclick="closeThresholdPanel()">Stäng</button>
   </div>
+
   <!-- Bottom-right button container -->
   <div class="bottom-buttons">
     <button class="action-btn" onclick="window.location='/edit_category'">Redigera befintlig kategori</button>
     <button class="action-btn" onclick="window.location='/add_category'">Lägg till ny kategori</button>
+    <button class="action-btn" onclick="openThresholdPanel()">Redigera gränsen</button>
   </div>
-
-
 
   <script>
    const PATIENTS_URL = "http://127.0.0.1:5000/api/patients";
 
-  // 2. Internal patient storage
+  // Internal patient storage
   let patients = [];
 
-  // 3. Fetch from API
+  // Dynamic threshold (0–1), default 0.5 => 50
+  let threshold = 0.5;
+
+  // Fetch from API
   async function fetchPatientsFromApi() {
     try {
       const response = await fetch(PATIENTS_URL, {
@@ -172,7 +226,7 @@
         score: p.score
       }));
 
-      patients.sort((a, b) => a.score - b.score)
+      patients.sort((a, b) => a.score - b.score);
 
       updateLists();
     } catch (err) {
@@ -180,29 +234,28 @@
     }
   }
 
-  // 4. Split into two groups based on score
+  // Split into two groups based on dynamic threshold
   function updateLists() {
-    const stay = patients.filter(p => p.score < 0.5);   // Bör stanna
-    const maybeLeave = patients.filter(p => p.score > 0.5); // Möjligtvis lämna
+    const stay = patients.filter(p => p.score <= threshold);   // Bör stanna
+    const maybeLeave = patients.filter(p => p.score > threshold); // Möjligtvis lämna
 
     renderList(document.getElementById("list1"), stay);
     renderList(document.getElementById("list2"), maybeLeave);
   }
 
-  // 5. Render one list (Bör stanna / Möjligtvis lämna)
+  // Render one list (Bör stanna / Möjligtvis lämna)
   function renderList(listElement, arr) {
     listElement.innerHTML = "";
     arr.forEach(patient => {
       const div = document.createElement("div");
       div.className = "item";
-      div.textContent =
-        div.textContent = `${patient.name} ${patient.lastName}`;
+      div.textContent = `${patient.name} ${patient.lastName}`;
       div.onclick = () => updateInfo(patient);
       listElement.appendChild(div);
     });
   }
 
-  // 6. Info panel
+  // Info panel
   function updateInfo(patient) {
     const panel = document.getElementById("infoPanel");
     document.getElementById("infoContent").innerHTML = `
@@ -212,8 +265,6 @@
       <p><strong>Hemtjänst:</strong> ${patient.has_homecare ? "JA" : "NEJ"}</p>
       <p><strong>Betyg från programmet:</strong> ${patient.score}</p>
     `;
-
-    //<p><strong>Motivering:</strong> Förklaring till varför patienten bör stanna/lämna </p>
     panel.style.display = "flex";
     panel.classList.remove("collapsed");
   }
@@ -222,12 +273,30 @@
     document.getElementById("infoPanel").style.display = "none";
   }
 
-  // 7. Load patients when page opens
+  // Open / close threshold panel
+  function openThresholdPanel() {
+    document.getElementById("thresholdPanel").style.display = "block";
+  }
+
+  function closeThresholdPanel() {
+    document.getElementById("thresholdPanel").style.display = "none";
+  }
+
+  // Load patients when page opens
   window.addEventListener("load", () => {
     fetchPatientsFromApi();
 
-    // Optional: auto-refresh from server every 10s
-    // setInterval(fetchPatientsFromApi, 10000);
+    const slider = document.getElementById("thresholdSlider");
+    const label = document.getElementById("thresholdLabel");
+
+    if (slider && label) {
+      slider.addEventListener("input", (e) => {
+        const value = Number(e.target.value); // 0–100
+        label.textContent = value;
+        threshold = value / 100;             // 0–1 for score
+        updateLists();
+      });
+    }
   });
   </script>
 
