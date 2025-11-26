@@ -1,9 +1,16 @@
-from app import create_app, db
+from app import Application, db
+from app.models import Tests
 
-app = create_app()
+app = Application()
+
 
 with app.app_context():
     db.create_all()
+
+    # if len(Tests.query.all()) == 0:
+    #     categories_test = Tests("Categories")
+    #     db.session.add(categories_test)
+    #     db.session.commit()
 
 if __name__ == "__main__":
     app.run(debug=True)

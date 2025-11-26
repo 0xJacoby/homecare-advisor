@@ -1,266 +1,319 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Skapa ny kategori</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Skapa ny kategori</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f6f6;
-      padding: 20px;
-    }
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f6f6f6;
+        padding: 20px;
+      }
 
-    h1 {
-      margin-bottom: 20px;
-    }
+      h1 {
+        margin-bottom: 20px;
+      }
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #000;
-      background: #fff;
-      cursor: pointer;
-      text-decoration: none;
-      color: #000;
-    }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #000;
+        background: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000;
+      }
 
-    .config-container {
-      background: #fff;
-      border: 2px solid #000;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 900px;
-    }
+      .config-container {
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 900px;
+      }
 
-    .section-title {
-      font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      font-size: 18px;
-    }
+      .section-title {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
 
-    .row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
+      .row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 4px;
-    }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+      }
 
-    input[type="text"], select {
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid #aaa;
-      min-width: 240px;
-    }
+      input[type="text"],
+      select {
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+        min-width: 240px;
+      }
 
-    .slider-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .slider-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    button {
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 2px solid #000;
-      background: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
+      button {
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 2px solid #000;
+        background: #fff;
+        cursor: pointer;
+        font-weight: bold;
+      }
 
-    button:hover {
-      opacity: 0.9;
-    }
+      button:hover {
+        opacity: 0.9;
+      }
 
-    .param-list {
-      margin-top: 15px;
-      padding-top: 10px;
-      border-top: 1px solid #ccc;
-    }
+      .param-list {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #ccc;
+      }
 
-    .param-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
-    }
+      .param-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #eee;
+      }
 
-    .remove-btn {
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: 2px solid #b00020;
-      color: #b00020;
-      background: #fff;
-    }
+      .remove-btn {
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 2px solid #b00020;
+        color: #b00020;
+        background: #fff;
+      }
 
-    .bottom-create-bar {
-      margin-top: 30px;
-      display: flex;
-      justify-content: flex-end;
-    }
+      .bottom-create-bar {
+        margin-top: 30px;
+        display: flex;
+        justify-content: flex-end;
+      }
 
-    #createCategoryBtn {
-      padding: 14px 24px;
-      font-size: 18px;
-      background: #fff;
-      border: 3px solid black;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
+      #createCategoryBtn {
+        padding: 14px 24px;
+        font-size: 18px;
+        background: #fff;
+        border: 3px solid black;
+        border-radius: 10px;
+        cursor: pointer;
+      }
 
-<a href="test_ui.html" class="back-link">← Tillbaka</a>
+      .empty-text {
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="/" class="back-link">← Tillbaka</a>
 
-<h1>Skapa ny diagnoskategori</h1>
+    <h1>Skapa ny diagnoskategori</h1>
 
-<div class="config-container">
-
-  <!-- Kategorinamn -->
-  <div class="section-title"></div>
-  <div class="row">
-    <div style="flex: 1;">
-      <label for="newCategoryName">Namn på ny kategori:</label>
-      <input type="text" id="newCategoryName" placeholder="t.ex. Lung- och andningssjukdomar">
-    </div>
-  </div>
-
-  <!-- Lägg till parametrar -->
-  <div class="section-title">Lägg till parametrar</div>
-
-  <div class="row">
-    <div style="flex: 2;">
-      <label for="newParamSelect">Ny parameter:</label>
-      <select id="newParamSelect">
-        <option value="">– Välj parameter –</option>
-        <option value="Blodtryck">Blodtryck</option>
-        <option value="Puls">Puls</option>
-        <option value="Andningsfrekvens">Andningsfrekvens</option>
-        <option value="SpO₂">SpO₂</option>
-        <option value="Hb">Hb</option>
-        <option value="CRP">CRP</option>
-        <option value="Temperatur">Temperatur</option>
-        <option value="Kreatinin">Kreatinin</option>
-        <option value="BMI">BMI</option>
-        <option value="Ålder">Ålder</option>
-      </select>
-    </div>
-
-    <div style="flex: 1;">
-      <label for="newParamWeight">Vikt (0–10):</label>
-      <div class="slider-wrapper">
-        <input type="range" id="newParamWeight" min="0" max="10" value="5">
-        <span id="newParamWeightLabel">5</span>
+    <div class="config-container">
+      <!-- Kategorinamn -->
+      <div class="section-title"></div>
+      <div class="row">
+        <div style="flex: 1">
+          <label for="newCategoryName">Namn på ny kategori:</label>
+          <input
+            type="text"
+            id="newCategoryName"
+            placeholder="t.ex. Lung- och andningssjukdomar"
+          />
+        </div>
       </div>
+
+      <!-- Lägg till parametrar -->
+      <div class="section-title">Lägg till parametrar</div>
+
+      <div class="row">
+        <div style="flex: 2">
+          <label for="newParamSelect">Ny parameter:</label>
+          <select id="newParamSelect">
+            <option value="">– Välj parameter –</option>
+            <!-- Värdena här är de namn som backend får, texten är det användaren ser -->
+            <option value="Blodtryck">Blodtryck</option>
+            <option value="Puls">Puls</option>
+            <option value="Andningsfrekvens">Andningsfrekvens</option>
+            <option value="SpO₂">SpO₂</option>
+            <option value="Hb">Hb</option>
+            <option value="CRP">CRP</option>
+            <option value="Temperatur">Temperatur</option>
+            <option value="Kreatinin">Kreatinin</option>
+            <option value="BMI">BMI</option>
+            <option value="Ålder">Ålder</option>
+          </select>
+        </div>
+
+        <div style="flex: 1">
+          <label for="newParamWeight">Vikt (0–10):</label>
+          <div class="slider-wrapper">
+            <input
+              type="range"
+              id="newParamWeight"
+              min="0"
+              max="10"
+              value="5"
+            />
+            <span id="newParamWeightLabel">5</span>
+          </div>
+        </div>
+
+        <div style="align-self: flex-end">
+          <button id="addParamBtn">Lägg till parameter</button>
+        </div>
+      </div>
+
+      <!-- Lista med parametrar -->
+      <div class="param-list" id="paramList"></div>
     </div>
 
-    <div style="align-self:flex-end;">
-      <button id="addParamBtn">Lägg till parameter</button>
+    <!-- Skapa kategori-knapp -->
+    <div class="bottom-create-bar">
+      <button id="createCategoryBtn">✔ Skapa kategori</button>
     </div>
-  </div>
 
-  <!-- Lista med parametrar -->
-  <div class="param-list" id="paramList"></div>
+    <script>
+      // API URL for categories
+      const API_URL = "http://127.0.0.1:5000/api/categories";
 
-</div>
+      const newCategoryName = document.getElementById("newCategoryName");
+      const newParamSelect = document.getElementById("newParamSelect");
+      const newParamWeight = document.getElementById("newParamWeight");
+      const newParamWeightLabel = document.getElementById(
+        "newParamWeightLabel",
+      );
+      const addParamBtn = document.getElementById("addParamBtn");
+      const createCategoryBtn = document.getElementById("createCategoryBtn");
+      const paramList = document.getElementById("paramList");
 
-<!-- Skapa kategori-knapp -->
-<div class="bottom-create-bar">
-  <button id="createCategoryBtn">✔ Skapa kategori</button>
-</div>
+      // Temporär lista med parametrar för den nya kategorin
+      let tempParameters = [];
 
-<script>
-  const STORAGE_KEY = "diagnosisCategories";
+      // Render parameter list
+      function renderParamList() {
+        paramList.innerHTML = "";
 
-  const newCategoryName  = document.getElementById("newCategoryName");
-  const newParamSelect   = document.getElementById("newParamSelect");
-  const newParamWeight   = document.getElementById("newParamWeight");
-  const newParamWeightLabel = document.getElementById("newParamWeightLabel");
-  const addParamBtn      = document.getElementById("addParamBtn");
-  const createCategoryBtn = document.getElementById("createCategoryBtn");
-  const paramList        = document.getElementById("paramList");
+        if (tempParameters.length === 0) {
+          paramList.innerHTML =
+            "<div class='empty-text'>Inga parametrar tillagda ännu.</div>";
+          return;
+        }
 
-  let categories = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  let tempParameters = [];
+        tempParameters.forEach((p) => {
+          const row = document.createElement("div");
+          row.className = "param-item";
 
-  // Render parameter list
-  function renderParamList() {
-    paramList.innerHTML = "";
+          row.innerHTML = `
+            <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
+            <button class="remove-btn" data-id="${p.id}">Ta bort</button>
+          `;
 
-    if (tempParameters.length === 0) {
-      paramList.innerHTML = "<div class='empty-text'>Inga parametrar tillagda ännu.</div>";
-      return;
-    }
+          paramList.appendChild(row);
+        });
 
-    tempParameters.forEach(p => {
-      const row = document.createElement("div");
-      row.className = "param-item";
+        document.querySelectorAll(".remove-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            tempParameters = tempParameters.filter(
+              (p) => p.id !== btn.dataset.id,
+            );
+            renderParamList();
+          });
+        });
+      }
 
-      row.innerHTML = `
-        <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
-        <button class="remove-btn" data-id="${p.id}">Ta bort</button>
-      `;
+      // Add parameter
+      addParamBtn.addEventListener("click", () => {
+        const name = newParamSelect.value;
+        if (!name) return alert("Välj en parameter.");
 
-      paramList.appendChild(row);
-    });
+        tempParameters.push({
+          id: "param_" + Date.now(),
+          name,
+          weight: Number(newParamWeight.value),
+        });
 
-    document.querySelectorAll(".remove-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        tempParameters = tempParameters.filter(p => p.id !== btn.dataset.id);
         renderParamList();
       });
-    });
-  }
 
-  // Add parameter
-  addParamBtn.addEventListener("click", () => {
-    const name = newParamSelect.value;
-    if (!name) return alert("Välj en parameter.");
+      newParamWeight.addEventListener("input", () => {
+        newParamWeightLabel.textContent = newParamWeight.value;
+      });
 
-    tempParameters.push({
-      id: "param_" + Date.now(),
-      name,
-      weight: Number(newParamWeight.value)
-    });
+      // Create category -> POST to API
+      createCategoryBtn.addEventListener("click", async () => {
+        const name = newCategoryName.value.trim();
+        if (!name) return alert("Ange ett kategorinamn.");
+        if (tempParameters.length === 0) {
+          const proceed = confirm(
+            "Inga parametrar är tillagda. Vill du skapa kategorin ändå?",
+          );
+          if (!proceed) return;
+        }
 
-    renderParamList();
-  });
+        // Payload that backend expects
+        const payload = {
+          name,
+          parameters: tempParameters.map((p) => ({
+            name: p.name,
+            // skalan from 0 till 10 blir 0 till 2
+            weight: p.weight/5,
+          })),
+        };
 
-  newParamWeight.addEventListener("input", () => {
-    newParamWeightLabel.textContent = newParamWeight.value;
-  });
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-  // Create category
-  createCategoryBtn.addEventListener("click", () => {
-    const name = newCategoryName.value.trim();
-    if (!name) return alert("Ange ett kategorinamn.");
+          if (!res.ok) {
+            const text = await res.text();
+            console.error("API error:", res.status, text);
+            alert(
+              "Kunde inte skapa kategorin. Status: " +
+                res.status +
+                "\n" +
+                text,
+            );
+            return;
+          }
 
-    categories.push({
-      id: "cat_" + Date.now(),
-      name,
-      parameters: tempParameters
-    });
+          alert("Kategori skapad!");
+          // Gå tillbaka till startsidan eller konfigurationssidan
+          window.location.href = "/";
+        } catch (err) {
+          console.error("Network error creating category:", err);
+          alert("Något gick fel när kategorin skulle skapas (nätverksfel?).");
+        }
+      });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-
-    alert("Kategori skapad!");
-    window.location.href = "test_ui.html";
-  });
-
-</script>
-
-</body>
+      // Initial render
+      renderParamList();
+    </script>
+  </body>
 </html>

@@ -1,50 +1,90 @@
-from random import random
-from flask import Flask, render_template, jsonify
+from __future__ import annotations
+from typing import Any, Dict, List, Optional, Tuple
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import cross_origin
+from app.config import Config
 import os
 
+"""
+Utkast:
+Application håller i config och databasen -- (Bör db variabeln också ligga där?)
+
+1:
+Kommer in en GET request
+
+2:
+Hämtar ssn:s
+
+3: För varje ssn
+
+    1:
+    database.search_db(ssn) ger information:
+        - om personen (det som inte ligger i journalen)
+        - Alla relevanta categories
+
+    2: För varje category
+
+        1:
+        config.category_parameters(self, category_name) ger namnen
+            och vikterna på parametrarna
+
+        2:
+        parameter_from_name(person_info, database, name)
+            vet vilken parameter som ska skapas och vilka
+            fält som tas ut ur person_info och databasen
+            baserat på namnet .
+
+        3:
+        category.combined_score() räknar ut score för specifika
+        category.
+
+    3:
+    Minsta score returneras
+"""
+
 db = SQLAlchemy()
+config = Config()
 
 
-def create_app():
-    app = Flask(__name__)
+class Application(Flask):
 
-    # Database configuration
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + \
-        os.path.join(basedir, "database.db")
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    def __init__(self):
+        super().__init__(__name__)
 
-    db.init_app(app)
+        # Initilize database
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        self.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+            basedir, "database.db"
+        )
+        self.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        db.init_app(self)
 
-    # Import and register routes
-    from .api import patients, journals
-    app.register_blueprint(patients, url_prefix="/api/patients")
-    app.register_blueprint(journals, url_prefix="/api/journals")
+        from app.api import register_routes
 
-    # Serve test gui
-    @app.route("/")
-    def index():
-        return render_template("test_ui.html")
-    @app.route("/test", methods=["GET"])
-    @cross_origin()
-    def get_test_patients():
-        resp = []
-        for i in range(100):
-            year = int(100 * random()) + 1920
-            month = int(12 * random()) + 1
-            date = int(30 * random()) + 1
-            fyra_sista = int(10000 * random())
-            dct = {
-                "ssn": str(year)+str(month)+str(date)+str(fyra_sista),
-                "age": 2025 - year,
-                "firstname": "Johan",
-                "surname": "Johansson",
-                "score": random()
-            }
-            resp.append(dct)
+        # Register API routes
+        register_routes(self)
 
-        return jsonify(resp)
+        # Define non-API routes
+        @self.route("/")
+        def index():
+            return render_template("test_ui.html")
 
-    return app
+        @self.route("/edit_category")
+        def edit_category():
+            return render_template("edit_category.html")
+
+        @self.route("/add_category")
+        def add_category():
+            return render_template("add_category.html")
+
+    @staticmethod
+    def person_score(ssn: str):
+        from app.models.categories import Categories
+
+        categories = Categories.all_from_ssn(ssn)
+
+        min_score = 1.0
+        for category in categories:
+            min_score = min(category.combined_score(), min_score)
+
+        return min_score

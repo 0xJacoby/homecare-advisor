@@ -1,0 +1,78 @@
+from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import IntegrityError
+
+from .. import db, config
+from ..models.categories import Categories
+from ..category import Category
+from ..models.patient import Patient
+
+bp = Blueprint("categories", __name__)
+
+
+@bp.route("/", methods=["POST"])
+def add_category():
+    data = request.get_json()
+    name = data.get("name", "")
+    if not name:
+        return "Bad format for POST request", 400
+
+    category = Categories(name)
+
+    try:
+        db.session.add(category)
+        db.session.commit()
+        config.add_category(name)
+    except IntegrityError:
+        return jsonify({"error": "Category name already exists"}), 409
+
+    try:
+        for param in data.get("parameters", []):
+            config.add_parameter(name, param["name"], param["weight"])
+
+        return jsonify(data), 201
+    except (KeyError, TypeError):
+        return "Bad format for POST request", 400
+
+
+@bp.route("/", methods=["GET"])
+def get_categories():
+    ssn = request.args.get("ssn")
+
+    if ssn:
+        if Patient.from_ssn(ssn):
+            categories = Categories.all_from_ssn(ssn)
+
+            return jsonify([c.to_dict() for c in categories])
+        else:
+            return "user not found", 404
+
+    return config.all_categories()
+
+
+@bp.route("/", methods=["DELETE"])
+def del_categories():
+    name = request.args.get("name", "")
+
+    if not name:
+        return "Bad format for POST request", 400
+
+    config.remove_category(name)
+    Categories.del_from_name(name)
+    return "Removed", 200
+
+
+@bp.route("/", methods=["PATCH"])
+def upt_categories():
+    data = request.get_json()
+    name = data.get("name", "")
+    if not name:
+        return "Bad format for POST request", 400
+
+    try:
+        updated_params = data.get("parameters", [])
+
+        config.set_parameters(name, updated_params)
+
+        return data
+    except (KeyError, TypeError):
+        return "Bad format for POST request", 400
