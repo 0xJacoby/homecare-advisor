@@ -13,6 +13,7 @@ class NEWS:
     pulse_frequency: Optional[float]
     temperature: Optional[float]
     score: float
+    incomplete = False
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -60,6 +61,7 @@ class NEWS:
             self.pulse_frequency,
             self.temperature,
         ]:
+            self.incomplete = True
             return 0
 
         individual = [

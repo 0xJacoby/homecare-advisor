@@ -10,6 +10,7 @@ class RespiratoryRate:
     age: int
     respiratory_rate: Optional[float]  # breaths per min
     score: float
+    incomplete = False
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -27,6 +28,7 @@ class RespiratoryRate:
         """
 
         if self.respiratory_rate is None:
+            self.incomplete = True
             return 0
 
         if self.age < 10:

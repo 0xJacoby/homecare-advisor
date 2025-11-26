@@ -13,6 +13,7 @@ class Parameter:
     """Interface for parameters"""
     name: str
     score: float
+    incomplete = False # Set to true if there is not enough test data
 
     def calculate_score(self) -> float:
         """
@@ -35,7 +36,8 @@ class Parameter:
                     "value": value
                 }
                 for (name, value) in cls.tests()
-            ]
+            ],
+            "incomplete": cls.incomplete
         }
 
 

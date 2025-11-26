@@ -43,7 +43,7 @@ class Category:
         https://www.desmos.com/calculator/j0krldwn5u
         """
         score = parameter[0].calculate_score()
-        weight = parameter[1]
+        weight = 10 ** (parameter[1] - 1)
 
         return score ** (weight**2)
         """TODO: Change the formula"""

@@ -10,6 +10,7 @@ class BloodPressure:
     systolic: Optional[float]
     diastolic: Optional[float]
     score: float
+    incomplete = False
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -28,6 +29,7 @@ class BloodPressure:
         """
 
         if self.systolic is None or self.diastolic is None:
+            self.incomplete = True
             return 0
 
         if self.systolic < 120 and self.diastolic < 80:
