@@ -41,16 +41,16 @@ def get_patient():
         patient = Patient.from_ssn(ssn)
 
         if patient:
-            return jsonify(add_score(patient.to_dict(), ssn))
+            return jsonify(extend_patient(patient.to_dict(), ssn))
         else:
             return "user not found", 404
 
     return jsonify(
-        [add_score(patient.to_dict(), patient.ssn)
+        [extend_patient(patient.to_dict(), patient.ssn)
          for patient in Patient.query.all()]
     )
 
 
-def add_score(dict, ssn):
-    dict["score"] = Application.person_score(ssn)
-    return dict
+def extend_patient(dict, ssn):
+    return Application.person_score(ssn, dict)
+

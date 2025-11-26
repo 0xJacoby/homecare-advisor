@@ -1,12 +1,15 @@
-from typing import Optional
+from typing import List, Optional, Tuple
 
+from app.parameter.helper import format_test
 from app.person_info import PersonInfo
 
 
 class BloodPressure:
     """Interface for parameters"""
+    name = "BloodPressure"
     systolic: Optional[float]
     diastolic: Optional[float]
+    score: float
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -16,6 +19,7 @@ class BloodPressure:
         diastolic_id = Tests.id_from_name("diastolic")
         self.systolic = JournalEntry.latest_test_from_ssn(pi.ssn, systolic_id)
         self.diastolic = JournalEntry.latest_test_from_ssn(pi.ssn, diastolic_id)
+        self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
         """
@@ -36,3 +40,15 @@ class BloodPressure:
             return 0.5
         else:
             return 0.1
+
+
+    def tests(self) -> List[Tuple[str, str]]:
+        """
+        List of all test fields and their value (representation in str)
+        If value is missing the it will be \"Missing\"
+        """
+
+        return [
+            format_test("Systoliskt", self.systolic, str, True),
+            format_test("diastoliskt", self.diastolic, str, True),
+        ]

@@ -1,13 +1,15 @@
-from typing import Optional
+from typing import List, Optional, Tuple
 
+from app.parameter.helper import format_test
 from app.person_info import PersonInfo
 
 
 class RespiratoryRate:
     """Interface for parameters"""
-
+    name = "RespiratoryRate"
     age: int
     respiratory_rate: Optional[float]  # breaths per min
+    score: float
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -16,6 +18,7 @@ class RespiratoryRate:
         self.age = pi.age
         respiratory_rate_id = Tests.id_from_name("respiratory_rate")
         self.respiratory_rate = JournalEntry.latest_test_from_ssn(pi.ssn, respiratory_rate_id)
+        self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
         """
@@ -57,3 +60,15 @@ class RespiratoryRate:
             else:
                 return 0
         return None
+
+
+    def tests(self) -> List[Tuple[str, str]]:
+        """
+        List of all test fields and their value (representation in str)
+        If value is missing the it will be \"Missing\"
+        """
+
+        return [
+            format_test("Ålder", self.age, str),
+            format_test("Andningsfrekvens", self.respiratory_rate, str, True)
+        ]

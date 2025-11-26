@@ -15,10 +15,12 @@ import os
 class Category:
     name: str
     parameters: List[Tuple[Parameter, float]]  # float is weight
+    score: float
 
     def __init__(self, name: str, parameters: List[Tuple[Parameter, float]]):
         self.name = name
         self.parameters = parameters
+        self.score = self.combined_score()
 
     def combined_score(self) -> float:
         """Returns a score in the range [0, 1]"""
@@ -49,7 +51,25 @@ class Category:
 
     def to_dict(self):
         return config.get_category(self.name).to_dict()
+    
+    def to_display_dict(self):
+        return {
+            "name": self.name,
+            "score": self.score,
+            "parameters": [
+                Category.display_add_weight(
+                    Parameter.to_display_dict(parameter), 
+                    weight
+                ) for (parameter, weight) in self.parameters
+            ]
+                
+        }
 
     @staticmethod
     def from_name(name: str, pi: PersonInfo):
         return Category(name, config.category_parameters(name, pi))
+
+    @staticmethod
+    def display_add_weight(parameter_dict, weight: float):
+        parameter_dict["weight"] = weight
+        return parameter_dict

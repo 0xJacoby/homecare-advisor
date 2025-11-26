@@ -1,15 +1,18 @@
-from typing import Optional
+from typing import List, Optional, Tuple
 
+from app.parameter.helper import format_bool, format_test
 from app.person_info import PersonInfo
 
 
 class NEWS:
+    name = "NEWS"
     respiratory_rate: Optional[float]
     oxygen_saturation: Optional[float]
-    supplied_oxygen: Optional[float]
+    supplied_oxygen: Optional[bool]
     systolic: Optional[float]
     pulse_frequency: Optional[float]
     temperature: Optional[float]
+    score: float
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
@@ -30,12 +33,18 @@ class NEWS:
         self.supplied_oxygen = JournalEntry.latest_test_from_ssn(
             pi.ssn, supplied_oxygen_id
         )
+        if not (self.supplied_oxygen is None):
+            if self.supplied_oxygen == 0:
+                self.supplied_oxygen = False
+            else:
+                self.supplied_oxygen = True
         self.systolic = JournalEntry.latest_test_from_ssn(pi.ssn, systolic_id)
         self.pulse_frequency = JournalEntry.latest_test_from_ssn(
             pi.ssn, pulse_frequency_id
         )
         self.temperature = JournalEntry.latest_test_from_ssn(
             pi.ssn, temperature_id)
+        self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
         """
@@ -74,6 +83,21 @@ class NEWS:
             return 0.25
         return 0
 
+    def tests(self) -> List[Tuple[str, str]]:
+        """
+        List of all test fields and their value (representation in str)
+        If value is missing the it will be \"Missing\"
+        """
+
+        return [
+            format_test("Andningsfrekvens", self.respiratory_rate, str, True),
+            format_test("Syremättnad", self.oxygen_saturation, str, True),
+            format_test("Tillförd syrgas", self.supplied_oxygen, format_bool, True),
+            format_test("Systoliskt", self.systolic, str, True),
+            format_test("Puls", self.pulse_frequency, str, True),
+            format_test("Temperatur", self.temperature, str, True),
+        ]
+
     def respiratory_rate_score(self) -> float:
         if self.respiratory_rate <= 8:
             return 3
@@ -96,7 +120,7 @@ class NEWS:
             return 3
 
     def supplied_oxygen_score(self) -> float:
-        if self.supplied_oxygen == 0:
+        if not self.supplied_oxygen:
             return 0
         return 2
 

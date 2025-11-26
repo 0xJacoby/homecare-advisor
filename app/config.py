@@ -43,8 +43,8 @@ class CategoryConfig:
     def name(self):
         return self.json["name"]
 
-    def all_parameters(self) -> List[ParameterConfig]:
-        return self.parameters.values()
+    def all_parameters(self) -> dict[str, ParameterConfig]:
+        return self.parameters
 
     def to_dict(self):
         return copy.deepcopy(self.json)
@@ -97,14 +97,26 @@ class Config:
                 category = CategoryConfig(category_obj)
                 self.categories[category.name()] = category
 
+    def category_index(
+            self, category_name: str
+    ) -> Optional[int]:
+        categories = self.all_categories()
+        for i in range(len(categories)):
+            if categories[i]["name"] == category_name:
+                return i
+
+        return None
+
     # list of parameter name and weight
     def category_parameters(
-        self, category_name: str, pi: PersonInfo
+        self, 
+        category_name: str, 
+        pi: PersonInfo
     ) -> List[Tuple[Parameter, float]]:
         return list(
             map(
                 lambda c: (Parameter.from_name(c.name(), pi), c.weight()),
-                self.categories[category_name].all_parameters(),
+                self.categories[category_name].all_parameters().values(),
             )
         )
 
