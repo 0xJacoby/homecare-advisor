@@ -11,6 +11,7 @@ class Accessibility:
     municipality: str
     has_home_care: Optional[bool]
     score: float
+    incomplete = False
 
     def __init__(self, pi: PersonInfo):
         self.age = pi.age
@@ -20,7 +21,8 @@ class Accessibility:
 
     def calculate_score(self) -> float:
         if self.has_home_care is None or not self.has_home_care:
-            return 0.0
+            self.incomplete = True
+            return 0
 
         return self.decide_age() * self.decide_municipality()
 
