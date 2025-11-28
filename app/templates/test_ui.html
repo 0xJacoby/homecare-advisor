@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fixed Collapsible Info Panel</title>
+  <title>Patientöversikt</title>
   <style>
     body {
       margin: 0;
@@ -46,19 +46,7 @@
       cursor: pointer;
     }
 
-    #configButton {
-      margin-top: 40px;
-      width: 200px;
-      padding: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      background: white;
-      border: 2px solid black;
-      border-radius: 10px;
-      float: right;
-    }
-
-    /* Fixed info panel (not sliding, no blur) */
+    /* Info-panel */
     .info-panel {
       width: 40vw;
       height: 70vh;
@@ -72,7 +60,6 @@
       flex-direction: column;
     }
 
-    /* Collapsible section */
     .collapse-toggle {
       position: absolute;
       top: 10px;
@@ -99,7 +86,7 @@
       bottom: 20px;
       right: 20px;
       display: flex;
-      gap: 15px; /* space between the buttons */
+      gap: 15px;
     }
 
     .action-btn {
@@ -112,7 +99,7 @@
       border-radius: 10px;
     }
 
-    /* Panel for editing the threshold */
+    /* Panel för tröskel */
     .threshold-panel {
       position: fixed;
       bottom: 90px;
@@ -146,33 +133,63 @@
       border: 1px solid black;
       background: #f0f0f0;
     }
+
+    .reason-section {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
+
+    .reason-section h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+
+    .reason-section ul {
+      margin: 4px 0 0 16px;
+      padding: 0;
+    }
+
+    .reason-section li {
+      margin-bottom: 2px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Bör stanna -->
   <div class="list-container">
     <div>
       <div class="list-title">Bör stanna</div>
       <div id="list1" class="list-box"></div>
     </div>
   </div>
+
+  <!-- Möjligtvis lämna -->
   <div>
     <div class="list-title">Möjligtvis lämna</div>
     <div id="list2" class="list-box"></div>
   </div>
 
-  <!-- Fixed, collapsible info panel -->
-  <div id="infoPanel" class="info-panel" style="display:none;">
-    <button class="collapse-toggle" onclick="toggleCollapse()">Stäng</button>
-    <h2>Patient information</h2>
-    <div id="infoContent">Select an item to view its details.</div>
+  <!-- Osäker -->
+  <div>
+    <div class="list-title">Osäker</div>
+    <div id="list3" class="list-box"></div>
   </div>
 
-  <!-- New threshold panel -->
+  <!-- Info-panel -->
+  <div id="infoPanel" class="info-panel" style="display:none;">
+    <button class="collapse-toggle" onclick="toggleCollapse()">Stäng</button>
+    <h2>Patientinformation</h2>
+    <div id="infoContent">Välj en patient för att se detaljer.</div>
+  </div>
+
+  <!-- Tröskel-panel -->
   <div id="thresholdPanel" class="threshold-panel" style="display:none;">
     <h3>Redigera gränsen</h3>
     <p>
-      Gräns mellan <strong>"Bör stanna"</strong> och <strong>"Möjligtvis lämna"</strong>:
+      Gräns mellan <strong>"Bör stanna"</strong> och
+      <strong>"Möjligtvis lämna"</strong>:
       <span id="thresholdLabel">50</span>
     </p>
     <input
@@ -185,23 +202,31 @@
     <button class="close-btn" onclick="closeThresholdPanel()">Stäng</button>
   </div>
 
-  <!-- Bottom-right button container -->
+  <!-- Knappar nere till höger -->
   <div class="bottom-buttons">
-    <button class="action-btn" onclick="window.location='/edit_category'">Redigera befintlig kategori</button>
-    <button class="action-btn" onclick="window.location='/add_category'">Lägg till ny kategori</button>
-    <button class="action-btn" onclick="openThresholdPanel()">Redigera gränsen</button>
+    <button class="action-btn" onclick="window.location='/edit_category'">
+      Redigera befintlig kategori
+    </button>
+    <button class="action-btn" onclick="window.location='/add_category'">
+      Lägg till ny kategori
+    </button>
+    <button class="action-btn" onclick="openThresholdPanel()">
+      Redigera gränsen
+    </button>
   </div>
 
   <script>
    const PATIENTS_URL = "http://127.0.0.1:5000/api/patients";
 
-  // Internal patient storage
+  // Intern lagring
   let patients = [];
 
-  // Dynamic threshold (0–1), default 0.5 => 50
+  // Dynamisk tröskel (0–1), default 0.5 => 50
   let threshold = 0.5;
 
-  // Fetch from API
+  // =========================
+  //  HÄMTA PATIENTER
+  // =========================
   async function fetchPatientsFromApi() {
     try {
       const response = await fetch(PATIENTS_URL, {
@@ -213,20 +238,22 @@
         return;
       }
 
-      // Your server returns a list (array)
       const data = await response.json();
+      console.log("Raw patients from API:", data);
 
-      // Normalize to a consistent structure
+      // Normalisera struktur
       patients = data.map(p => ({
         name: p.firstname,
         lastName: p.surname,
         ssn: p.ssn,
         municipality: p.municipality,
         has_homecare: p.has_homecare,
-        score: p.score
+        score: p.score,
+        categories: p.categories || [],
+        errors: p.errors || {}
       }));
-      console.log(data)
 
+      // Sortera på score
       patients.sort((a, b) => a.score - b.score);
 
       updateLists();
@@ -235,16 +262,81 @@
     }
   }
 
-  // Split into two groups based on dynamic threshold
+  // =========================
+  //  ANALYS AV OSÄKERHET
+  // =========================
+  // Returnerar ett objekt med:
+  // {
+  //   isUncertain: boolean,
+  //   missingCategories: [ ... ],
+  //   incompleteParams: [ {categoryName, paramName, weight}, ... ]
+  // }
+  function analyzeUncertainty(patient) {
+    const errors = patient.errors || {};
+    const categories = patient.categories || [];
+
+    // 1) Saknade kategorier
+    const missingCategories = Array.isArray(errors.missing_categories)
+      ? errors.missing_categories
+      : [];
+
+    // 2) Ofullständiga parametrar med hög vikt (> 1.1 i 0–2-skalan)
+    const incompleteParams = [];
+    categories.forEach(cat => {
+      const params = Array.isArray(cat.parameters) ? cat.parameters : [];
+      params.forEach(param => {
+        const w = Number(param.weight);
+        if (param.incomplete === true && w > 1.1) {
+          incompleteParams.push({
+            categoryName: cat.name,
+            paramName: param.name,
+            weight: w
+          });
+        }
+      });
+    });
+
+    const isUncertain =
+      missingCategories.length > 0 || incompleteParams.length > 0;
+
+    return {
+      isUncertain,
+      missingCategories,
+      incompleteParams
+    };
+  }
+
+  function isUncertain(patient) {
+    return analyzeUncertainty(patient).isUncertain;
+  }
+
+  // =========================
+  //  UPPDATERA LISTOR
+  // =========================
   function updateLists() {
-    const stay = patients.filter(p => p.score <= threshold);   // Bör stanna
-    const maybeLeave = patients.filter(p => p.score > threshold); // Möjligtvis lämna
+    const stay = [];       // Bör stanna
+    const maybeLeave = []; // Möjligtvis lämna
+    const uncertain = [];  // Osäker
+
+    patients.forEach(p => {
+      const analysis = analyzeUncertainty(p);
+      if (analysis.isUncertain) {
+        uncertain.push(p);
+      } else if (p.score <= threshold) {
+        stay.push(p);
+      } else {
+        maybeLeave.push(p);
+      }
+    });
 
     renderList(document.getElementById("list1"), stay);
     renderList(document.getElementById("list2"), maybeLeave);
+    renderList(document.getElementById("list3"), uncertain);
   }
 
-  // Render one list (Bör stanna / Möjligtvis lämna)
+  // =========================
+  //  RITA LISTA
+  // =========================
   function renderList(listElement, arr) {
     listElement.innerHTML = "";
     arr.forEach(patient => {
@@ -256,16 +348,64 @@
     });
   }
 
-  // Info panel
+  // =========================
+  //  VISA INFO OM PATIENT
+  // =========================
   function updateInfo(patient) {
     const panel = document.getElementById("infoPanel");
-    document.getElementById("infoContent").innerHTML = `
+    const infoDiv = document.getElementById("infoContent");
+
+    const analysis = analyzeUncertainty(patient);
+
+    let html = `
       <p><strong>Personnummer:</strong> ${patient.ssn}</p>
       <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
       <p><strong>Kommun:</strong> ${patient.municipality}</p> 
       <p><strong>Hemtjänst:</strong> ${patient.has_homecare ? "JA" : "NEJ"}</p>
       <p><strong>Betyg från programmet:</strong> ${patient.score}</p>
     `;
+
+    // Lägg till förklaring om OSÄKER
+    if (analysis.isUncertain) {
+      html += `<div class="reason-section">
+        <h3>Varför är patienten markerad som "Osäker"?</h3>
+      `;
+
+      if (analysis.missingCategories.length > 0) {
+        html += `
+          <p><strong>Saknade kategorier:</strong></p>
+          <ul>
+            ${analysis.missingCategories
+              .map(catName => `<li>${catName}</li>`)
+              .join("")}
+          </ul>
+        `;
+      }
+
+      if (analysis.incompleteParams.length > 0) {
+        html += `
+          <p><strong>Ofullständiga parametrar med hög vikt (&gt; 1.1):</strong></p>
+          <ul>
+            ${analysis.incompleteParams
+              .map(p =>
+                `<li>${p.categoryName}: ${p.paramName} (vikt ${p.weight.toFixed(2)})</li>`
+              )
+              .join("")}
+          </ul>
+        `;
+      }
+
+      html += `</div>`;
+    } else {
+      html += `
+        <div class="reason-section">
+          <h3>Osäkerhetsbedömning</h3>
+          <p>Denna patient uppfyller inte kriterierna för "Osäker" enligt nuvarande regler.</p>
+        </div>
+      `;
+    }
+
+    infoDiv.innerHTML = html;
     panel.style.display = "flex";
     panel.classList.remove("collapsed");
   }
@@ -274,7 +414,9 @@
     document.getElementById("infoPanel").style.display = "none";
   }
 
-  // Open / close threshold panel
+  // =========================
+  //  TRÖSKEL-PANEL
+  // =========================
   function openThresholdPanel() {
     document.getElementById("thresholdPanel").style.display = "block";
   }
@@ -283,7 +425,9 @@
     document.getElementById("thresholdPanel").style.display = "none";
   }
 
-  // Load patients when page opens
+  // =========================
+  //  INIT
+  // =========================
   window.addEventListener("load", () => {
     fetchPatientsFromApi();
 
@@ -294,7 +438,7 @@
       slider.addEventListener("input", (e) => {
         const value = Number(e.target.value); // 0–100
         label.textContent = value;
-        threshold = value / 100;             // 0–1 for score
+        threshold = value / 100;             // 0–1 för score
         updateLists();
       });
     }
