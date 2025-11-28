@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Patientöversikt</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f6f6f6;
+        padding: 20px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #000;
+        background: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000;
+      }
+
+      h1 {
+        margin-bottom: 10px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1.1fr 1.4fr;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .card {
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 10px;
+        padding: 16px 20px;
+      }
+
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+
+      .patient-meta p,
+      .category-meta p {
+        margin: 4px 0;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #000;
+        font-size: 12px;
+        margin-right: 6px;
+        margin-top: 4px;
+      }
+
+      .variables-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 4px;
+        font-size: 14px;
+      }
+
+      .variables-table th,
+      .variables-table td {
+        border-bottom: 1px solid #ddd;
+        padding: 6px 4px;
+        text-align: left;
+      }
+
+      .variables-table th {
+        font-weight: bold;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid #000;
+        font-size: 12px;
+      }
+
+      #errorMessage {
+        color: #b00020;
+        margin-top: 10px;
+      }
+
+      #loader {
+        margin-top: 10px;
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="/" class="back-link">← Tillbaka</a>
+
+    <h1>Patientöversikt</h1>
+
+    <div id="loader">Laddar patientdata…</div>
+    <div id="errorMessage"></div>
+
+    <div id="content" class="layout" style="display: none">
+      <!-- Vänster sida: patient + kategori -->
+      <div>
+        <div class="card" id="patientCard">
+          <h2>Patient</h2>
+          <div class="patient-meta" id="patientMeta"></div>
+        </div>
+
+        <div class="card" id="categoryCard" style="margin-top: 16px">
+          <h2>Kategori</h2>
+          <div class="category-meta" id="categoryMeta"></div>
+        </div>
+      </div>
+
+      <!-- Höger sida: variabler -->
+      <div class="card">
+        <h2>Variabler i denna kategori</h2>
+        <div id="variablesContainer"></div>
+      </div>
+    </div>
+
+    <script>
+      // === Justera denna URL så den matchar ditt backend ===
+      // Exempel: GET /api/patient_detail?ssn=...
+      const PATIENT_DETAIL_URL =
+        "http://127.0.0.1:5000/api/patients";
+
+      // Hjälpfunktion: hämta query-param från URL
+      function getQueryParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      async function loadPatient() {
+        const ssn = getQueryParam("ssn");
+        const loader = document.getElementById("loader");
+        const errorMessage = document.getElementById("errorMessage");
+        const content = document.getElementById("content");
+
+        if (!ssn) {
+          loader.style.display = "none";
+          errorMessage.textContent =
+            "Ingen patient angiven (saknar personnummer i URL).";
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `${PATIENT_DETAIL_URL}?ssn=${encodeURIComponent(ssn)}`,
+            { method: "GET" }
+          );
+          //console.log(res);
+          
+          if (!res.ok) {
+            loader.style.display = "none";
+            errorMessage.textContent =
+              "Kunde inte hämta patientdata. Status: " + res.status;
+            return;
+          }
+
+          const data = await res.json();
+
+          console.log(data);
+
+          // Förväntad struktur (exempel – anpassa till ditt API):
+          // {
+          //   firstname, surname, ssn, municipality,
+          //   has_homecare, score,
+          //   category: {
+          //     name: "...",
+          //     description: "...",
+          //     parameters: [
+          //       { name: "Blodtryck", value: 120, unit: "mmHg", weight: 1.4 },
+          //       ...
+          //     ]
+          //   }
+          // }
+
+          renderPatient(data);
+          renderCategories(data.categories[0], data.categories[0].score);
+          renderVariables(data.categories[0] && data.categories[0].parameters);
+
+          loader.style.display = "none";
+          content.style.display = "grid";
+        } catch (err) {
+          console.error(err);
+          loader.style.display = "none";
+          errorMessage.textContent =
+            "Ett fel uppstod när patientdata skulle hämtas.";
+        }
+      }
+
+      function renderPatient(p) {
+        const el = document.getElementById("patientMeta");
+        if (!p) {
+          el.innerHTML = "<p>Ingen patientdata hittades.</p>";
+          return;
+        }
+
+        el.innerHTML = `
+          <p><strong>Namn:</strong> ${p.firstname ?? ""} ${p.surname ?? ""}</p>
+          <p><strong>Personnummer:</strong> ${p.ssn ?? "-"}</p>
+          <p><strong>Kommun:</strong> ${p.municipality ?? "-"}</p>
+          <p><strong>Hemtjänst:</strong> ${
+            p.has_homecare ? "Ja" : "Nej"
+          }</p>
+          <p><strong>Programscore:</strong> ${
+            p.score != null ? p.score : "-"
+          }</p>
+        `;
+      }
+
+      function renderCategories(category, score) {
+        const el = document.getElementById("categoryMeta");
+        if (!category) {
+          el.innerHTML =
+            "<p>Ingen kategori kopplad till den här patienten.</p>";
+          return;
+        }
+
+        el.innerHTML = `
+          <p><strong>Kategori:</strong> ${category.name}</p>
+          ${
+            category.description
+              ? `<p><strong>Beskrivning:</strong> ${category.parameters}</p>`
+              : ""
+          }
+          ${
+            score != null
+              ? `<p><span class="badge">Riskscore: ${score}</span></p>`
+              : ""
+          }
+        `;
+      }
+
+      function renderVariables(params) {
+        const container = document.getElementById("variablesContainer");
+
+        if (!params || params.length === 0) {
+          container.innerHTML =
+            "<p><em>Inga variabler hittades för denna kategori.</em></p>";
+          return;
+        }
+
+        const rows = params
+          .map(
+            (p) => `
+            <tr>
+              <td>${p.name ?? "-"}</td>
+              <td>${p.value ?? "-"}</td>
+              <td>${p.unit ?? ""}</td>
+              <td>${p.weight != null ? p.weight : "-"}</td>
+            </tr>
+          `
+          )
+          .join("");
+
+        container.innerHTML = `
+          <table class="variables-table">
+            <thead>
+              <tr>
+                <th>Variabel</th>
+                <th>Värde</th>
+                <th>Enhet</th>
+                <th>Vikt</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        `;
+      }
+
+      window.addEventListener("load", loadPatient);
+    </script>
+  </body>
+</html>

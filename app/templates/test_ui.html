@@ -251,7 +251,7 @@
       const div = document.createElement("div");
       div.className = "item";
       div.textContent = `${patient.name} ${patient.lastName}`;
-      div.onclick = () => updateInfo(patient);
+      div.onclick = () => window.location = "/patient_panel?ssn=" + patient.ssn //updateInfo(patient);
       listElement.appendChild(div);
     });
   }
