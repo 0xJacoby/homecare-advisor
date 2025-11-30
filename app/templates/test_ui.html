@@ -344,6 +344,10 @@
       div.className = "item";
       div.textContent = `${patient.name} ${patient.lastName}`;
       div.onclick = () => updateInfo(patient);
+      div.ondblclick = () => {
+        const url = "/patient_panel?ssn=" + encodeURIComponent(patient.ssn);
+        window.open(url, "_blank"); // öppna i ny flik
+      };
       listElement.appendChild(div);
     });
   }

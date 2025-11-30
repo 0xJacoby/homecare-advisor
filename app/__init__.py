@@ -76,7 +76,11 @@ class Application(Flask):
         @self.route("/add_category")
         def add_category():
             return render_template("add_category.html")
-
+        
+        @self.route("/patient_panel")
+        def patient_panel():
+            return render_template("patient_panel.html")
+        
     @staticmethod
     def person_score(ssn: str, extend_me={}):
         """
