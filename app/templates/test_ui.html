@@ -38,12 +38,19 @@
     }
 
     .item {
+      display: block;         /* fyller hela raden, som div */
+      box-sizing: border-box; /* inkluderar padding i bredden */
       background: #ffffff;
       border: 2px solid black;
       border-radius: 10px;
       padding: 10px;
       margin-bottom: 10px;
       cursor: pointer;
+      text-decoration: none;        /* tar bort understrykningen */
+      color: inherit;               /* behåller textfärgen */
+    }
+    .item:hover {
+      background-color: #f0f0f0;  /* liknande hover som div */
     }
 
     /* Info-panel */
@@ -339,16 +346,29 @@
   // =========================
   function renderList(listElement, arr) {
     listElement.innerHTML = "";
+
     arr.forEach(patient => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.textContent = `${patient.name} ${patient.lastName}`;
-      div.onclick = () => updateInfo(patient);
-      div.ondblclick = () => {
-        const url = "/patient_panel?ssn=" + encodeURIComponent(patient.ssn);
-        window.open(url, "_blank"); // öppna i ny flik
+      const url = "/patient_panel?ssn=" + encodeURIComponent(patient.ssn);
+
+      // Skapa länk istället för div
+      const link = document.createElement("a");
+      link.href = url;
+      link.className = "item";       // behåll samma klass för styling
+      link.textContent = `${patient.name} ${patient.lastName}`;
+
+
+      // Enkelklick för updateInfo
+      link.onclick = (e) => {
+        e.preventDefault(); // förhindrar att länken navigerar vid enkelklick
+        updateInfo(patient);
       };
-      listElement.appendChild(div);
+
+      // Dubbelklick för navigering i samma flik
+      link.ondblclick = () => {
+        window.location.href = url;
+      };
+
+      listElement.appendChild(link);
     });
   }
 
