@@ -1,176 +1,363 @@
 <!doctype html>
 <html lang="sv">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Patientöversikt</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f6f6f6;
-        padding: 20px;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Patientöversikt</title>
 
-      .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        padding: 8px 14px;
-        border-radius: 8px;
-        border: 1px solid #000;
-        background: #fff;
-        cursor: pointer;
-        text-decoration: none;
-        color: #000;
-      }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f6f6;
+      padding: 20px;
+    }
 
-      h1 {
-        margin-bottom: 10px;
-      }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #000;
+      background: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      color: #000;
+    }
 
-      .layout {
-        display: grid;
-        grid-template-columns: 1.1fr 1.4fr;
-        gap: 20px;
-        align-items: flex-start;
-      }
+    h1 {
+      margin-bottom: 10px;
+    }
 
-      .card {
-        background: #fff;
-        border: 2px solid #000;
-        border-radius: 10px;
-        padding: 16px 20px;
-      }
+    /* GRID LAYOUT */
+    .layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.4fr;
+      gap: 20px;
+    }
 
-      .card h2 {
-        margin-top: 0;
-        margin-bottom: 10px;
-      }
+    .card {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
 
-      .patient-meta p,
-      .category-meta p {
-        margin: 4px 0;
-      }
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-      .pill {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid #000;
-        font-size: 12px;
-        margin-right: 6px;
-        margin-top: 4px;
-      }
+    /* Scrollbar kategori-lista */
+    .category-list {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+    }
 
-      .variables-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 4px;
-        font-size: 14px;
-      }
+    .category-item {
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
 
-      .variables-table th,
-      .variables-table td {
-        border-bottom: 1px solid #ddd;
-        padding: 6px 4px;
-        text-align: left;
-      }
+    .category-item.active {
+      background: #e6f3ff;
+      border-color: #0077cc;
+    }
 
-      .variables-table th {
-        font-weight: bold;
-      }
+    /* Höger sida */
+    .category-details {
+      height: 650px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .badge {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 999px;
-        border: 1px solid #000;
-        font-size: 12px;
-      }
+    .parameter-list {
+      margin-top: 10px;
+      overflow-y: auto;
+      padding-right: 5px;
+      flex-grow: 1;
+    }
 
-      #errorMessage {
-        color: #b00020;
-        margin-top: 10px;
-      }
+    .parameter-row {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid #000;
 
-      #loader {
-        margin-top: 10px;
-        font-style: italic;
-        color: #666;
-      }
-    </style>
-  </head>
-  <body>
-    <a href="/" class="back-link">← Tillbaka</a>
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
 
-    <h1>Patientöversikt</h1>
+    .leftSideParaDescript{
+      display: flex;
+      flex-direction: column; /* gör att allt inuti ligger under varandra */
+      gap: 5px;
+      padding-left : 5%;
+    }
+    .rightSideParaDescript {
+      display: flex;
+      flex-direction: column; /* gör att allt inuti ligger under varandra */
+      gap: 5px;
+      padding-right: 30%;
+    }
 
-    <div id="loader">Laddar patientdata…</div>
-    <div id="errorMessage"></div>
+    #errorMessage {
+      color: #b00020;
+      margin-top: 10px;
+    }
 
-    <div id="content" class="layout" style="display: none">
-      <!-- Vänster sida: patient + kategori -->
-      <div>
-        <div class="card" id="patientCard">
-          <h2>Patient</h2>
-          <div class="patient-meta" id="patientMeta"></div>
-        </div>
+    #loader {
+      margin-top: 10px;
+      font-style: italic;
+      color: #666;
+    }
 
-        <div class="card" id="categoryCard" style="margin-top: 16px">
-          <h2>Kategori</h2>
-          <div class="category-meta" id="categoryMeta"></div>
-        </div>
+    #topBox{
+      display: flex;             /* Gör div:en till flex-container */
+      justify-content: space-between; /* Lämnar maximalt avstånd mellan vänster och höger */
+      align-items: center; 
+      border-bottom: 2px solid black;
+      margin-bottom: 5px;
+
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/" class="back-link">← Tillbaka</a>
+
+  <h1>Patientöversikt</h1>
+
+  <div id="loader">Laddar patientdata…</div>
+  <div id="errorMessage"></div>
+
+  <div id="content" class="layout" style="display:none">
+
+    <!-- VÄNSTER KOLUMN -->
+    <div class="left-panel">
+
+      <!-- Patientkort -->
+      <div class="card" id="patientCard">
+        <h2>Patient</h2>
+        <div id="patientMeta"></div>
       </div>
 
-      <!-- Höger sida: variabler -->
-      <div class="card">
-        <h2>Variabler i denna kategori</h2>
-        <div id="variablesContainer"></div>
-      </div>
+      <!-- Kategorier -->
+      <h2>Kategorier</h2>
+      <div id="categoryList" class="card category-list"></div>
+
     </div>
 
-    <script>
-      // === Justera denna URL så den matchar ditt backend ===
-      // Exempel: GET /api/patient_detail?ssn=...
-      const PATIENT_DETAIL_URL =
-        "http://127.0.0.1:5000/api/patients";
+    <!-- HÖGER KOLUMN -->
+    <div class="card category-details">
 
-      // Hjälpfunktion: hämta query-param från URL
-      function getQueryParam(name) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(name);
+      <div id="topBox">
+        <div id="categoruNameAndScore">
+        <h2 id="detailTitle">Välj en kategori</h2>
+        <div id="detailScore"></div>
+        </div>
+      </div>
+
+      <div id="detailParameters" class="parameter-list"></div>
+    </div>
+
+  </div>
+
+  <script>
+
+    const PATIENT_DETAIL_URL = "http://127.0.0.1:5000/api/patients";
+
+
+
+    // --- DIN TESTDATA (behåller exakt som du gav) ---
+    const testPatient = {
+      firstname: "Johan",
+      surname: "Lindberg",
+      ssn: "19891230-2288",
+      municipality: "Partille",
+      has_homecare: false,
+      score: 0,
+
+      categories: [
+        {
+          name: "Cancer",
+          score: 0,
+          parameters: [
+            {
+              name: "BloodPressure",
+              incomplete: true,
+              weight: 1.6,
+              score: 2,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+            {
+              name: "Rythm",
+              incomplete: true,
+              weight: 1.7,
+              score: 10,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "A",
+              incomplete: true,
+              weight: 0.5,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "C",
+              incomplete: true,
+              weight: 1.3,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "Z",
+              incomplete: true,
+              weight: 0.3,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "G",
+              incomplete: true,
+              weight: 2,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "O",
+              incomplete: true,
+              weight: 0.9,
+              score: 15,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "I",
+              incomplete: true,
+              weight: 0.8,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            },
+                        {
+              name: "M",
+              incomplete: true,
+              weight: 2,
+              score: 1,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Diabetes",
+          score: 0,
+          parameters: [
+            {
+              name: "BloodPressure",
+              incomplete: true,
+              weight: 1.6,
+              score: 0,
+              tests: [
+                { name: "Systoliskt", value: "122.0" },
+                { name: "Diastoliskt", value: "Missing" }
+              ]
+            }
+          ]
+        }
+      ],
+
+      errors: {
+        missing_categories: [],
+        missing_tests: ["diastoliskt"]
+      }
+    };
+
+    // === Din befintliga query param funktion ===
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    // === LADDAR PATIENTDATA ===
+
+    /*
+    async function loadPatient() {
+      const content = document.getElementById("content");
+      const loader = document.getElementById("loader");
+
+      // *** För demo använder vi din test patient direkt ***
+      renderPatient(patient);
+      renderCategories(patient.categories);
+
+      loader.style.display = "none";
+      content.style.display = "grid";
+    }
+    */
+
+    async function loadPatient() {
+      const ssn = getQueryParam("ssn");
+      const loader = document.getElementById("loader");
+      const errorMessage = document.getElementById("errorMessage");
+      const content = document.getElementById("content");
+
+      if (!ssn) {
+        loader.style.display = "none";
+        errorMessage.textContent =
+          "Ingen patient angiven (saknar personnummer i URL).";
+        return;
       }
 
-      async function loadPatient() {
-        const ssn = getQueryParam("ssn");
-        const loader = document.getElementById("loader");
-        const errorMessage = document.getElementById("errorMessage");
-        const content = document.getElementById("content");
-
-        if (!ssn) {
-          loader.style.display = "none";
-          errorMessage.textContent =
-            "Ingen patient angiven (saknar personnummer i URL).";
-          return;
-        }
-
-        try {
-          const res = await fetch(
-            `${PATIENT_DETAIL_URL}?ssn=${encodeURIComponent(ssn)}`,
-            { method: "GET" }
+      try {
+        const res = await fetch(
+          `${PATIENT_DETAIL_URL}?ssn=${encodeURIComponent(ssn)}`,
+          { method: "GET" }
           );
           //console.log(res);
           
-          if (!res.ok) {
-            loader.style.display = "none";
-            errorMessage.textContent =
-              "Kunde inte hämta patientdata. Status: " + res.status;
-            return;
-          }
+        if (!res.ok) {
+          loader.style.display = "none";
+          errorMessage.textContent =
+            "Kunde inte hämta patientdata. Status: " + res.status;
+          return;
+        }
 
-          const data = await res.json();
+        const data = await res.json();
 
-          console.log(data);
+        console.log(data);
 
           // Förväntad struktur (exempel – anpassa till ditt API):
           // {
@@ -186,103 +373,153 @@
           //   }
           // }
 
-          renderPatient(data);
-          renderCategories(data.categories[0], data.categories[0].score);
-          renderVariables(data.categories[0] && data.categories[0].parameters);
 
-          loader.style.display = "none";
-          content.style.display = "grid";
-        } catch (err) {
-          console.error(err);
-          loader.style.display = "none";
-          errorMessage.textContent =
-            "Ett fel uppstod när patientdata skulle hämtas.";
-        }
+        // Till för testning
+        //renderPatient(testPatient);
+        //renderCategories(testPatient.categories);
+
+        renderPatient(data);
+        renderCategories(data.categories)
+
+        loader.style.display = "none";
+        content.style.display = "grid";
+      } catch (err) {
+        console.error(err);
+        loader.style.display = "none";
+        errorMessage.textContent = "Ett fel uppstod när patientdata skulle hämtas.";
       }
+    }
 
-      function renderPatient(p) {
-        const el = document.getElementById("patientMeta");
-        if (!p) {
-          el.innerHTML = "<p>Ingen patientdata hittades.</p>";
-          return;
-        }
 
-        el.innerHTML = `
-          <p><strong>Namn:</strong> ${p.firstname ?? ""} ${p.surname ?? ""}</p>
-          <p><strong>Personnummer:</strong> ${p.ssn ?? "-"}</p>
-          <p><strong>Kommun:</strong> ${p.municipality ?? "-"}</p>
-          <p><strong>Hemtjänst:</strong> ${
-            p.has_homecare ? "Ja" : "Nej"
-          }</p>
-          <p><strong>Programscore:</strong> ${
-            p.score != null ? p.score : "-"
-          }</p>
+
+
+    // === RENDER PATIENT ===
+    function renderPatient(p) {
+      const el = document.getElementById("patientMeta");
+
+      el.innerHTML = `
+        <p><strong>Namn:</strong> ${p.firstname} ${p.surname}</p>
+        <p><strong>Personnummer:</strong> ${p.ssn}</p>
+        <p><strong>Kommun:</strong> ${p.municipality}</p>
+        <p><strong>Hemtjänst:</strong> ${p.has_homecare ? "Ja" : "Nej"}</p>
+        <p><strong>Programpoäng:</strong> ${p.score}</p>
+      `;
+    }
+
+    // ======================================================
+    //  INTERAKTIV KATEGORILISTA + DETALJVY
+    // ======================================================
+
+    let currentCategories = [];
+    let selectedCategoryIndex = null;
+
+    function renderCategories(categories) {
+      currentCategories = categories || [];
+      const list = document.getElementById("categoryList");
+      if(currentCategories.length === 0){
+        list.innerHTML = `
+          <div class="category-item">
+            <strong style="color:red;">Programmet saknar patientens kategorier</strong>
+          </div>
         `;
+        return;
       }
-
-      function renderCategories(category, score) {
-        const el = document.getElementById("categoryMeta");
-        if (!category) {
-          el.innerHTML =
-            "<p>Ingen kategori kopplad till den här patienten.</p>";
-          return;
-        }
-
-        el.innerHTML = `
-          <p><strong>Kategori:</strong> ${category.name}</p>
-          ${
-            category.description
-              ? `<p><strong>Beskrivning:</strong> ${category.parameters}</p>`
-              : ""
-          }
-          ${
-            score != null
-              ? `<p><span class="badge">Riskscore: ${score}</span></p>`
-              : ""
-          }
-        `;
-      }
-
-      function renderVariables(params) {
-        const container = document.getElementById("variablesContainer");
-
-        if (!params || params.length === 0) {
-          container.innerHTML =
-            "<p><em>Inga variabler hittades för denna kategori.</em></p>";
-          return;
-        }
-
-        const rows = params
+      else{
+        list.innerHTML = categories
           .map(
-            (p) => `
-            <tr>
-              <td>${p.name ?? "-"}</td>
-              <td>${p.value ?? "-"}</td>
-              <td>${p.unit ?? ""}</td>
-              <td>${p.weight != null ? p.weight : "-"}</td>
-            </tr>
-          `
+            (cat, i) => `
+            <div class="category-item" onclick="selectCategory(${i})">
+              <strong>${cat.name}</strong><br>
+              Poäng: ${cat.score}
+            </div>`
           )
           .join("");
-
-        container.innerHTML = `
-          <table class="variables-table">
-            <thead>
-              <tr>
-                <th>Variabel</th>
-                <th>Värde</th>
-                <th>Enhet</th>
-                <th>Vikt</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-            </tbody>
-          </table>
-        `;
       }
+    }
 
-      window.addEventListener("load", loadPatient);
-    </script>
-  </body>
+    function selectCategory(index) {
+      selectedCategoryIndex = index;
+
+      // Markera aktiv kategori
+      document.querySelectorAll(".category-item").forEach((el, i) => {
+        el.classList.toggle("active", i === index);
+      });
+
+      renderCategoryDetail(currentCategories[index]);
+    }
+
+    let dropDown = null;
+
+    function renderCategoryDetail(category) {
+      document.getElementById("detailTitle").textContent = "Kategori: " + category.name;
+      document.getElementById("detailScore").innerHTML =
+        `<p><strong>Beräknad poäng: </strong> ${category.score}</p>`;
+
+      // Ta bort eventuell gammal dropdown först
+      const oldSortDiv = document.getElementById("paramSortDiv");
+      if (oldSortDiv) oldSortDiv.remove();
+
+      document.getElementById("topBox").insertAdjacentHTML('beforeend', `
+        <div id="paramSortDiv">
+          <label for="sortering">Sortera parameter efter:</label>
+          <select id="sortering" name="sortering">
+            <option value="noChoice">Inget valt</option>
+            <option value="name">Namn</option>
+            <option value="weight">Vikt</option>
+            <option value="score">Poäng</option>
+          </select>
+        </div>`);
+
+      // Ropa på en enda renderingfunktion som alltid använder vänster/höger-layout
+      renderParameters(category.parameters);
+
+      // koppla sorteringslyssnare
+      dropDown = document.getElementById("sortering");
+      dropDown.addEventListener("change", function(){
+        const chosenValue = dropDown.value;
+        sortParameters(category, chosenValue);
+      });
+    }
+
+    function renderParameters(parameters) {
+      // bygg samma struktur (vänster + höger) för varje parameterrad
+      document.getElementById("detailParameters").innerHTML =
+        parameters.map(p => `
+          <div class="parameter-row">
+            <div class="leftSideParaDescript">
+              <strong>${p.name}</strong>
+              Vikt: ${p.weight} <br>
+              Parameter poäng: ${p.score}<br>
+            </div>
+
+            <div class="rightSideParaDescript">
+              <strong>Tester:</strong>
+              ${p.tests.map(t => `${t.name}: ${t.value}`).join("<br>")}
+            </div>
+          </div>
+        `).join("");
+    }
+
+    function sortParameters(category, value) {
+      if(!category || !category.parameters) return;
+      if(value === "noChoice") return;
+
+      let sorted = [...category.parameters]; // kopiera arrayen
+
+      if(value === "name"){
+        sorted.sort((a,b) => a.name.localeCompare(b.name));
+        console.log("Sorterar efter namn");
+      } else if(value === "weight"){
+        sorted.sort((a,b) => b.weight - a.weight);
+         console.log("Sorterar efter vikt");
+      } else if(value === "score"){
+        sorted.sort((a,b) => a.score - b.score);
+        console.log("Sorterar efter score");
+      }
+      renderParameters(sorted);
+    }
+
+    window.addEventListener("load", loadPatient);
+  </script>
+</body>
 </html>
