@@ -13,25 +13,18 @@ bp = Blueprint("categories", __name__)
 def add_category():
     data = request.get_json()
     name = data.get("name", "")
+    parameters = data.get("parameters", [])
     if not name:
         return "Bad format for POST request", 400
 
-    category = Categories(name)
+    if not Categories.get_by_name(name):
+        return jsonify({"error": "Category doesn't exist in central database"}), 409
 
-    try:
-        db.session.add(category)
-        db.session.commit()
-        config.add_category(name)
-    except IntegrityError:
-        return jsonify({"error": "Category name already exists"}), 409
+    if name in config.categories:
+        return jsonify({"error": "Category already exists in config"}), 409
 
-    try:
-        for param in data.get("parameters", []):
-            config.add_parameter(name, param["name"], param["weight"])
-
-        return jsonify(data), 201
-    except (KeyError, TypeError):
-        return "Bad format for POST request", 400
+    config.add_category(name, parameters)
+    return "Added", 201
 
 
 @bp.route("/", methods=["GET"])

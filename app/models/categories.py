@@ -31,6 +31,10 @@ class Categories(db.Model):
         return Categories.query.all()
 
     @staticmethod
+    def get_by_name(name: str):
+        return Categories.query.filter_by(name=name).first()
+
+    @staticmethod
     def all_from_ssn(
         ssn: str, 
         missing_categories_err = lambda category_name: category_name, 

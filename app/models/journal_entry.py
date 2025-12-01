@@ -33,6 +33,16 @@ class JournalEntry(db.Model):
         return JournalEntry.query.filter_by(patient_ssn=ssn).all()
 
     @staticmethod
+    def get_tests_from_ssn(ssn, test_id, count) -> List[float]:
+        tests = (
+            JournalEntry.query.filter_by(patient_ssn=ssn, test_id=test_id)
+                .order_by(JournalEntry.entry_date.desc())
+                .limit(count)
+        )
+
+        return [t.test_value for t in tests]
+
+    @staticmethod
     def latest_test_from_ssn(ssn, test_id) -> Optional[float]:
         test = (
             JournalEntry.query.filter_by(patient_ssn=ssn, test_id=test_id)
