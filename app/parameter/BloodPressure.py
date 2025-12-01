@@ -6,7 +6,7 @@ from app.person_info import PersonInfo
 
 class BloodPressure:
     """Interface for parameters"""
-    name = "BloodPressure"
+    name = "Blodtryck"
     systolic: Optional[float]
     diastolic: Optional[float]
     score: float
@@ -30,7 +30,7 @@ class BloodPressure:
 
         if self.systolic is None or self.diastolic is None:
             self.incomplete = True
-            return 0
+            return 1
 
         if self.systolic < 120 and self.diastolic < 80:
             return 1
@@ -52,5 +52,5 @@ class BloodPressure:
 
         return [
             format_test("Systoliskt", self.systolic, str, True),
-            format_test("diastoliskt", self.diastolic, str, True),
+            format_test("Diastoliskt", self.diastolic, str, True),
         ]
