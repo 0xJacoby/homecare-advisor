@@ -53,5 +53,10 @@ class Accessibility:
 
         return [
             format_test("Kommun", self.municipality, str),
-            format_test("Har hemhjälp", self.has_home_care, format_bool, True)
+            format_test("Har hemhjälp", self.has_home_care, format_bool, True),
+            format_test("Trygghetslarm", self.safety_alarm, format_bool, True),
+            format_test("Har annan hemhjälp", self.other_home_care, format_bool, True),
+            format_test("Socialt nätverk", self.social_network, format_bool, True),
+            format_test("Behöver hemhjälp", self.need_of_assistance, format_bool, True),
+            format_test("Personlig adl", self.personal_adl, format_bool, True),
         ]

@@ -36,4 +36,6 @@ class BodyTemperature:
         If value is missing the it will be \"Missing\"
         """
 
-        return []
+        return [
+            format_test("Kroppstemperatur", self.temprature, str, True)
+        ]

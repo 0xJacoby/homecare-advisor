@@ -52,5 +52,5 @@ class BloodPressure:
 
         return [
             format_test("Systoliskt", self.systolic, str, True),
-            format_test("diastoliskt", self.diastolic, str, True),
+            format_test("Diastoliskt", self.diastolic, str, True),
         ]

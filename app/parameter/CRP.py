@@ -42,4 +42,7 @@ class CRP:
         If value is missing the it will be \"Missing\"
         """
 
-        return []
+        return [
+            format_test("CRP", self.current_crp, str, True),
+            format_test("Föregående CRP", self.old_crp, str, True)
+        ]

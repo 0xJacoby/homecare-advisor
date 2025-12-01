@@ -14,6 +14,8 @@ class Pulse:
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
 
+        pulse_id = Tests.id_from_name("pulse")
+        self.pulse = JournalEntry.latest_test_from_ssn(pi.ssn, pulse_id)
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
