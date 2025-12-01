@@ -21,8 +21,6 @@ class Glucose:
         Returns a score in range [0, 1]
         """
 
-        return 0
-
     def tests(self) -> List[Tuple[str, str]]:
         """
         List of all test fields and their value (representation in str)

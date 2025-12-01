@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_bool, format_test
 from app.person_info import PersonInfo
 
 
@@ -31,4 +31,6 @@ class WishToStay:
         If value is missing the it will be \"Missing\"
         """
 
-        return []
+        return [
+            format_test("Önskar att stanna", self.wish_to_stay, format_bool, True)
+        ]
