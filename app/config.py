@@ -142,10 +142,10 @@ class Config:
     def all_categories(self):
         return copy.deepcopy(self.json["categories"])
 
-    def add_category(self, category: str):
+    def add_category(self, category: str, parameters: list[dict[str, str]]):
         if category in self.categories:
             self.remove_category(category)
-        self.json["categories"].append({"name": category, "parameters": []})
+        self.json["categories"].append({"name": category, "parameters": parameters})
         self.categories[category] = CategoryConfig(self.json["categories"][-1])
         self.sync()
 
