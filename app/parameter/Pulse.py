@@ -7,6 +7,7 @@ from app.person_info import PersonInfo
 class Pulse:
     """Interface for parameters"""
     name = "Puls"
+    pulse: Optional[float]
     incomplete = False
 
     def __init__(self, pi: PersonInfo):
@@ -21,7 +22,17 @@ class Pulse:
         Returns a score in range [0, 1]
         """
 
-        return 0
+        if self.pulse is None:
+            self.incomplete = True
+            return 1
+
+        if self.pulse >= 110:
+            return 0
+        if self.pulse >= 100:
+            return 1 / 3
+        if self.pulse >= 90:
+            return 2 / 3
+        return 1
 
     def tests(self) -> List[Tuple[str, str]]:
         """
@@ -29,4 +40,6 @@ class Pulse:
         If value is missing the it will be \"Missing\"
         """
 
-        return []
+        return [
+            format_test("Puls", self.pulse, str, True),
+        ]

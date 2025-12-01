@@ -29,7 +29,7 @@ class RespiratoryRate:
 
         if self.respiratory_rate is None:
             self.incomplete = True
-            return 0
+            return 1
 
         if self.age < 10:
             if 18 < self.respiratory_rate < 25:
