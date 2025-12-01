@@ -4,9 +4,9 @@ from app.parameter.helper import format_test
 from app.person_info import PersonInfo
 
 
-class Creatine:
+class Krea:
     """Interface for parameters"""
-    name = "Kreatin"
+    name = "Krea"
     incomplete = False
 
     def __init__(self, pi: PersonInfo):

@@ -7,12 +7,12 @@ from app.person_info import PersonInfo
 class BodyTemperature:
     """Interface for parameters"""
     name = "Kroppstemperatur"
+    temprature: Optional [float]
     incomplete = False
 
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
-
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
@@ -20,6 +20,13 @@ class BodyTemperature:
         Calculates score based on personal information and test values
         Returns a score in range [0, 1]
         """
+
+        if self.temprature is None:
+            self.incomplete = True
+            return 1
+        
+        if 36.0 <= self.temprature <= 37.8:
+            return 1
 
         return 0
 

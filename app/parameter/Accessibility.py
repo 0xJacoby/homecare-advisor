@@ -6,10 +6,14 @@ from app.person_info import PersonInfo
 
 class Accessibility:
     # Optional ifall informationen inte finns, ksk inte så troligt för just age dock
-    name = "Accessibility"
-    age: int
+    name = "Socialt Tillstånd"
     municipality: str
     has_home_care: Optional[bool]
+    safety_alarm: Optional[bool]
+    other_home_care: Optional[bool]
+    social_network: Optional[bool]
+    need_of_assistance: Optional[bool]
+    personal_adl: Optional[bool]
     score: float
     incomplete = False
 
@@ -20,11 +24,25 @@ class Accessibility:
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
-        if self.has_home_care is None or not self.has_home_care:
-            self.incomplete = True
-            return 0
+        
+        acc_score = 0.1
 
-        return self.decide_age() * self.decide_municipality()
+        if self.has_home_care is True:
+            return 1
+        
+        if self.safety_alarm is True:
+            acc_score = acc_score + 1.0
+        if self.other_home_care is True:
+            acc_score = acc_score + 1.0
+        if self.social_network is True:
+            acc_score = acc_score + 1.0
+        if self.need_of_assistance is not True:
+            acc_score = acc_score + 1.0
+        if self.personal_adl is True:
+            acc_score = acc_score + 1.0
+        
+        
+        return max((acc_score /  5.0), 1)
 
 
     def tests(self) -> List[Tuple[str, str]]:
@@ -34,13 +52,6 @@ class Accessibility:
         """
 
         return [
-            format_test("Ålder", self.age, str),
             format_test("Kommun", self.municipality, str),
             format_test("Har hemhjälp", self.has_home_care, format_bool, True)
         ]
-
-    def decide_age(self) -> float:
-        """TODO: How to handle age"""
-
-    def decide_municipality(self) -> float:
-        """TODO: How to handle municipality"""
