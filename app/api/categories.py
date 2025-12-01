@@ -26,14 +26,6 @@ def add_category():
     config.add_category(name, parameters)
     return "Added", 201
 
-    try:
-        for param in data.get("parameters", []):
-            config.add_parameter(name, param["name"], param["weight"])
-
-        return jsonify(data), 201
-    except (KeyError, TypeError):
-        return "Bad format for POST request", 400
-
 
 @bp.route("/", methods=["GET"])
 def get_categories():
