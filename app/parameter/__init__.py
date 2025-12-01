@@ -46,7 +46,7 @@ class Parameter:
         match name:
             case "Accessibility":
                 return Accessibility(pi)
-            case "BloodPressure":
+            case "BloodPressure" | "Blodtryck":
                 return BloodPressure(pi)
             case "RespiratoryRate":
                 return RespiratoryRate(pi)
