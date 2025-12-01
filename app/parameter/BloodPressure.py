@@ -6,7 +6,7 @@ from app.person_info import PersonInfo
 
 class BloodPressure:
     """Interface for parameters"""
-    name = "BloodPressure"
+    name = "Blodtryck"
     systolic: Optional[float]
     diastolic: Optional[float]
     score: float

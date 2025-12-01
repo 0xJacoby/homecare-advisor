@@ -6,7 +6,7 @@ from app.person_info import PersonInfo
 
 class RespiratoryRate:
     """Interface for parameters"""
-    name = "RespiratoryRate"
+    name = "Andningsfrekvens"
     age: int
     respiratory_rate: Optional[float]  # breaths per min
     score: float
