@@ -6,7 +6,7 @@ from app.person_info import PersonInfo
 
 class Sodium:
     """Interface for parameters"""
-    name = "Natrium (P_Natrium elektrolyt i blodet)"
+    name = "Natrium"
     incomplete = False
 
     def __init__(self, pi: PersonInfo):
