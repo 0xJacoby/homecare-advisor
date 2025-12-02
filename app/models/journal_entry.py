@@ -43,7 +43,7 @@ class JournalEntry(db.Model):
         return [t.test_value for t in tests]
 
     @staticmethod
-    def latest_test_from_ssn(ssn, test_id) -> Optional[float]:
+    def latest_test_from_ssn(ssn, test_id, type = None) -> Optional[float]:
         test = (
             JournalEntry.query.filter_by(patient_ssn=ssn, test_id=test_id)
             .order_by(JournalEntry.entry_date.desc())
@@ -51,6 +51,12 @@ class JournalEntry(db.Model):
         )
 
         if test:
+            if type == "bool":
+                if test.test_value == 0:
+                    return False
+                else:
+                    return True
+                
             return test.test_value
         else:
             return None

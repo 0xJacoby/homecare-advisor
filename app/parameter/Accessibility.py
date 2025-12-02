@@ -18,9 +18,25 @@ class Accessibility:
     incomplete = False
 
     def __init__(self, pi: PersonInfo):
+        from app.models.journal_entry import JournalEntry
+        from app.models.tests import Tests
+
+        other_home_care_id = Tests.id_from_name("other_home_care")
+        safety_alarm_id = Tests.id_from_name("safety_alarm")
+        social_network_id = Tests.id_from_name("social_network")
+        need_of_assistance_id = Tests.id_from_name("need_of_assistance")
+        personal_adl_id = Tests.id_from_name("personal_adl")
+
         self.age = pi.age
         self.municipality = pi.municipality
-        self.has_home_care = pi.has_homecare
+        self.has_home_care = pi.has_home_care
+
+        self.other_home_care = JournalEntry.latest_test_from_ssn(pi.ssn, other_home_care_id, "bool")
+        self.safety_alarm = JournalEntry.latest_test_from_ssn(pi.ssn, safety_alarm_id, "bool")
+        self.social_network = JournalEntry.latest_test_from_ssn(pi.ssn, social_network_id, "bool")
+        self.need_of_assistance = JournalEntry.latest_test_from_ssn(pi.ssn, need_of_assistance_id, "bool")
+        self.personal_adl = JournalEntry.latest_test_from_ssn(pi.ssn, personal_adl_id, "bool")
+
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:

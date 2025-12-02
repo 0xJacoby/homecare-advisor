@@ -15,6 +15,18 @@ class CRP:
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
 
+        crp_id = Tests.id_from_name("crp")
+
+        crp_history = JournalEntry.get_tests_from_ssn(pi.ssn, crp_id, 2)
+
+        self.current_crp = None
+        self.old_crp = None
+
+        if len(crp_history) >= 1:
+            self.current_crp = crp_history[0]
+        if len(crp_history) >= 2:
+            self.old_crp = crp_history[1]
+
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
