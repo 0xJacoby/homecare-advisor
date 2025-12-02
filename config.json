@@ -1,1 +1,22 @@
-{"categories": [{"name": "Diabetes", "parameters": [{"name": "NEWS", "weight": 1.1}]}, {"name": "Cancer", "parameters": [{"name": "BloodPressure", "weight": 1.6}]}]}
+{
+    "categories": [
+        {
+            "name": "Diabetes",
+            "parameters": [
+                {
+                    "name": "NEWS",
+                    "weight": 1.1
+                }
+            ]
+        },
+        {
+            "name": "Cancer",
+            "parameters": [
+                {
+                    "name": "BloodPressure",
+                    "weight": 1.6
+                }
+            ]
+        }
+    ]
+}
