@@ -9,6 +9,7 @@ class PersonInfo:
     age: Optional[int]
     municipality: Optional[str]
     has_homecare: Optional[bool]
+    other_homecare: Optional[bool]
 
     def __init__(self, ssn: str):
         from app.models.patient import Patient

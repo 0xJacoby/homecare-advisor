@@ -13,6 +13,10 @@ class WishToStay:
     def __init__(self, pi: PersonInfo):
         from app.models.journal_entry import JournalEntry
         from app.models.tests import Tests
+
+        wish_to_stay_id = Tests.id_from_name("wish_to_stay")
+        self.wish_to_stay = JournalEntry.latest_test_from_ssn(pi.ssn, wish_to_stay_id, "bool")
+        
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
