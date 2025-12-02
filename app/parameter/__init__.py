@@ -59,7 +59,7 @@ class Parameter:
         match name:
             case "Socialt Tillstånd":
                 return Accessibility(pi)
-            case "Blodtryck":
+            case "Blodtryck" | "BloodPressure":
                 return BloodPressure(pi)
             case "Kroppstempratur":
                 return BodyTemperature(pi)
@@ -67,7 +67,7 @@ class Parameter:
                 return CRP(pi)
             case "eGFR":
                 return EGFR(pi)
-            case "RespiratoryRate":
+            case "Andningsfrekvens":
                 return RespiratoryRate(pi)
             case "NEWS":
                 return NEWS(pi)

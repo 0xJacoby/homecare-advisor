@@ -20,7 +20,7 @@ class Accessibility:
     def __init__(self, pi: PersonInfo):
         self.age = pi.age
         self.municipality = pi.municipality
-        self.has_home_care = pi.has_home_care
+        self.has_home_care = pi.has_homecare
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
