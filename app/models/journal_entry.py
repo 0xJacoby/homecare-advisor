@@ -44,6 +44,9 @@ class JournalEntry(db.Model):
 
     @staticmethod
     def latest_test_from_ssn(ssn, test_id, type = None) -> Optional[float]:
+        # print(ssn)
+        # for e in JournalEntry.query.filter_by(patient_ssn=ssn).order_by(JournalEntry.entry_date.desc()).all():
+        #     print(e.test_id, e.test_value)
         test = (
             JournalEntry.query.filter_by(patient_ssn=ssn, test_id=test_id)
             .order_by(JournalEntry.entry_date.desc())

@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -36,14 +36,7 @@ class OxygenSaturation:
                 return 1
             else:
                 return 0
-        
-        if self.oxygen_saturation >= 96:
-            return 1
-        if self.oxygen_saturation >= 95:
-            return 2/3
-        if self.oxygen_saturation >= 94:
-            return 1/3
-        return 0
+        return lerp_clamp(92,95,self.oxygen_saturation)
 
     def tests(self) -> List[Tuple[str, str]]:
         """

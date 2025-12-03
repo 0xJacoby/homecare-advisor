@@ -1,43 +1,43 @@
 {
-  "categories": [
-    {
-      "name": "Diabetes",
-      "parameters": [
+    "categories": [
         {
-          "name": "NEWS",
-          "weight": 1.1
-        }
-      ]
-    },
-    {
-      "name": "Cancer",
-      "parameters": [
-        {
-          "name": "BloodPressure",
-          "weight": 1.6
-        }
-      ]
-    },
-    {
-      "name": "Pneumoni",
-      "parameters": [
-        {
-          "name": "BloodPressure",
-          "weight": 2
+            "name": "Diabetes",
+            "parameters": [
+                {
+                    "name": "NEWS",
+                    "weight": 1.1
+                }
+            ]
         },
         {
-          "name": "Syremättnad",
-          "weight": 2
+            "name": "Cancer",
+            "parameters": [
+                {
+                    "name": "BloodPressure",
+                    "weight": 1.6
+                }
+            ]
         },
         {
-          "name": "NEWS",
-          "weight": 2
-        },
-        {
-          "name": "Kalium",
-          "weight": 2
+            "name": "Pneumoni",
+            "parameters": [
+                {
+                    "name": "BloodPressure",
+                    "weight": 1
+                },
+                {
+                    "name": "Syrem\u00e4ttnad",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Kalium",
+                    "weight": 1
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }

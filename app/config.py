@@ -90,7 +90,7 @@ class Config:
 
     def __init__(self):
         self.categories = {}
-        with open(config_path, "r") as file:
+        with open(config_path, "r", encoding="utf-8") as file:
             data = json.load(file)
             self.json = data
             for category_obj in data["categories"]:

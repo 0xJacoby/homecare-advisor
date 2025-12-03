@@ -34,7 +34,7 @@ class CRP:
         Calculates score based on personal information and test values
         Returns a score in range [0, 1]
         """
-        if self.current_crp or self.old_crp is None:
+        if self.current_crp is None or self.old_crp is None:
             self.incomplete = True
             return 1
         

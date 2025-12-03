@@ -74,16 +74,22 @@ class NEWS:
         ]
 
         news_score = sum(individual)
+        possible = []
         if 3 in individual:
-            return 0.5
+            possible.append(0.5)
 
         if news_score == 0:
-            return 1
-        if news_score <= 4:
-            return 0.75
-        if news_score <= 6:
-            return 0.25
-        return 0
+            possible.append(1)
+        elif news_score <= 4:
+            possible.append(0.75)
+        elif news_score <= 6:
+            possible.append(0.25)
+        else:
+            possible.append(0.0)
+            
+        if not possible:
+            return 0
+        return min(possible)
 
     def tests(self) -> List[Tuple[str, str]]:
         """
@@ -105,7 +111,7 @@ class NEWS:
             return 3
         if self.respiratory_rate <= 11:
             return 1
-        if self.respiratory_rate <= 12:
+        if self.respiratory_rate <= 20:
             return 0
         if self.respiratory_rate <= 24:
             return 2
@@ -118,8 +124,7 @@ class NEWS:
             return 1
         if self.oxygen_saturation >= 92:
             return 2
-        if self.oxygen_saturation >= 91:
-            return 3
+        return 3
 
     def supplied_oxygen_score(self) -> float:
         if not self.supplied_oxygen:

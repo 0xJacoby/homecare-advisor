@@ -16,3 +16,11 @@ def format_bool(value: bool) -> str:
         return "Ja"
     else:
         return "Nej"
+    
+def lerp_clamp(low: float, high: float, val: float):
+    if val <= low:
+        return 0
+    if val >= high:
+        return 1
+    return (val - low) / (high-low)
+    

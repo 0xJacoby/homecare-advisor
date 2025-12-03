@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -28,16 +28,11 @@ class Pottasium:
             self.incomplete = True
             return 1
         
-        if 4 < self.potassium < 4.5:
-            return 1
-
-        if 3.75 < self.potassium < 4.75:
-            return 2 / 3
-        
-        if 3.5 < self.potassium < 5:
-            return 1 / 3
-
-        return 0
+        x = self.potassium
+        if 4.25 < x:
+            return 1 - lerp_clamp(4.8, 5.5, x)
+        else:
+            return lerp_clamp(3, 3.7, x)
 
     def tests(self) -> List[Tuple[str, str]]:
         """
