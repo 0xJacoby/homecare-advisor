@@ -1,0 +1,25 @@
+fake datan inkluderar följande parametrar per kategori:
+
+KOL (30 pers):
+    oxygen_saturation : 88–93 (variera)
+    target_oxygen_saturation : alltid >= oxygen_saturation, 90–95 (variera lite)
+    temperature : 38.2–39.6 (variera)
+    categories : 1–3 (1=Låg, 2=Medel, 3=Hög — variera)
+    potassium : 3.3–5.3 (variera så vissa ligger strax över/under gräns)
+     
+HJÄRTVIKT (30 pers):
+    pulse_frequency (BPM): 80–130 (några ska få >=110)
+    oxygen_saturation (%): 89–98 (några >=94, några <94)
+    temperature (C): 36.5–39.5 (några >=39)
+    respiratory_rate: 14–28 (några >=25)
+    categories (NEWS poäng): 1–12 (några <=4, några >4)
+    potassium: 2.8–5.5 (några <=3.5 eller >=5.0)
+     
+PNEUMONI (30 pers):
+    NEWS (test_id=1): test_value=10
+    Systoliskt blodtryck (test_id=2): ≤ 100  (risk )
+    oxygen_saturation (test_id=5): < 94 (risk )
+    CRP (test_id=14): högt (t.ex. 145) och tidigare  värde för patienten ≥ 10 lägre (dvs först ett värde, sedan ett >10 lägre; vi lägger in två rader CRP per patient)
+    potassium (test_id=16): ≤ 3.5 eller ≥ 5.0 (risk )
+     
+

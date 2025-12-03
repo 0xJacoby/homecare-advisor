@@ -1,22 +1,43 @@
 {
-    "categories": [
+  "categories": [
+    {
+      "name": "Diabetes",
+      "parameters": [
         {
-            "name": "Diabetes",
-            "parameters": [
-                {
-                    "name": "NEWS",
-                    "weight": 1.1
-                }
-            ]
+          "name": "NEWS",
+          "weight": 1.1
+        }
+      ]
+    },
+    {
+      "name": "Cancer",
+      "parameters": [
+        {
+          "name": "BloodPressure",
+          "weight": 1.6
+        }
+      ]
+    },
+    {
+      "name": "Pneumoni",
+      "parameters": [
+        {
+          "name": "BloodPressure",
+          "weight": 2
         },
         {
-            "name": "Cancer",
-            "parameters": [
-                {
-                    "name": "BloodPressure",
-                    "weight": 1.6
-                }
-            ]
+          "name": "Syremättnad",
+          "weight": 2
+        },
+        {
+          "name": "NEWS",
+          "weight": 2
+        },
+        {
+          "name": "Kalium",
+          "weight": 2
         }
-    ]
+      ]
+    }
+  ]
 }
