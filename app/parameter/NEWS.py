@@ -80,13 +80,13 @@ class NEWS:
 
         if news_score == 0:
             possible.append(1)
-        elif news_score <= 4:
+        elif news_score <= 5:
             possible.append(0.75)
-        elif news_score <= 6:
+        elif news_score <= 8:
             possible.append(0.25)
         else:
             possible.append(0.0)
-            
+
         if not possible:
             return 0
         return min(possible)
@@ -100,7 +100,8 @@ class NEWS:
         return [
             format_test("Andningsfrekvens", self.respiratory_rate, str, True),
             format_test("Syremättnad", self.oxygen_saturation, str, True),
-            format_test("Tillförd syrgas", self.supplied_oxygen, format_bool, True),
+            format_test("Tillförd syrgas", self.supplied_oxygen,
+                        format_bool, True),
             format_test("Systoliskt", self.systolic, str, True),
             format_test("Puls", self.pulse_frequency, str, True),
             format_test("Temperatur", self.temperature, str, True),
@@ -133,13 +134,13 @@ class NEWS:
 
     def systolic_score(self) -> float:
         if self.systolic <= 90:
-            return 3
-        if self.systolic <= 100:
             return 2
-        if self.systolic <= 110:
-            return 1
-        if self.systolic <= 219:
+        if self.systolic <= 120:
             return 0
+        if self.systolic <= 130:
+            return 1
+        if self.systolic <= 140:
+            return 2
         return 3
 
     def pulse_frequency_score(self) -> float:

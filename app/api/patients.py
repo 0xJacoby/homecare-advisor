@@ -46,11 +46,12 @@ def get_patient():
             return "user not found", 404
 
     return jsonify(
-        [extend_patient(patient.to_dict(), patient.ssn)
-         for patient in Patient.query.all()]
+        [
+            extend_patient(patient.to_dict(), patient.ssn)
+            for patient in Patient.query.all()
+        ]
     )
 
 
 def extend_patient(dict, ssn):
     return Application.person_score(ssn, dict)
-

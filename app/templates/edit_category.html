@@ -217,7 +217,7 @@
       // ==============================
       //  API CONFIG
       // ==============================
-      const API_URL = "http://127.0.0.1:5000/api/categories";
+      const API_URL = window.location.origin + "/api/categories";
 
       // DOM elements
       const categorySelect = document.getElementById("categorySelect");
@@ -251,7 +251,7 @@
             parameters: (cat.parameters || []).map((p) => ({
               id: p.name,
               name: p.name,
-              weight: Number(p.weight ?? 0) *5, // Från 0-2 till 0-10
+              weight: Number(p.weight ?? 0) * 5, // Från 0-2 till 0-10
             })),
           }));
         } catch (err) {
@@ -267,7 +267,7 @@
             name: category.name,
             parameters: category.parameters.map((p) => ({
               name: p.name,
-              weight: p.weight/5, //Från 0-10 till 0-2
+              weight: p.weight / 5, //Från 0-10 till 0-2
             })),
           };
 
@@ -354,8 +354,7 @@
         if (!currentCategoryId) {
           const p = document.createElement("div");
           p.className = "empty-text";
-          p.textContent =
-            "Välj en kategori för att se eller ändra parametrar.";
+          p.textContent = "Välj en kategori för att se eller ändra parametrar.";
           paramList.appendChild(p);
           return;
         }

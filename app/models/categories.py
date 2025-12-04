@@ -5,6 +5,7 @@ from .. import db
 from app.models.journal_entry import JournalEntry
 from app.person_info import PersonInfo
 from app.category import Category
+import sys
 
 
 class Categories(db.Model):
@@ -36,8 +37,8 @@ class Categories(db.Model):
 
     @staticmethod
     def all_from_ssn(
-        ssn: str, 
-        missing_categories_err = lambda category_name: category_name, 
+        ssn: str,
+        missing_categories_err=lambda category_name: category_name,
     ) -> Generator[Category, None, None]:
         pi = PersonInfo(ssn)
         data = (
@@ -49,11 +50,10 @@ class Categories(db.Model):
         )
 
         for _, c in data:
-            if c and config.category_index(c.name):
+            if c and (config.category_index(c.name) is not None):
                 yield Category.from_name(c.name, pi)
             elif c:
                 missing_categories_err(c.name)
-
 
     @staticmethod
     def del_from_name(name: str):

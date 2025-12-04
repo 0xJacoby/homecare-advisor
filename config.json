@@ -13,8 +13,42 @@
             "name": "Cancer",
             "parameters": [
                 {
-                    "name": "BloodPressure",
+                    "name": "Blodtryck",
                     "weight": 1.6
+                }
+            ]
+        },
+        {
+            "name": "Hj\u00e4rtsvikt",
+            "parameters": [
+                {
+                    "name": "Puls",
+                    "weight": 1
+                },
+                {
+                    "name": "Syrem\u00e4ttnad",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Kalium",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "KOL",
+            "parameters": [
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Kalium",
+                    "weight": 1
                 }
             ]
         },
@@ -22,7 +56,7 @@
             "name": "Pneumoni",
             "parameters": [
                 {
-                    "name": "BloodPressure",
+                    "name": "Blodtryck",
                     "weight": 1
                 },
                 {

@@ -24,9 +24,10 @@ from app.person_info import PersonInfo
 
 class Parameter:
     """Interface for parameters"""
+
     name: str
     score: float
-    incomplete = False # Set to true if there is not enough test data
+    incomplete = False  # Set to true if there is not enough test data
 
     def calculate_score(self) -> float:
         """
@@ -36,23 +37,19 @@ class Parameter:
         pass
 
     @staticmethod
-    def to_display_dict(cls: Parameter): # Static method to avoid having to implement for every class
+    def to_display_dict(
+        cls: Parameter,
+    ):  # Static method to avoid having to implement for every class
         """
         Constructs a dict with the name, tests and score
         """
-        
+
         return {
             "name": cls.name,
             "score": cls.score,
-            "tests": [{
-                    "name": name,
-                    "value": value
-                }
-                for (name, value) in cls.tests()
-            ],
-            "incomplete": cls.incomplete
+            "tests": [{"name": name, "value": value} for (name, value) in cls.tests()],
+            "incomplete": cls.incomplete,
         }
-
 
     @staticmethod
     def from_name(name: str, pi: PersonInfo) -> Optional[Parameter]:
@@ -79,7 +76,7 @@ class Parameter:
                 return Krea(pi)
             case "LPK":
                 return LPK(pi)
-            case "Syremättnad":
+            case "Syremättnad" | "Syrem\u00e4ttnad":
                 return OxygenSaturation(pi)
             case "Kalium":
                 return Pottasium(pi)
@@ -95,10 +92,8 @@ class Parameter:
 
         return None
 
-
     def tests(self) -> List[Tuple[str, str]]:
         """
         List of all test fields and their value (representation in str)
         If value is missing the it will be \"Missing\"
         """
-

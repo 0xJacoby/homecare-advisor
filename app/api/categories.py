@@ -17,13 +17,15 @@ def add_category():
     if not name:
         return "Bad format for POST request", 400
 
-    if not Categories.get_by_name(name):
-        return jsonify({"error": "Category doesn't exist in central database"}), 409
-
     if name in config.categories:
         return jsonify({"error": "Category already exists in config"}), 409
+    if Categories.get_by_name(name):
+        return jsonify({"error": "Category already exists in central database"}), 409
 
     config.add_category(name, parameters)
+    category = Categories(name)
+    db.session.add(category)
+    db.session.commit()
     return "Added", 201
 
 

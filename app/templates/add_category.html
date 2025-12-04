@@ -186,13 +186,14 @@
 
     <script>
       // API URL for categories
-      const API_URL = "http://127.0.0.1:5000/api/categories";
+      const API_URL = window.location.origin + "/api/categories";
 
       const newCategoryName = document.getElementById("newCategoryName");
       const newParamSelect = document.getElementById("newParamSelect");
       const newParamWeight = document.getElementById("newParamWeight");
-      const newParamWeightLabel =
-        document.getElementById("newParamWeightLabel");
+      const newParamWeightLabel = document.getElementById(
+        "newParamWeightLabel",
+      );
       const addParamBtn = document.getElementById("addParamBtn");
       const createCategoryBtn = document.getElementById("createCategoryBtn");
       const paramList = document.getElementById("paramList");
@@ -236,7 +237,7 @@
         document.querySelectorAll(".remove-btn").forEach((btn) => {
           btn.addEventListener("click", () => {
             tempParameters = tempParameters.filter(
-              (p) => p.id !== btn.dataset.id
+              (p) => p.id !== btn.dataset.id,
             );
             renderParamList();
           });
@@ -274,7 +275,7 @@
 
         if (tempParameters.length === 0) {
           const proceed = confirm(
-            "Inga parametrar är tillagda. Vill du skapa kategorin ändå?"
+            "Inga parametrar är tillagda. Vill du skapa kategorin ändå?",
           );
           if (!proceed) return;
         }
@@ -302,10 +303,7 @@
             const text = await res.text();
             console.error("API error:", res.status, text);
             alert(
-              "Kunde inte skapa kategorin. Status: " +
-                res.status +
-                "\n" +
-                text
+              "Kunde inte skapa kategorin. Status: " + res.status + "\n" + text,
             );
             return;
           }
@@ -315,9 +313,7 @@
           window.location.href = "/";
         } catch (err) {
           console.error("Network error creating category:", err);
-          alert(
-            "Något gick fel när kategorin skulle skapas (nätverksfel?)."
-          );
+          alert("Något gick fel när kategorin skulle skapas (nätverksfel?).");
         }
       });
 
