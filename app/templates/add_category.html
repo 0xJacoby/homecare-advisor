@@ -92,7 +92,7 @@
         background: #fff;
       }
       .bottom-create-bar {
-        margin-top: 30px;
+        margin-top: 20%;
         display: flex;
         justify-content: flex-end;
       }
@@ -107,6 +107,48 @@
       .empty-text {
         font-style: italic;
         color: #666;
+      }
+      .help-box {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 400px;
+        height: 60%;
+        background: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 14px;
+        margin-top: 5%;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: 0.3s ease;
+        z-index: 2000;
+      }
+
+      .help-box.show {
+        transform: translateX(0);
+      }
+
+      .help-box .close-btn {
+        float: right;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      .help-btn {
+        margin-left: 10px;
+        background: #ddd;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border: 1px solid black;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -184,6 +226,7 @@
       <button id="createCategoryBtn">✔ Skapa kategori</button>
     </div>
 
+    
     <script>
       // API URL for categories
       const API_URL = "http://127.0.0.1:5000/api/categories";
@@ -212,6 +255,99 @@
         },
       ];
 
+
+      /////////////// LÄGG TILL PARAMETERBESKRIVNINGAR HÄR ///////////////////////
+      const BlodtryckDescription =
+        "Blodtryck – Poängsättning:<br><br>" +
+        "+-------------------------------+--------+<br>" +
+        "Systoliskt / Diastoliskt (mmHg) | Poäng | <br>" +
+        "+-------------------------------+--------+<br>" +
+        "| <120 och <80                  | 1.0    |<br>" +
+        "| 120–129 och <80               | 0.9    |<br>" +
+        "| 130–139 eller 80–89           | 0.7    |<br>" +
+        "| 140–179 eller 90–119          | 0.5    |<br>" +
+        "| ≥180 eller ≥120               | 0.1    |<br>" +
+        "+-------------------------------+--------+<br><br>" +
+        "Ett normalt blodtryck ger hög poäng (1.0).<br>" +
+        "Ju mer blodtrycket avviker från normalvärden, desto lägre blir poängen.<br>" +
+        "Låga poäng indikerar att patienten kan behöva stanna för vidare vård.";
+
+        const temperaturInfo =
+        "Temperatur bedöms enligt följande:<br><br>" +
+        "• 36.0–37.8°C → Poäng: 1.0 (normal kroppstemperatur)<br>" +
+        "• Utanför intervallet → Poäng: 0 (avvikande temperatur)<br><br>" +
+        "Ett normalt temperaturintervall ger högsta poäng och indikerar stabilt tillstånd.<br>" +
+        "Avvikande temperatur kan signalera infektion eller annan påverkan och ger därför lägre poäng.";
+
+        const önskanAttStannaInfo =
+        "Poängen baseras på patientens önskan att stanna:<br><br>" +
+        "• Patienten vill stanna → Poäng: 0.5<br>" +
+        "• Patienten vill inte stanna → Poäng: 1.0<br><br>" +
+        "Poängen används för att justera helhetsbedömningen.";
+
+        const andningsfrekvensInfo =
+        "Andningsfrekvens bedöms utifrån patientens ålder:<br><br>" +
+        "• Ålder < 10 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
+        "• Ålder 10–17 år → Normalt: 18–22 andetag/min → Poäng: 1<br>" +
+        "• Ålder 18–49 år → Normalt: 16–17 andetag/min → Poäng: 1<br>" +
+        "• Ålder 50–64 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
+        "• Ålder 65–79 år → Normalt: 13–27 andetag/min → Poäng: 1<br>" +
+        "• Ålder ≥ 80 år → Normalt: 11–29 andetag/min → Poäng: 1<br><br>" +
+        "Värden utanför intervallet ger poängen 0.";
+
+      //Lista med beskrivning av varje parameter
+      const helpTexts = 
+      {
+        "Socialt Tillstånd": {
+          description: "Hur denna parametern räknas ut...",
+          fields: ["Hemtjänst", "Trygghetslarm", "Annan vård i hemmet", "Social krets", "Behov av stöd", "Personlig ADL"]
+          },
+        "NEWS":{
+          description: "Hur denna parameter räknas ut, hur vikten påverkar uträkning...",
+          fields: ["Bloodtryck","etc..."]
+        },
+        "Blodtryck": {
+          description: BlodtryckDescription,
+          fields: ["Systoliskt", "Diastoliskt"]
+        },
+        "CRP": {
+          description: "Räknas ut genom att jämföra föregånde CRP med nuvarande CRP. Om nuvarande CRP är mer än 10 mindre än föregående indikerar detta möjlig hemvård",
+          fields: ["CRP", "Föregående CRP"]
+        },
+        "NEWS":{
+          description: "NEWS beräknas genom att varje vitalparameter får 0–3 poäng, poängen summeras, och slutresultatet blir ett värde mellan 0–1 baserat på både totalpoängen och om någon parameter fått en 3:a.",
+          fields: ["Andningsfrekvens","Syremättnad","Tillförd syrgas", "Systoliskt", "Puls", "Temperatur"]
+        },
+        "Syremättnad":{
+            description: "Syremättnaden beräknas genom att jämföra aktuell saturation med ett målvärde (ger 1 om nästan identiskt, annars 0) eller, om inget mål finns, normaliseras värdet linjärt mellan 89–100 %.",
+            fields: ["Syregasmättnad", "Målmättnad"]
+        },
+        "Kalium":{
+            description: "Kaliumvärdet omvandlas till en score mellan 0–1 genom att värden under 4.25 normaliseras uppåt mellan 3–3.7 och värden över 4.25 normaliseras nedåt mellan 4.8–5.5.",
+            fields: ["Kalium"]
+        },
+        "Puls":{
+            description: "Pulsvärdet omvandlas till en score mellan 0–1 där lägre puls ger högre poäng och värden över 110 ger 0.",
+            fields: ["Puls"],
+        },
+        "Kroppstemperatur": {
+          description: temperaturInfo  ,
+          fields: []
+        },
+        "Önskar stanna": {
+          description: temperaturInfo  ,
+          fields: ["Önskar stanna"]
+        },
+        "Andningsfrekvens":
+        {
+           description: andningsfrekvensinfo,
+           fields:["Andningsfrekvens", "Ålder"] 
+        }
+      };
+
+      //////////////////////////////////////////////////////////////
+
+
       // Render parameter list
       function renderParamList() {
         paramList.innerHTML = "";
@@ -226,7 +362,10 @@
           const row = document.createElement("div");
           row.className = "param-item";
           row.innerHTML = `
-            <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
+            <div>
+              <strong>${p.name}</strong> – vikt: ${p.weight}
+              <span class="help-btn" data-name="${p.name}">?</span>
+            </div>
             <button class="remove-btn" data-id="${p.id}">Ta bort</button>
           `;
           paramList.appendChild(row);
@@ -241,6 +380,39 @@
             renderParamList();
           });
         });
+
+        // Help button — create unique box
+        document.querySelectorAll(".help-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const name = btn.dataset.name;
+            const description = helpTexts[name].description || "Ingen information tillgänglig.";
+            const fields = helpTexts[name].fields || "Fält saknas.";
+
+            // Remove any existing help boxes
+            document.querySelectorAll(".help-box").forEach(b => b.remove());
+
+            // Create new box
+            const box = document.createElement("div");
+            box.className = "help-box show";
+            box.innerHTML = `
+              <span class="close-btn">✖</span>
+              <h2>${name}</h2>
+              <h4 style="border-bottom: 1px solid black";>Vilka journalfält ingår i parametern?</h4>
+              * ${fields.join("<br> * ")}
+              <h4 style="border-bottom: 1px solid black;">Hur räknas parametern ut?</h4>
+              <p>${description}</p>
+            `;
+
+            document.body.appendChild(box);
+
+            // Close button
+            box.querySelector(".close-btn").addEventListener("click", () => {
+              box.classList.remove("show");
+              setTimeout(() => box.remove(), 300);
+            });
+          });
+        });
+
       }
 
       // Add parameter
@@ -285,7 +457,7 @@
           parameters: tempParameters.map((p) => ({
             name: p.name,
             // skalan från 0 till 10 blir 0 till 2
-            weight: p.weight / 5,
+            weight: p.weight / 5.0,
           })),
         };
 
