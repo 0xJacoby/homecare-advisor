@@ -1,24 +1,6 @@
 {
     "categories": [
         {
-            "name": "Diabetes",
-            "parameters": [
-                {
-                    "name": "NEWS",
-                    "weight": 1.1
-                }
-            ]
-        },
-        {
-            "name": "Cancer",
-            "parameters": [
-                {
-                    "name": "Blodtryck",
-                    "weight": 1.6
-                }
-            ]
-        },
-        {
             "name": "Hj\u00e4rtsvikt",
             "parameters": [
                 {
@@ -44,6 +26,10 @@
             "parameters": [
                 {
                     "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Syrem\u00e4ttnad",
                     "weight": 1
                 },
                 {
