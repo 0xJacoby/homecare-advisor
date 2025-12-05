@@ -1,464 +1,473 @@
 <!doctype html>
 <html lang="sv">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Patientöversikt</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f6f6f6;
-        display: flex;
-        flex-direction: row;
-        padding: 20px;
-        gap: 40px;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Patientöversikt</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f6f6;
+      display: flex;
+      flex-direction: row;
+      padding: 20px;
+      gap: 40px;
+    }
 
-      .list-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
+    .list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-      .list-box {
-        width: 300px;
-        height: 80vh;
-        padding: 10px;
-        background: white;
-        border: 2px solid black;
-        border-radius: 10px;
-        overflow-y: auto;
-      }
+    .list-box {
+      width: 300px;
+      height: 80vh;
+      padding: 10px;
+      background: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      overflow-y: auto;
+    }
 
-      .list-title {
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
+    .list-title {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
 
-      .item {
-        display: block; /* fyller hela raden, som div */
-        box-sizing: border-box; /* inkluderar padding i bredden */
-        background: #ffffff;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 10px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        text-decoration: none; /* tar bort understrykningen */
-        color: inherit; /* behåller textfärgen */
-      }
-      .item:hover {
-        background-color: #f0f0f0; /* liknande hover som div */
-      }
+    .item {
+      display: block;         /* fyller hela raden, som div */
+      box-sizing: border-box; /* inkluderar padding i bredden */
+      background: #ffffff;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-decoration: none;        /* tar bort understrykningen */
+      color: inherit;               /* behåller textfärgen */
+    }
+    .item:hover {
+      background-color: #f0f0f0;  /* liknande hover som div */
+    }
 
-      /* Info-panel */
-      .info-panel {
-        width: 40vw;
-        height: 70vh;
-        background: white;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 20px;
-        margin-top: 34px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-      }
+    /* Info-panel */
+    .info-panel {
+      width: 40vw;
+      height: 70vh;
+      background: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 34px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .collapse-toggle {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        border: 1px solid black;
-        background: #ddd;
-        padding: 6px 10px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
+    .collapse-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid black;
+      background: #ddd;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-      .collapsed {
-        height: 40px !important;
-        overflow: hidden;
-      }
+    .collapsed {
+      height: 40px !important;
+      overflow: hidden;
+    }
 
-      .collapsed #infoContent,
-      .collapsed h2 {
-        display: none;
-      }
+    .collapsed #infoContent,
+    .collapsed h2 {
+      display: none;
+    }
 
-      .bottom-buttons {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        gap: 15px;
-      }
+    .bottom-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 15px;
+    }
 
-      .action-btn {
-        width: 200px;
-        padding: 12px 18px;
-        font-size: 16px;
-        cursor: pointer;
-        background: white;
-        border: 2px solid black;
-        border-radius: 10px;
-      }
+    .action-btn {
+      width: 200px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      background: white;
+      border: 2px solid black;
+      border-radius: 10px;
+    }
 
-      /* Panel för tröskel */
-      .threshold-panel {
-        position: fixed;
-        bottom: 90px;
-        right: 20px;
-        width: 260px;
-        background: white;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 14px;
-        z-index: 1000;
-      }
+    /* Panel för tröskel */
+    .threshold-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 260px;
+      background: white;
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 14px;
+      z-index: 1000;
+    }
 
-      .threshold-panel h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-size: 16px;
-      }
+    .threshold-panel h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
 
-      .threshold-panel input[type="range"] {
-        width: 100%;
-      }
+    .threshold-panel input[type="range"] {
+      width: 100%;
+    }
 
-      .threshold-panel .close-btn {
-        margin-top: 10px;
-        width: 100%;
-        padding: 6px 10px;
-        cursor: pointer;
-        border-radius: 8px;
-        border: 1px solid black;
-        background: #f0f0f0;
-      }
+    .threshold-panel .close-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid black;
+      background: #f0f0f0;
+    }
 
-      .reason-section {
-        margin-top: 15px;
-        padding-top: 10px;
-        border-top: 1px solid #ddd;
-      }
+    .reason-section {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
 
-      .reason-section h3 {
-        margin: 0 0 6px 0;
-        font-size: 16px;
-      }
+    .reason-section h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
 
-      .reason-section ul {
-        margin: 4px 0 0 16px;
-        padding: 0;
-      }
+    .reason-section ul {
+      margin: 4px 0 0 16px;
+      padding: 0;
+    }
 
-      .reason-section li {
-        margin-bottom: 2px;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Bör stanna -->
-    <div class="list-container">
-      <div>
-        <div class="list-title">Bör stanna</div>
-        <div id="list1" class="list-box"></div>
-      </div>
-    </div>
+    .reason-section li {
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
 
-    <!-- Möjligtvis lämna -->
+  <!-- Bör stanna -->
+  <div class="list-container">
     <div>
-      <div class="list-title">Möjligtvis lämna</div>
-      <div id="list2" class="list-box"></div>
+      <div class="list-title">Bör stanna</div>
+      <div id="list1" class="list-box"></div>
     </div>
+  </div>
 
-    <!-- Osäker -->
-    <div>
-      <div class="list-title">Osäker</div>
-      <div id="list3" class="list-box"></div>
-    </div>
+  <!-- Möjligtvis lämna -->
+  <div>
+    <div class="list-title">Möjligtvis lämna</div>
+    <div id="list2" class="list-box"></div>
+  </div>
 
-    <!-- Info-panel -->
-    <div id="infoPanel" class="info-panel" style="display: none">
-      <button class="collapse-toggle" onclick="toggleCollapse()">Stäng</button>
-      <h2>Patientinformation</h2>
-      <div id="infoContent">Välj en patient för att se detaljer.</div>
-    </div>
+  <!-- Osäker -->
+  <div>
+    <div class="list-title">Osäker</div>
+    <div id="list3" class="list-box"></div>
+  </div>
 
-    <!-- Tröskel-panel -->
-    <div id="thresholdPanel" class="threshold-panel" style="display: none">
-      <h3>Ändra antalet platser</h3>
-      <p>
-        Antalet patient platser som finns på avdelningen.
-        <span id="thresholdLabel">20</span>
-      </p>
-      <input id="thresholdSlider" type="range" min="0" max="100" value="20" />
-      <button class="close-btn" onclick="closeThresholdPanel()">Stäng</button>
-    </div>
+  <!-- Info-panel -->
+  <div id="infoPanel" class="info-panel" style="display:none;">
+    <button class="collapse-toggle" onclick="toggleCollapse()">Stäng</button>
+    <h2>Patientinformation</h2>
+    <div id="infoContent">Välj en patient för att se detaljer.</div>
+  </div>
 
-    <!-- Knappar nere till höger -->
-    <div class="bottom-buttons">
-      <button class="action-btn" onclick="window.location='/edit_category'">
-        Redigera befintlig kategori
-      </button>
-      <button class="action-btn" onclick="window.location='/add_category'">
-        Lägg till ny kategori
-      </button>
-      <button class="action-btn" onclick="openThresholdPanel()">
-        Ändra antalet platser
-      </button>
-    </div>
+  <!-- Tröskel-panel -->
+  <div id="thresholdPanel" class="threshold-panel" style="display:none;">
+    <h3>Redigera gränsen</h3>
+    <p>
+      Gräns mellan <strong>"Bör stanna"</strong> och
+      <strong>"Möjligtvis lämna"</strong>:
+      <span id="thresholdLabel">50</span>
+    </p>
+    <input
+      id="thresholdSlider"
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+    />
+    <button class="close-btn" onclick="closeThresholdPanel()">Stäng</button>
+  </div>
 
-    <script>
-      const PATIENTS_URL = window.location.origin + "/api/patients";
+  <!-- Knappar nere till höger -->
+  <div class="bottom-buttons">
+    <button class="action-btn" onclick="window.location='/edit_category'">
+      Redigera befintlig kategori
+    </button>
+    <button class="action-btn" onclick="window.location='/add_category'">
+      Lägg till ny kategori
+    </button>
+    <button class="action-btn" onclick="openThresholdPanel()">
+      Redigera gränsen
+    </button>
+  </div>
 
-      // Intern lagring
-      let patients = [];
+  <script>
+   const PATIENTS_URL = "http://127.0.0.1:5000/api/patients";
 
-      // threshold för max antal platser. default=20
-      let threshold = 20;
+  // Intern lagring
+  let patients = [];
 
-      // =========================
-      //  HÄMTA PATIENTER
-      // =========================
-      async function fetchPatientsFromApi() {
-        try {
-          const response = await fetch(PATIENTS_URL, {
-            method: "GET",
+  // Dynamisk tröskel (0–1), default 0.5 => 50
+  let threshold = 50;
+
+  // =========================
+  //  HÄMTA PATIENTER
+  // =========================
+  async function fetchPatientsFromApi() {
+    try {
+      const response = await fetch(PATIENTS_URL, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch patients:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Raw patients from API:", data);
+
+      // Normalisera struktur
+      patients = data.map(p => ({
+        name: p.firstname,
+        lastName: p.surname,
+        ssn: p.ssn,
+        municipality: p.municipality,
+        has_homecare: p.has_homecare,
+        score: Math.round(100 * p.score),
+        categories: p.categories || [],
+        errors: p.errors || {}
+      }));
+
+      // Sortera på score
+      patients.sort((a, b) => a.score - b.score);
+
+      updateLists();
+    } catch (err) {
+      console.error("Error fetching patients:", err);
+    }
+  }
+
+  // =========================
+  //  ANALYS AV OSÄKERHET
+  // =========================
+  // Returnerar ett objekt med:
+  // {
+  //   isUncertain: boolean,
+  //   missingCategories: [ ... ],
+  //   incompleteParams: [ {categoryName, paramName, weight}, ... ]
+  // }
+  function analyzeUncertainty(patient) {
+    const errors = patient.errors || {};
+    const categories = patient.categories || [];
+
+    // 1) Saknade kategorier
+    const missingCategories = Array.isArray(errors.missing_categories)
+      ? errors.missing_categories
+      : [];
+
+    // 2) Ofullständiga parametrar med hög vikt (> 1.1 i 0–2-skalan)
+    const incompleteParams = [];
+    categories.forEach(cat => {
+      const params = Array.isArray(cat.parameters) ? cat.parameters : [];
+      params.forEach(param => {
+        const w = Number(param.weight);
+        if (param.incomplete === true && w > 1.1) {
+          incompleteParams.push({
+            categoryName: cat.name,
+            paramName: param.name,
+            weight: w
           });
-
-          if (!response.ok) {
-            console.error("Failed to fetch patients:", response.status);
-            return;
-          }
-
-          const data = await response.json();
-          console.log("Raw patients from API:", data);
-
-          // Normalisera struktur
-          patients = data.map((p) => ({
-            name: p.firstname,
-            lastName: p.surname,
-            ssn: p.ssn,
-            municipality: p.municipality,
-            has_homecare: p.has_homecare,
-            score: p.score,
-            categories: p.categories || [],
-            errors: p.errors || {},
-          }));
-
-          // Sortera på score
-          patients.sort((a, b) => a.score - b.score);
-
-          updateLists();
-        } catch (err) {
-          console.error("Error fetching patients:", err);
         }
+      });
+    });
+
+    const isUncertain =
+      missingCategories.length > 0 || incompleteParams.length > 0;
+
+    return {
+      isUncertain,
+      missingCategories,
+      incompleteParams
+    };
+  }
+
+  function isUncertain(patient) {
+    return analyzeUncertainty(patient).isUncertain;
+  }
+
+  // =========================
+  //  UPPDATERA LISTOR
+  // =========================
+  function updateLists() {
+    const stay = [];       // Bör stanna
+    const maybeLeave = []; // Möjligtvis lämna
+    const uncertain = [];  // Osäker
+
+    patients.forEach(p => {
+      const analysis = analyzeUncertainty(p);
+      if (analysis.isUncertain) {
+        uncertain.push(p);
+      } else if (p.score <= threshold) {
+        stay.push(p);
+      } else {
+        maybeLeave.push(p);
       }
+    });
 
-      // =========================
-      //  ANALYS AV OSÄKERHET
-      // =========================
-      // Returnerar ett objekt med:
-      // {
-      //   isUncertain: boolean,
-      //   missingCategories: [ ... ],
-      //   incompleteParams: [ {categoryName, paramName, weight}, ... ]
-      // }
-      function analyzeUncertainty(patient) {
-        const errors = patient.errors || {};
-        const categories = patient.categories || [];
+    renderList(document.getElementById("list1"), stay);
+    renderList(document.getElementById("list2"), maybeLeave);
+    renderList(document.getElementById("list3"), uncertain);
+  }
 
-        // 1) Saknade kategorier
-        const missingCategories = Array.isArray(errors.missing_categories)
-          ? errors.missing_categories
-          : [];
+  // =========================
+  //  RITA LISTA
+  // =========================
+  function renderList(listElement, arr) {
+    listElement.innerHTML = "";
 
-        // 2) Ofullständiga parametrar med hög vikt (> 1.1 i 0–2-skalan)
-        const incompleteParams = [];
-        categories.forEach((cat) => {
-          const params = Array.isArray(cat.parameters) ? cat.parameters : [];
-          params.forEach((param) => {
-            const w = Number(param.weight);
-            if (param.incomplete === true && w > 1.1) {
-              incompleteParams.push({
-                categoryName: cat.name,
-                paramName: param.name,
-                weight: w,
-              });
-            }
-          });
-        });
+    arr.forEach(patient => {
+      const url = "/patient_panel?ssn=" + encodeURIComponent(patient.ssn);
 
-        const isUncertain =
-          missingCategories.length > 0 || incompleteParams.length > 0;
+      // Skapa länk istället för div
+      const link = document.createElement("a");
+      link.href = url;
+      link.className = "item";       // behåll samma klass för styling
+      link.textContent = `${patient.name} ${patient.lastName}`;
 
-        return {
-          isUncertain,
-          missingCategories,
-          incompleteParams,
-        };
-      }
 
-      function isUncertain(patient) {
-        return analyzeUncertainty(patient).isUncertain;
-      }
+      // Enkelklick för updateInfo
+      link.onclick = (e) => {
+        e.preventDefault(); // förhindrar att länken navigerar vid enkelklick
+        updateInfo(patient);
+      };
 
-      // =========================
-      //  UPPDATERA LISTOR
-      // =========================
-      function updateLists() {
-        const stay = []; // Bör stanna
-        const maybeLeave = []; // Möjligtvis lämna
-        const uncertain = []; // Osäker
+      // Dubbelklick för navigering i samma flik
+      link.ondblclick = () => {
+        window.location.href = url;
+      };
 
-        patients.forEach((p) => {
-          const analysis = analyzeUncertainty(p);
-          if (analysis.isUncertain) {
-            uncertain.push(p);
-          } else if (stay.length <= threshold) {
-            stay.push(p);
-          } else {
-            maybeLeave.push(p);
-          }
-        });
+      listElement.appendChild(link);
+    });
+  }
 
-        renderList(document.getElementById("list1"), stay);
-        renderList(document.getElementById("list2"), maybeLeave);
-        renderList(document.getElementById("list3"), uncertain);
-      }
+  // =========================
+  //  VISA INFO OM PATIENT
+  // =========================
+  function updateInfo(patient) {
+    const panel = document.getElementById("infoPanel");
+    const infoDiv = document.getElementById("infoContent");
 
-      // =========================
-      //  RITA LISTA
-      // =========================
-      function renderList(listElement, arr) {
-        listElement.innerHTML = "";
+    const analysis = analyzeUncertainty(patient);
 
-        arr.forEach((patient) => {
-          const url = "/patient_panel?ssn=" + encodeURIComponent(patient.ssn);
-
-          // Skapa länk istället för div
-          const link = document.createElement("a");
-          link.href = url;
-          link.className = "item"; // behåll samma klass för styling
-          link.textContent = `${patient.name} ${patient.lastName}`;
-
-          // Enkelklick för updateInfo
-          link.onclick = (e) => {
-            e.preventDefault(); // förhindrar att länken navigerar vid enkelklick
-            updateInfo(patient);
-          };
-
-          // Dubbelklick för navigering i samma flik
-          link.ondblclick = () => {
-            window.location.href = url;
-          };
-
-          listElement.appendChild(link);
-        });
-      }
-
-      // =========================
-      //  VISA INFO OM PATIENT
-      // =========================
-      function updateInfo(patient) {
-        const panel = document.getElementById("infoPanel");
-        const infoDiv = document.getElementById("infoContent");
-
-        const analysis = analyzeUncertainty(patient);
-
-        let html = `
+    let html = `
       <p><strong>Personnummer:</strong> ${patient.ssn}</p>
       <p><strong>Namn:</strong> ${patient.name} ${patient.lastName}</p>
       <p><strong>Kommun:</strong> ${patient.municipality}</p> 
       <p><strong>Hemtjänst:</strong> ${patient.has_homecare ? "JA" : "NEJ"}</p>
-      <p><strong>Betyg från programmet:</strong> ${parseFloat(patient.score.toFixed(3)).toString()}</p>
+      <p><strong>Betyg från programmet:</strong> ${patient.score}</p>
     `;
 
-        // Lägg till förklaring om OSÄKER
-        if (analysis.isUncertain) {
-          html += `<div class="reason-section">
+    // Lägg till förklaring om OSÄKER
+    if (analysis.isUncertain) {
+      html += `<div class="reason-section">
         <h3>Varför är patienten markerad som "Osäker"?</h3>
       `;
 
-          if (analysis.missingCategories.length > 0) {
-            html += `
+      if (analysis.missingCategories.length > 0) {
+        html += `
           <p><strong>Saknade kategorier:</strong></p>
           <ul>
             ${analysis.missingCategories
-              .map((catName) => `<li>${catName}</li>`)
+              .map(catName => `<li>${catName}</li>`)
               .join("")}
           </ul>
         `;
-          }
+      }
 
-          if (analysis.incompleteParams.length > 0) {
-            html += `
+      if (analysis.incompleteParams.length > 0) {
+        html += `
           <p><strong>Ofullständiga parametrar med hög vikt (&gt; 1.1):</strong></p>
           <ul>
             ${analysis.incompleteParams
-              .map(
-                (p) =>
-                  `<li>${p.categoryName}: ${p.paramName} (vikt ${p.weight.toFixed(2)})</li>`,
+              .map(p =>
+                `<li>${p.categoryName}: ${p.paramName} (vikt ${p.weight.toFixed(2)})</li>`
               )
               .join("")}
           </ul>
         `;
-          }
+      }
 
-          html += `</div>`;
-        } else {
-          html += `
+      html += `</div>`;
+    } else {
+      html += `
         <div class="reason-section">
           <h3>Osäkerhetsbedömning</h3>
           <p>Denna patient uppfyller inte kriterierna för "Osäker" enligt nuvarande regler.</p>
         </div>
       `;
-        }
+    }
 
-        infoDiv.innerHTML = html;
-        panel.style.display = "flex";
-        panel.classList.remove("collapsed");
-      }
+    infoDiv.innerHTML = html;
+    panel.style.display = "flex";
+    panel.classList.remove("collapsed");
+  }
 
-      function toggleCollapse() {
-        document.getElementById("infoPanel").style.display = "none";
-      }
+  function toggleCollapse() {
+    document.getElementById("infoPanel").style.display = "none";
+  }
 
-      // =========================
-      //  TRÖSKEL-PANEL
-      // =========================
-      function openThresholdPanel() {
-        document.getElementById("thresholdPanel").style.display = "block";
-      }
+  // =========================
+  //  TRÖSKEL-PANEL
+  // =========================
+  function openThresholdPanel() {
+    document.getElementById("thresholdPanel").style.display = "block";
+  }
 
-      function closeThresholdPanel() {
-        document.getElementById("thresholdPanel").style.display = "none";
-      }
+  function closeThresholdPanel() {
+    document.getElementById("thresholdPanel").style.display = "none";
+  }
 
-      // =========================
-      //  INIT
-      // =========================
-      window.addEventListener("load", () => {
-        fetchPatientsFromApi();
+  // =========================
+  //  INIT
+  // =========================
+  window.addEventListener("load", () => {
+    fetchPatientsFromApi();
 
-        const slider = document.getElementById("thresholdSlider");
-        const label = document.getElementById("thresholdLabel");
+    const slider = document.getElementById("thresholdSlider");
+    const label = document.getElementById("thresholdLabel");
 
-        if (slider && label) {
-          slider.addEventListener("input", (e) => {
-            const value = Number(e.target.value); // 0–100
-            label.textContent = value;
-            threshold = value; // Representerar antalet patienter som kan stanna
-            updateLists();
-          });
-        }
+    if (slider && label) {
+      slider.addEventListener("input", (e) => {
+        const value = Number(e.target.value); // 0–100
+        label.textContent = value;
+        threshold = value;             // 0–1 för score
+        updateLists();
       });
-    </script>
-  </body>
+    }
+  });
+  </script>
+
+</body>
 </html>
