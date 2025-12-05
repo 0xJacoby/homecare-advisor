@@ -346,8 +346,15 @@
             return;
           }
 
-          const data = await res.json();
-
+          let data = await res.json();
+          data.score = Math.round(100 * data.score);
+          for (category of data.categories) {
+            category.score = Math.round(100 * category.score)
+            for (parameter of category.parameters) {
+                parameter.score = Math.round(100 * parameter.score)
+                parameter.weight *= 5
+            }
+          }
           console.log(data);
 
           // Förväntad struktur (exempel – anpassa till ditt API):
