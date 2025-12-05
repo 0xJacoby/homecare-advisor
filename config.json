@@ -1,14 +1,14 @@
 {
     "categories": [
         {
-            "name": "Hj\u00e4rtsvikt",
+            "name": "Hjärtsvikt",
             "parameters": [
                 {
                     "name": "Puls",
                     "weight": 1
                 },
                 {
-                    "name": "Syrem\u00e4ttnad",
+                    "name": "Syremättnad",
                     "weight": 1
                 },
                 {
@@ -29,7 +29,7 @@
                     "weight": 1
                 },
                 {
-                    "name": "Syrem\u00e4ttnad",
+                    "name": "Syremättnad",
                     "weight": 1
                 },
                 {
@@ -46,7 +46,7 @@
                     "weight": 1
                 },
                 {
-                    "name": "Syrem\u00e4ttnad",
+                    "name": "Syremättnad",
                     "weight": 1
                 },
                 {
