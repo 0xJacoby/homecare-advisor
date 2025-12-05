@@ -54,7 +54,7 @@ class Parameter:
     @staticmethod
     def from_name(name: str, pi: PersonInfo) -> Optional[Parameter]:
         match name:
-            case "Socialt Tillstånd":
+            case "Hemsituation":
                 return Accessibility(pi)
             case "Blodtryck" | "BloodPressure":
                 return BloodPressure(pi)
