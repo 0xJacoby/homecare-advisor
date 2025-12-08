@@ -32,10 +32,7 @@ class OxygenSaturation:
             return 1
 
         if not (self.target_saturation is None):
-            if abs(self.oxygen_saturation - self.target_saturation) < 0.1:
-                return 1
-            else:
-                return 0
+            return 1 - lerp_clamp(0, 5, abs(self.oxygen_saturation - self.target_saturation))
         return lerp_clamp(92,95,self.oxygen_saturation)
 
     def tests(self) -> List[Tuple[str, str]]:
