@@ -25,7 +25,12 @@ class Accessibility:
         social_network_id = Tests.id_from_name("social_network")
 
         self.age = pi.age
+<<<<<<< HEAD
         self.has_home_care = pi.has_home_care
+=======
+        self.municipality = pi.municipality
+        self.has_home_care = pi.has_homecare
+>>>>>>> d070e40450b17bfdf90883b1fa1e22e9b71d32ba
 
         self.other_home_care = JournalEntry.latest_test_from_ssn(pi.ssn, other_home_care_id, "bool")
         self.safety_alarm = JournalEntry.latest_test_from_ssn(pi.ssn, safety_alarm_id, "bool")

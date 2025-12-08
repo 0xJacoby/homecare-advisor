@@ -92,7 +92,7 @@
         background: #fff;
       }
       .bottom-create-bar {
-        margin-top: 30px;
+        margin-top: 20%;
         display: flex;
         justify-content: flex-end;
       }
@@ -107,6 +107,48 @@
       .empty-text {
         font-style: italic;
         color: #666;
+      }
+      .help-box {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 400px;
+        height: 60%;
+        background: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 14px;
+        margin-top: 5%;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: 0.3s ease;
+        z-index: 2000;
+      }
+
+      .help-box.show {
+        transform: translateX(0);
+      }
+
+      .help-box .close-btn {
+        float: right;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      .help-btn {
+        margin-left: 10px;
+        background: #ddd;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border: 1px solid black;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -184,9 +226,10 @@
       <button id="createCategoryBtn">✔ Skapa kategori</button>
     </div>
 
+    
     <script>
       // API URL for categories
-      const API_URL = window.location.origin + "/api/categories";
+      const API_URL = "/api/categories/";
 
       const newCategoryName = document.getElementById("newCategoryName");
       const newParamSelect = document.getElementById("newParamSelect");
@@ -213,6 +256,140 @@
         },
       ];
 
+
+      /////////////// LÄGG TILL PARAMETERBESKRIVNINGAR HÄR ///////////////////////
+    const hemSituationInfo = 
+        "Den sociala situationen bedöms utifrån fem områden:<br><br>" +
+        "• Trygghetslarm<br>" +
+        "• Annan vård i hemmet<br>" +
+        "• Socialt nätverk<br>" +
+        "• Behov av stöd i vardagen<br>" +
+        "• Personlig ADL (förmåga att klara dagliga aktiviteter)<br><br>" +
+        "Varje område som fungerar bra ger 1 poäng.<br>" +
+        "Poängen summeras och omvandlas till ett värde mellan 0 och 1.<br><br>" +
+        "Om patienten har hemtjänst ges alltid full poäng (1.0)."
+
+      const BlodtryckDescription =
+        "Blodtryck bedöms enligt följande intervall:<br><br>" +
+        "• &lt;120 / &lt;80 → Poäng: 1.0 (normalt blodtryck)<br>" +
+        "• 120–129 / &lt;80 → Poäng: 0.9 (förhöjt men ej akut)<br>" +
+        "• 130–139 / 80–89 → Poäng: 0.7 (lindrig hypertoni)<br>" +
+        "• 140–179 / 90–119 → Poäng: 0.5 (måttlig hypertoni)<br>" +
+        "• ≥180 / ≥120 → Poäng: 0.1 (kraftigt avvikande, hög risk)<br><br>" +
+        "Högre poäng innebär stabilare blodtryck och mindre risk.<br>" +
+        "Lägre poäng innebär högre risk och större behov av medicinsk bedömning.";
+
+        const temperaturInfo =
+        "Temperatur bedöms enligt följande:<br><br>" +
+        "• 36.0–37.8°C → Poäng: 1.0 (normal kroppstemperatur)<br>" +
+        "• Utanför intervallet → Poäng: 0 (avvikande temperatur)<br><br>" +
+        "Ett normalt temperaturintervall ger högsta poäng och indikerar stabilt tillstånd.<br>" +
+        "Avvikande temperatur kan signalera infektion eller annan påverkan och ger därför lägre poäng.";
+
+        const crpInfo = "Räknas ut genom att jämföra föregånde CRP med nuvarande CRP. Om nuvarande CRP är mer än 10 mindre än föregående indikerar detta möjlig hemvård"; 
+
+        const newsInfo = "NEWS beräknas genom att varje vitalparameter får 0–3 poäng, poängen summeras, och slutresultatet blir ett värde mellan 0–1 baserat på både totalpoängen och om någon parameter fått en 3:a."; 
+
+        const spoInfo = "Syremättnaden beräknas genom att jämföra aktuell saturation med ett målvärde (ger 1 om nästan identiskt, annars 0) eller, om inget mål finns, normaliseras värdet linjärt mellan 89–100 %.";
+
+        const kaliumInfo = "Kaliumvärdet omvandlas till en score mellan 0–1 genom att värden under 4.25 normaliseras uppåt mellan 3–3.7 och värden över 4.25 normaliseras nedåt mellan 4.8–5.5."; 
+
+        const pulsInfo = "Pulsvärdet omvandlas till en score mellan 0–1 där lägre puls ger högre poäng och värden över 110 ger 0.";
+
+        const önskanAttStannaInfo =
+        "Poängen baseras på patientens önskan att stanna:<br><br>" +
+        "• Patienten vill stanna → Poäng: 0.5<br>" +
+        "• Patienten vill inte stanna → Poäng: 1.0<br><br>" +
+        "Poängen används för att justera helhetsbedömningen.";
+
+        const andningsfrekvensInfo =
+        "Andningsfrekvens bedöms utifrån patientens ålder:<br><br>" +
+        "• Ålder < 10 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
+        "• Ålder 10–17 år → Normalt: 18–22 andetag/min → Poäng: 1<br>" +
+        "• Ålder 18–49 år → Normalt: 16–17 andetag/min → Poäng: 1<br>" +
+        "• Ålder 50–64 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
+        "• Ålder 65–79 år → Normalt: 13–27 andetag/min → Poäng: 1<br>" +
+        "• Ålder ≥ 80 år → Normalt: 11–29 andetag/min → Poäng: 1<br><br>" +
+        "Värden utanför intervallet ger poängen 0.";
+
+      //Lista med beskrivning av varje parameter
+      const helpTexts = 
+      {
+        "Socialt Tillstånd": {
+          description: hemSituationInfo,
+          fields: ["Hemtjänst", "Trygghetslarm", "Annan vård i hemmet", "Social krets", "Behov av stöd", "Personlig ADL"]
+          },
+
+        "Blodtryck": {
+          description: BlodtryckDescription,
+          fields: ["Systoliskt", "Diastoliskt"]
+        },
+         "Temperatur": {
+          description: temperaturInfo  ,
+          fields: ["Temperatur"]
+        },
+        "CRP": {
+          description: crpInfo,
+          fields: ["CRP", "Föregående CRP"]
+        },
+          "EGFR":{
+          description: "Hur parameteren räknas ut...",
+          fields: ["EGFR"]
+        },
+          "Glukos":{
+          description: "Hur parametern räknas ut...",
+          fields: ["Glukos"]
+        },
+          "Hb":{
+          description: "Hur parametern räknas ut...",
+          fields: ["Hemoglobin (Hb)"]
+        },
+        "Kreatinin":{
+          description: "Hur parametern räknas ut...",
+          fields: ["Kreatinin"]
+        },
+         "LPK":{
+          description: "Hur parametern räknas ut...",
+          fields: ["LPK"]
+        },
+        "NEWS":{
+          description: newsInfo,
+          fields: ["Andningsfrekvens","Syremättnad","Tillförd syrgas", "Systoliskt", "Puls", "Temperatur"]
+        },
+        "Syremättnad":{
+            description: spoInfo,
+            fields: ["Syregasmättnad", "Målmättnad"]
+        },
+        "Kalium":{
+            description: kaliumInfo,
+            fields: ["Kalium"]
+        },
+        "Puls":{
+            description: pulsInfo,
+            fields: ["Puls"],
+        },
+         "Andningsfrekvens":{
+           description: andningsfrekvensInfo,
+           fields:["Andningsfrekvens", "Ålder"] 
+        },
+         "Natrium":
+        {
+           description: "Hur parametern räknas ut...",
+           fields:["Natrium"] 
+        },
+         "TPK": {
+          description: "Hur parametern räknas ut..."   ,
+          fields: ["TPK"]
+        },
+        "Önskar stanna": {
+          description: önskanAttStannaInfo  ,
+          fields: ["Önskar stanna"]
+        }
+      };
+
+      //////////////////////////////////////////////////////////////
+
+
       // Render parameter list
       function renderParamList() {
         paramList.innerHTML = "";
@@ -227,7 +404,10 @@
           const row = document.createElement("div");
           row.className = "param-item";
           row.innerHTML = `
-            <div><strong>${p.name}</strong> – vikt: ${p.weight}</div>
+            <div>
+              <strong>${p.name}</strong> – vikt: ${p.weight}
+              <span class="help-btn" data-name="${p.name}">?</span>
+            </div>
             <button class="remove-btn" data-id="${p.id}">Ta bort</button>
           `;
           paramList.appendChild(row);
@@ -242,6 +422,39 @@
             renderParamList();
           });
         });
+
+        // Help button — create unique box
+        document.querySelectorAll(".help-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const name = btn.dataset.name;
+            const description = helpTexts[name].description || "Ingen information tillgänglig.";
+            const fields = helpTexts[name].fields || "Fält saknas.";
+
+            // Remove any existing help boxes
+            document.querySelectorAll(".help-box").forEach(b => b.remove());
+
+            // Create new box
+            const box = document.createElement("div");
+            box.className = "help-box show";
+            box.innerHTML = `
+              <span class="close-btn">✖</span>
+              <h2>${name}</h2>
+              <h4 style="border-bottom: 1px solid black";>Vilka journalfält ingår i parametern?</h4>
+              * ${fields.join("<br> * ")}
+              <h4 style="border-bottom: 1px solid black;">Hur räknas parametern ut?</h4>
+              <p>${description}</p>
+            `;
+
+            document.body.appendChild(box);
+
+            // Close button
+            box.querySelector(".close-btn").addEventListener("click", () => {
+              box.classList.remove("show");
+              setTimeout(() => box.remove(), 300);
+            });
+          });
+        });
+
       }
 
       // Add parameter
@@ -286,7 +499,7 @@
           parameters: tempParameters.map((p) => ({
             name: p.name,
             // skalan från 0 till 10 blir 0 till 2
-            weight: p.weight / 5,
+            weight: p.weight / 5.0,
           })),
         };
 

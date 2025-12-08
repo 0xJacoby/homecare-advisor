@@ -1,32 +1,14 @@
 {
     "categories": [
         {
-            "name": "Diabetes",
-            "parameters": [
-                {
-                    "name": "NEWS",
-                    "weight": 1.1
-                }
-            ]
-        },
-        {
-            "name": "Cancer",
-            "parameters": [
-                {
-                    "name": "Blodtryck",
-                    "weight": 1.6
-                }
-            ]
-        },
-        {
-            "name": "Hj\u00e4rtsvikt",
+            "name": "Hjärtsvikt",
             "parameters": [
                 {
                     "name": "Puls",
                     "weight": 1
                 },
                 {
-                    "name": "Syrem\u00e4ttnad",
+                    "name": "Syremättnad",
                     "weight": 1
                 },
                 {
@@ -47,6 +29,10 @@
                     "weight": 1
                 },
                 {
+                    "name": "Syremättnad",
+                    "weight": 1
+                },
+                {
                     "name": "Kalium",
                     "weight": 1
                 }
@@ -60,7 +46,37 @@
                     "weight": 1
                 },
                 {
-                    "name": "Syrem\u00e4ttnad",
+                    "name": "Syremättnad",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Kalium",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "KOL",
+            "parameters": [
+                {
+                    "name": "Socialt Tillst\u00e5nd",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "Hj\u00e4rtsvikt",
+            "parameters": [
+                {
+                    "name": "Socialt Tillst\u00e5nd",
                     "weight": 1
                 },
                 {
