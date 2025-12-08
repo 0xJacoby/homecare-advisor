@@ -4,6 +4,10 @@
       "name": "Hjärtsvikt",
       "parameters": [
         {
+          "name": "Hemsituation",
+          "weight": 1
+        },
+        {
           "name": "Puls",
           "weight": 1
         },
@@ -45,6 +49,10 @@
     {
       "name": "KOL",
       "parameters": [
+        {
+          "name": "Hemsituation",
+          "weight": 1
+        },
         {
           "name": "NEWS",
           "weight": 1

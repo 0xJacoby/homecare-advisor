@@ -59,7 +59,7 @@ class Category:
             "parameters": [
                 Category.display_add_weight(
                     Parameter.to_display_dict(parameter), 
-                    weight
+                    (parameter, weight)
                 ) for (parameter, weight) in self.parameters
             ]
                 
@@ -70,6 +70,8 @@ class Category:
         return Category(name, config.category_parameters(name, pi))
 
     @staticmethod
-    def display_add_weight(parameter_dict, weight: float):
+    def display_add_weight(parameter_dict, parameter_weight: Tuple[Parameter, float]):
+        weight = parameter_weight[1]
         parameter_dict["weight"] = weight
+        parameter_dict["weighted_score"] = Category.parameter_score(parameter_weight)
         return parameter_dict

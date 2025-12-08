@@ -6,6 +6,7 @@ from app.person_info import PersonInfo
 
 class OxygenSaturation:
     """Interface for parameters"""
+
     name = "Syregasmättnad"
     oxygen_saturation: Optional[float]
     target_saturation: Optional[float]
@@ -17,8 +18,12 @@ class OxygenSaturation:
 
         oxygen_saturation_id = Tests.id_from_name("oxygen_saturation")
         target_saturation_id = Tests.id_from_name("target_oxygen_saturation")
-        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(pi.ssn, oxygen_saturation_id)
-        self.target_saturation = JournalEntry.latest_test_from_ssn(pi.ssn, target_saturation_id)
+        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(
+            pi.ssn, oxygen_saturation_id
+        )
+        self.target_saturation = JournalEntry.latest_test_from_ssn(
+            pi.ssn, target_saturation_id
+        )
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
@@ -32,10 +37,7 @@ class OxygenSaturation:
             return 1
 
         if not (self.target_saturation is None):
-            if abs(self.oxygen_saturation - self.target_saturation) < 0.1:
-                return 1
-            else:
-                return 0
+            return 1 - lerp_clamp(0, 5, abs(self.oxygen_saturation - self.target_saturation))
         return lerp_clamp(92,95,self.oxygen_saturation)
 
     def tests(self) -> List[Tuple[str, str]]:
