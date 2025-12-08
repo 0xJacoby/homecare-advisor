@@ -29,7 +29,7 @@ class Accessibility:
 
         self.age = pi.age
         self.municipality = pi.municipality
-        self.has_home_care = pi.has_home_care
+        self.has_home_care = pi.has_homecare
 
         self.other_home_care = JournalEntry.latest_test_from_ssn(pi.ssn, other_home_care_id, "bool")
         self.safety_alarm = JournalEntry.latest_test_from_ssn(pi.ssn, safety_alarm_id, "bool")
