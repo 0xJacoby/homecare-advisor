@@ -5,31 +5,31 @@
       "parameters": [
         {
           "name": "Hemsituation",
-          "weight": 1
+          "weight": 0.6
         },
         {
           "name": "Puls",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Syremättnad",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "NEWS",
-          "weight": 1
+          "weight": 0.6
         },
         {
           "name": "Kalium",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Kroppstemperatur",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Andningsfrekvens",
-          "weight": 1
+          "weight": 1.4
         }
       ]
     },
@@ -38,27 +38,27 @@
       "parameters": [
         {
           "name": "Blodtryck",
-          "weight": 1
+          "weight": 1.2
         },
         {
           "name": "Syremättnad",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "NEWS",
-          "weight": 1
+          "weight": 0.6
         },
         {
           "name": "Kalium",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "CRP (C-reaktiv protein)",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Hemsituation",
-          "weight": 1
+          "weight": 0.6
         }
       ]
     },
@@ -67,23 +67,23 @@
       "parameters": [
         {
           "name": "Hemsituation",
-          "weight": 1
+          "weight": 0.6
         },
         {
           "name": "NEWS",
-          "weight": 1
+          "weight": 0.6
         },
         {
           "name": "Syremättnad",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Kalium",
-          "weight": 1
+          "weight": 1.4
         },
         {
           "name": "Kroppstemperatur",
-          "weight": 1
+          "weight": 1.4
         }
       ]
     }
