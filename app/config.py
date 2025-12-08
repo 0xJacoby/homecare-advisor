@@ -164,5 +164,5 @@ class Config:
             print("")
 
     def sync(self):
-        with open(config_path, "w") as file:
-            file.write(json.dumps(self.json))
+        with open(config_path, "w", encoding="utf-8") as file:
+            json.dump(self.json, file, ensure_ascii=False)
