@@ -6,6 +6,7 @@ from app.person_info import PersonInfo
 
 class OxygenSaturation:
     """Interface for parameters"""
+
     name = "Syregasmättnad"
     oxygen_saturation: Optional[float]
     target_saturation: Optional[float]
@@ -17,8 +18,12 @@ class OxygenSaturation:
 
         oxygen_saturation_id = Tests.id_from_name("oxygen_saturation")
         target_saturation_id = Tests.id_from_name("target_oxygen_saturation")
-        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(pi.ssn, oxygen_saturation_id)
-        self.target_saturation = JournalEntry.latest_test_from_ssn(pi.ssn, target_saturation_id)
+        self.oxygen_saturation = JournalEntry.latest_test_from_ssn(
+            pi.ssn, oxygen_saturation_id
+        )
+        self.target_saturation = JournalEntry.latest_test_from_ssn(
+            pi.ssn, target_saturation_id
+        )
         self.score = self.calculate_score()
 
     def calculate_score(self) -> float:
