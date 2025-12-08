@@ -77,7 +77,7 @@ class NEWS:
         possible = []
         if 3 in individual:
             possible.append(0.5)
-        possible.append(1 - lerp_clamp(4, 7, news_score))
+        possible.append(1 - lerp_clamp(5, 12, news_score))
         return min(possible)
 
         if news_score == 0:
