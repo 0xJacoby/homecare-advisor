@@ -165,4 +165,4 @@ class Config:
 
     def sync(self):
         with open(config_path, "w", encoding="utf-8") as file:
-            json.dump(self.json, file, ensure_ascii=False)
+            json.dump(self.json, file, ensure_ascii=False, indent=2)

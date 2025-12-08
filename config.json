@@ -1,93 +1,80 @@
 {
-    "categories": [
+  "categories": [
+    {
+      "name": "Hjärtsvikt",
+      "parameters": [
         {
-            "name": "Hjärtsvikt",
-            "parameters": [
-                {
-                    "name": "Puls",
-                    "weight": 1
-                },
-                {
-                    "name": "Syremättnad",
-                    "weight": 1
-                },
-                {
-                    "name": "NEWS",
-                    "weight": 1
-                },
-                {
-                    "name": "Kalium",
-                    "weight": 1
-                }
-            ]
+          "name": "Puls",
+          "weight": 1
         },
         {
-            "name": "KOL",
-            "parameters": [
-                {
-                    "name": "NEWS",
-                    "weight": 1
-                },
-                {
-                    "name": "Syremättnad",
-                    "weight": 1
-                },
-                {
-                    "name": "Kalium",
-                    "weight": 1
-                }
-            ]
+          "name": "Syremättnad",
+          "weight": 1
         },
         {
-            "name": "Pneumoni",
-            "parameters": [
-                {
-                    "name": "Blodtryck",
-                    "weight": 1
-                },
-                {
-                    "name": "Syremättnad",
-                    "weight": 1
-                },
-                {
-                    "name": "NEWS",
-                    "weight": 1
-                },
-                {
-                    "name": "Kalium",
-                    "weight": 1
-                }
-            ]
+          "name": "NEWS",
+          "weight": 1
         },
         {
-            "name": "KOL",
-            "parameters": [
-                {
-                    "name": "Hemsituation",
-                    "weight": 1
-                },
-                {
-                    "name": "NEWS",
-                    "weight": 1
-                }
-            ]
-        },
-        {
-            "name": "Hj\u00e4rtsvikt",
-            "parameters": [
-                {
-                    "name": "Hemsituation",
-                    "weight": 1
-                },
-                {
-                    "name": "NEWS",
-                    "weight": 1
-                },
-                {
-                    "name": "Kalium",
-                    "weight": 1
-                }
-            ]
+          "name": "Kalium",
+          "weight": 1
         }
-    ]
+      ]
+    },
+    {
+      "name": "Pneumoni",
+      "parameters": [
+        {
+          "name": "Blodtryck",
+          "weight": 1
+        },
+        {
+          "name": "Syremättnad",
+          "weight": 1
+        },
+        {
+          "name": "NEWS",
+          "weight": 1
+        },
+        {
+          "name": "Kalium",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "KOL",
+      "parameters": [
+        {
+          "name": "NEWS",
+          "weight": 1
+        },
+        {
+          "name": "Syremättnad",
+          "weight": 1.4
+        },
+        {
+          "name": "Kalium",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "Hjärtsvikt",
+      "parameters": [
+        {
+          "name": "Hemsituation",
+          "weight": 1
+        },
+        {
+          "name": "NEWS",
+          "weight": 1
+        },
+        {
+          "name": "Kalium",
+          "weight": 1
+        }
+      ]
+    }
+  ]
 }
