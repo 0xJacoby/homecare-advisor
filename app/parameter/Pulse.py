@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -27,14 +27,7 @@ class Pulse:
         if self.pulse is None:
             self.incomplete = True
             return 1
-
-        if self.pulse >= 110:
-            return 0
-        if self.pulse >= 100:
-            return 1 / 3
-        if self.pulse >= 90:
-            return 2 / 3
-        return 1
+        return 1 - lerp_clamp(90, 110, self.pulse)
 
     def tests(self) -> List[Tuple[str, str]]:
         """

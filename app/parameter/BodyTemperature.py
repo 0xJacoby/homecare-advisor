@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -29,10 +29,11 @@ class BodyTemperature:
             self.incomplete = True
             return 1
         
-        if 36.0 <= self.temperature <= 37.8:
-            return 1
-
-        return 0
+        x = self.temperature
+        if 36.5 < x:
+            return 1 - lerp_clamp(37.5, 38.5, x)
+        else:
+            return lerp_clamp(35.5, 36.5, x)
 
     def tests(self) -> List[Tuple[str, str]]:
         """
