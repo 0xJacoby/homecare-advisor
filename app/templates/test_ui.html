@@ -164,7 +164,7 @@
 </head>
 <body>
 
-  <!-- Bör stanna -->
+  <!-- Bör stanna på vårdavdelning -->
   <div class="list-container">
     <div>
       <div class="list-title">Bör stanna på vårdavdelning</div>
@@ -172,13 +172,13 @@
     </div>
   </div>
 
-  <!-- Möjligtvis lämna -->
+  <!-- Överväg NSVT -->
   <div>
     <div class="list-title">Överväg NSVT</div>
     <div id="list2" class="list-box"></div>
   </div>
 
-  <!-- Osäker -->
+  <!-- Saknar underlag för beslut -->
   <div>
     <div class="list-title">Saknar underlag för beslut</div>
     <div id="list3" class="list-box"></div>
@@ -195,8 +195,8 @@
   <div id="thresholdPanel" class="threshold-panel" style="display:none;">
     <h3>Redigera gränsen</h3>
     <p>
-      Gräns mellan <strong>"Bör stanna"</strong> och
-      <strong>"Möjligtvis lämna"</strong>:
+      Gräns mellan <strong>"Bör stanna på vårdavdelning"</strong> och
+      <strong>"Överväg NSVT"</strong>:
       <span id="thresholdLabel">50</span>
     </p>
     <input
@@ -306,12 +306,28 @@
     const isUncertain =
       missingCategories.length > 0 || incompleteParams.length > 0;
 
+    // Här bestämmer vi också *vilken* “säker” kategori patienten hamnar i
+    let stay = false;
+    let maybeLeave = false;
+
+    if (!isUncertain) {
+      if (patient.score <= threshold) {
+        stay = true;         // Bör stanna på vårdavdelning
+      } else {
+        maybeLeave = true;   // Överväg NSVT
+      }
+    }
+
     return {
       isUncertain,
       missingCategories,
-      incompleteParams
+      incompleteParams,
+      stay,
+      maybeLeave
     };
   }
+
+  
 
   function isUncertain(patient) {
     return analyzeUncertainty(patient).isUncertain;
@@ -321,17 +337,18 @@
   //  UPPDATERA LISTOR
   // =========================
   function updateLists() {
-    const stay = [];       // Bör stanna
-    const maybeLeave = []; // Möjligtvis lämna
-    const uncertain = [];  // Osäker
+    const stay = [];       // Bör stanna på vårdavdelning
+    const maybeLeave = []; // Överväg NSVT
+    const uncertain = [];  // Saknar underlag för beslut
 
     patients.forEach(p => {
       const analysis = analyzeUncertainty(p);
+
       if (analysis.isUncertain) {
         uncertain.push(p);
-      } else if (p.score <= threshold) {
+      } else if (analysis.stay) {
         stay.push(p);
-      } else {
+      } else if (analysis.maybeLeave) {
         maybeLeave.push(p);
       }
     });
@@ -389,10 +406,10 @@
       <p><strong>Betyg från programmet:</strong> ${patient.score}</p>
     `;
 
-    // Lägg till förklaring om OSÄKER
+    // Lägg till förklaring om "Saknar underlag för beslut"
     if (analysis.isUncertain) {
       html += `<div class="reason-section">
-        <h3>Varför är patienten markerad som "Osäker"?</h3>
+        <h3>Varför är patienten markerad som "Saknar underlag för beslut"?</h3>
       `;
 
       if (analysis.missingCategories.length > 0) {
@@ -420,11 +437,18 @@
       }
 
       html += `</div>`;
-    } else {
+    } if(analysis.stay) {
       html += `
         <div class="reason-section">
-          <h3>Osäkerhetsbedömning</h3>
-          <p>Denna patient uppfyller inte kriterierna för "Osäker" enligt nuvarande regler.</p>
+          <h3>Bedömning</h3>
+          <p>Patientens tillstånd bedöms kräva fortsatt inneliggande vård på avdelningen.</p>
+        </div>
+      `;
+    } if(analysis.maybeLeave) {
+      html += `
+        <div class="reason-section">
+          <h3>Bedömning</h3>
+          <p>Patientens tillstånd bedöms vara sådant att utskrivning från avdelningen kan övervägas.</p>
         </div>
       `;
     }
