@@ -352,6 +352,7 @@
             category.score = Math.round(100 * category.score)
             for (parameter of category.parameters) {
                 parameter.score = Math.round(100 * parameter.score)
+                parameter.weighted_score = Math.round(100 * parameter.weighted_score)
                 parameter.weight *= 5
             }
           }
@@ -486,13 +487,14 @@
             (p) => `
           <div class="parameter-row">
             <div class="leftSideParaDescript">
-              <strong>${p.name}</strong><br>
+              <strong >${p.name}</strong><br>
               Vikt: ${p.weight} <br>
               Parameter poäng: ${parseFloat(p.score.toFixed(3)).toString()}<br>
+              Viktad poäng: ${parseFloat(p.weighted_score.toFixed(3)).toString()}
             </div>
 
             <div class="rightSideParaDescript">
-              <strong>Tester:</strong><br>
+              <strong >Tester:</strong><br>
               ${p.tests.map((t) => `${t.name}: ${t.value}`).join("<br>")}
             </div>
           </div>
