@@ -63,7 +63,7 @@
             "name": "KOL",
             "parameters": [
                 {
-                    "name": "Hemtillstånd",
+                    "name": "Hemsituation",
                     "weight": 1
                 },
                 {
@@ -76,7 +76,7 @@
             "name": "Hj\u00e4rtsvikt",
             "parameters": [
                 {
-                    "name": "Hemtillstånd",
+                    "name": "Hemsituation",
                     "weight": 1
                 },
                 {
