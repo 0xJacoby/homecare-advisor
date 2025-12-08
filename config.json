@@ -58,6 +58,36 @@
                     "weight": 1
                 }
             ]
+        },
+        {
+            "name": "KOL",
+            "parameters": [
+                {
+                    "name": "Socialt Tillst\u00e5nd",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "Hj\u00e4rtsvikt",
+            "parameters": [
+                {
+                    "name": "Socialt Tillst\u00e5nd",
+                    "weight": 1
+                },
+                {
+                    "name": "NEWS",
+                    "weight": 1
+                },
+                {
+                    "name": "Kalium",
+                    "weight": 1
+                }
+            ]
         }
     ]
 }
