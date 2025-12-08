@@ -22,6 +22,14 @@
         {
           "name": "Kalium",
           "weight": 1
+        },
+        {
+          "name": "Kroppstemperatur",
+          "weight": 1
+        },
+        {
+          "name": "Andningsfrekvens",
+          "weight": 1
         }
       ]
     },
@@ -43,6 +51,14 @@
         {
           "name": "Kalium",
           "weight": 1
+        },
+        {
+          "name": "CRP (C-reaktiv protein)",
+          "weight": 1
+        },
+        {
+          "name": "Hemsituation",
+          "weight": 1
         }
       ]
     },
@@ -63,6 +79,10 @@
         },
         {
           "name": "Kalium",
+          "weight": 1
+        },
+        {
+          "name": "Kroppstemperatur",
           "weight": 1
         }
       ]
