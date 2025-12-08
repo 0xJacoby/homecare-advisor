@@ -56,9 +56,9 @@ class Parameter:
         match name:
             case "Hemsituation":
                 return Accessibility(pi)
-            case "Blodtryck" | "BloodPressure":
+            case "Blodtryck":
                 return BloodPressure(pi)
-            case "Kroppstempratur":
+            case "Kroppstemperatur":
                 return BodyTemperature(pi)
             case "CRP (C-reaktiv protein)":
                 return CRP(pi)

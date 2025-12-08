@@ -220,11 +220,19 @@
             <option value="Blodtryck">Blodtryck</option>
             <option value="Puls">Puls</option>
             <option value="Andningsfrekvens">Andningsfrekvens</option>
-            <option value="SpO₂">SpO₂ (syremättnad)</option>
-            <option value="Hb">Hb</option>
-            <option value="CRP">CRP</option>
-            <option value="Temperatur">Temperatur</option>
-            <option value="Kreatinin">Kreatinin</option>
+            <option value="Syremättnad">Syremättnad</option>
+            <option value="Hemoglobin (Hb)">Hemoglobin (Hb)</option>
+            <option value="CRP (C-reaktiv protein)">CRP (C-reaktiv protein)</option>
+            <option value="Kroppstemperatur">Kroppstemperatur</option>
+            <option value="Krea">Kreatinin</option>
+            <option value="eGFR">eGFR</option>
+            <option value="Glukos">Glukos</option>
+            <option value="LPK">LPK</option>
+            <option value="NEWS">NEWS</option>
+            <option value="Kalium">Kalium</option>
+            <option value="TPK">TPK</option>
+            <option value="Natrium">Natrium</option>
+            <option value="Önskar stanna">Önskar stanna</option>
           </select>
         </div>
 
@@ -456,15 +464,15 @@
           description: BlodtryckDescription,
           fields: ["Systoliskt", "Diastoliskt"]
         },
-         "Temperatur": {
+         "Kroppstemperatur": {
           description: temperaturInfo  ,
           fields: ["Temperatur"]
         },
-        "CRP": {
+        "CRP (C-reaktiv protein)": {
           description: crpInfo,
           fields: ["CRP", "Föregående CRP"]
         },
-          "EGFR":{
+          "eGFR":{
           description: "Hur parameteren räknas ut...",
           fields: ["EGFR"]
         },
@@ -472,11 +480,11 @@
           description: "Hur parametern räknas ut...",
           fields: ["Glukos"]
         },
-          "Hb":{
+          "Hemoglobin (Hb)":{
           description: "Hur parametern räknas ut...",
           fields: ["Hemoglobin (Hb)"]
         },
-        "Kreatinin":{
+        "Krea":{
           description: "Hur parametern räknas ut...",
           fields: ["Kreatinin"]
         },
@@ -488,7 +496,7 @@
           description: newsInfo,
           fields: ["Andningsfrekvens","Syremättnad","Tillförd syrgas", "Systoliskt", "Puls", "Temperatur"]
         },
-        "SpO₂":{
+        "Syremättnad":{
             description: spoInfo,
             fields: ["Syregasmättnad", "Målmättnad"]
         },

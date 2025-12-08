@@ -20,6 +20,8 @@ class EGFR:
         Calculates score based on personal information and test values
         Returns a score in range [0, 1]
         """
+        self.incomplete = True
+        return 1
 
     def tests(self) -> List[Tuple[str, str]]:
         """
