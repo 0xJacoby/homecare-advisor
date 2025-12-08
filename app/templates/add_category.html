@@ -260,65 +260,60 @@
 
       /////////////// LÄGG TILL PARAMETERBESKRIVNINGAR HÄR ///////////////////////
     const hemSituationInfo = 
-        "Den sociala situationen bedöms utifrån fem områden:<br><br>" +
-        "• Trygghetslarm<br>" +
-        "• Annan vård i hemmet<br>" +
-        "• Socialt nätverk<br>" +
-        "• Behov av stöd i vardagen<br>" +
-        "• Personlig ADL (förmåga att klara dagliga aktiviteter)<br><br>" +
-        "Varje område som fungerar bra ger 1 poäng.<br>" +
-        "Poängen summeras och omvandlas till ett värde mellan 0 och 1.<br><br>" +
-        "Om patienten har hemtjänst ges alltid full poäng (1.0)."
+      "Poängen börjar på 10. Om hemtjänst finns sätts poängen direkt till 100. "+
+      "Om hemtjänst inte finns beräknas poängen som medelvärdet av alla parametrar "+
+      "och ges ett slutvärde mellan 0 och 100."
+
 
       const BlodtryckDescription =
         "Blodtryck bedöms enligt följande intervall:<br><br>" +
-        "• &lt;120 / &lt;80 → Poäng: 1.0 (normalt blodtryck)<br>" +
-        "• 120–129 / &lt;80 → Poäng: 0.9 (förhöjt men ej akut)<br>" +
-        "• 130–139 / 80–89 → Poäng: 0.7 (lindrig hypertoni)<br>" +
-        "• 140–179 / 90–119 → Poäng: 0.5 (måttlig hypertoni)<br>" +
-        "• ≥180 / ≥120 → Poäng: 0.1 (kraftigt avvikande, hög risk)<br><br>" +
+        "• &lt;120 / &lt;80 → Poäng: 100 (normalt blodtryck)<br>" +
+        "• 120–129 / &lt;80 → Poäng: 90 (förhöjt men ej akut)<br>" +
+        "• 130–139 / 80–89 → Poäng: 70 (lindrig hypertoni)<br>" +
+        "• 140–179 / 90–119 → Poäng: 50 (måttlig hypertoni)<br>" +
+        "• ≥180 / ≥120 → Poäng: 10 (kraftigt avvikande, hög risk)<br><br>" +
         "Högre poäng innebär stabilare blodtryck och mindre risk.<br>" +
         "Lägre poäng innebär högre risk och större behov av medicinsk bedömning.";
 
         const temperaturInfo =
         "Temperatur bedöms enligt följande:<br><br>" +
-        "• 36.0–37.8°C → Poäng: 1.0 (normal kroppstemperatur)<br>" +
+        "• 36.0–37.8°C → Poäng: 100 (normal kroppstemperatur)<br>" +
         "• Utanför intervallet → Poäng: 0 (avvikande temperatur)<br><br>" +
         "Ett normalt temperaturintervall ger högsta poäng och indikerar stabilt tillstånd.<br>" +
         "Avvikande temperatur kan signalera infektion eller annan påverkan och ger därför lägre poäng.";
 
         const crpInfo = "Räknas ut genom att jämföra föregånde CRP med nuvarande CRP. Om nuvarande CRP är mer än 10 mindre än föregående indikerar detta möjlig hemvård"; 
 
-        const newsInfo = "NEWS beräknas genom att varje vitalparameter får 0–3 poäng, poängen summeras, och slutresultatet blir ett värde mellan 0–1 baserat på både totalpoängen och om någon parameter fått en 3:a."; 
+        const newsInfo = "NEWS beräknas genom att varje vitalparameter får 0–3 poäng, poängen summeras, och slutresultatet blir ett värde mellan 0–100 baserat på både totalpoängen och om någon parameter fått en 3:a."; 
 
-        const spoInfo = "Syremättnaden beräknas genom att jämföra aktuell saturation med ett målvärde (ger 1 om nästan identiskt, annars 0) eller, om inget mål finns, normaliseras värdet linjärt mellan 89–100 %.";
+        const spoInfo = "Syremättnaden beräknas genom att jämföra aktuell saturation med ett målvärde (ger 100 om nästan identiskt, annars 0) eller, om inget mål finns, normaliseras värdet linjärt mellan 89–100 %.";
 
-        const kaliumInfo = "Kaliumvärdet omvandlas till en score mellan 0–1 genom att värden under 4.25 normaliseras uppåt mellan 3–3.7 och värden över 4.25 normaliseras nedåt mellan 4.8–5.5."; 
+        const kaliumInfo = "Kaliumvärdet omvandlas till poäng mellan 0–100 genom att värden under 4.25 normaliseras uppåt mellan 3–3.7 och värden över 4.25 normaliseras nedåt mellan 4.8–5.5."; 
 
-        const pulsInfo = "Pulsvärdet omvandlas till en score mellan 0–1 där lägre puls ger högre poäng och värden över 110 ger 0.";
+        const pulsInfo = "Pulsvärdet omvandlas till poäng mellan 0–100 där lägre puls ger högre poäng och värden över 110 ger 0.";
 
         const önskanAttStannaInfo =
         "Poängen baseras på patientens önskan att stanna:<br><br>" +
-        "• Patienten vill stanna → Poäng: 0.5<br>" +
-        "• Patienten vill inte stanna → Poäng: 1.0<br><br>" +
+        "• Patienten vill stanna → Poäng: 50<br>" +
+        "• Patienten vill inte stanna → Poäng: 100<br><br>" +
         "Poängen används för att justera helhetsbedömningen.";
 
         const andningsfrekvensInfo =
         "Andningsfrekvens bedöms utifrån patientens ålder:<br><br>" +
-        "• Ålder < 10 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
-        "• Ålder 10–17 år → Normalt: 18–22 andetag/min → Poäng: 1<br>" +
-        "• Ålder 18–49 år → Normalt: 16–17 andetag/min → Poäng: 1<br>" +
-        "• Ålder 50–64 år → Normalt: 19–24 andetag/min → Poäng: 1<br>" +
-        "• Ålder 65–79 år → Normalt: 13–27 andetag/min → Poäng: 1<br>" +
-        "• Ålder ≥ 80 år → Normalt: 11–29 andetag/min → Poäng: 1<br><br>" +
+        "• Ålder < 10 år → Normalt: 19–24 andetag/min → Poäng: 100<br>" +
+        "• Ålder 10–17 år → Normalt: 18–22 andetag/min → Poäng: 100<br>" +
+        "• Ålder 18–49 år → Normalt: 16–17 andetag/min → Poäng: 100<br>" +
+        "• Ålder 50–64 år → Normalt: 19–24 andetag/min → Poäng: 100<br>" +
+        "• Ålder 65–79 år → Normalt: 13–27 andetag/min → Poäng: 100<br>" +
+        "• Ålder ≥ 80 år → Normalt: 11–29 andetag/min → Poäng: 100<br><br>" +
         "Värden utanför intervallet ger poängen 0.";
 
       //Lista med beskrivning av varje parameter
       const helpTexts = 
       {
-        "Socialt Tillstånd": {
+        "Hemsituation": {
           description: hemSituationInfo,
-          fields: ["Hemtjänst", "Trygghetslarm", "Annan vård i hemmet", "Social krets", "Behov av stöd", "Personlig ADL"]
+          fields: ["Hemtjänst", "Trygghetslarm", "Annan vård i hemmet", "Social krets"]
           },
 
         "Blodtryck": {
