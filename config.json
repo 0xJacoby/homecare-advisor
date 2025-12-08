@@ -63,7 +63,7 @@
             "name": "KOL",
             "parameters": [
                 {
-                    "name": "Socialt Tillst\u00e5nd",
+                    "name": "Hemtillstånd",
                     "weight": 1
                 },
                 {
@@ -76,7 +76,7 @@
             "name": "Hj\u00e4rtsvikt",
             "parameters": [
                 {
-                    "name": "Socialt Tillst\u00e5nd",
+                    "name": "Hemtillstånd",
                     "weight": 1
                 },
                 {
