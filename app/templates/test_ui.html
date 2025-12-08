@@ -111,7 +111,7 @@
       position: fixed;
       bottom: 90px;
       right: 20px;
-      width: 260px;
+      width: 500px;
       background: white;
       border: 2px solid black;
       border-radius: 10px;
@@ -425,11 +425,11 @@
 
       if (analysis.incompleteParams.length > 0) {
         html += `
-          <p><strong>Ofullständiga parametrar med hög vikt (&gt; 1.1):</strong></p>
+          <p><strong>Ofullständiga parametrar med hög vikt (&gt; 5.5):</strong></p>
           <ul>
             ${analysis.incompleteParams
               .map(p =>
-                `<li>${p.categoryName}: ${p.paramName} (vikt ${p.weight.toFixed(2)})</li>`
+                `<li>${p.categoryName}: ${p.paramName} (vikt ${Math.round(5.0*p.weight).toFixed(2)})</li>`
               )
               .join("")}
           </ul>
@@ -440,14 +440,14 @@
     } if(analysis.stay) {
       html += `
         <div class="reason-section">
-          <h3>Bedömning</h3>
+          <h3>Programmets Bedömning</h3>
           <p>Patientens tillstånd bedöms kräva fortsatt inneliggande vård på avdelningen.</p>
         </div>
       `;
     } if(analysis.maybeLeave) {
       html += `
         <div class="reason-section">
-          <h3>Bedömning</h3>
+          <h3>Programmets bedömning</h3>
           <p>Patientens tillstånd bedöms vara sådant att utskrivning från avdelningen kan övervägas.</p>
         </div>
       `;
