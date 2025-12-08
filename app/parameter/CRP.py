@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_test
+from app.parameter.helper import format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -38,15 +38,8 @@ class CRP:
             self.incomplete = True
             return 1
         
-        if self.old_crp - self.current_crp >= 15.0:
-            return 1
-
-        if self.old_crp - self.current_crp >= 10.0:
-            return 0.8
-        
-        
-        
-        return 0.01
+        x = self.old_crp - self.current_crp
+        return lerp_clamp(9, 15, x)
 
     def tests(self) -> List[Tuple[str, str]]:
         """

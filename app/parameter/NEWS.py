@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from app.parameter.helper import format_bool, format_test
+from app.parameter.helper import format_bool, format_test, lerp_clamp
 from app.person_info import PersonInfo
 
 
@@ -62,7 +62,7 @@ class NEWS:
             self.temperature,
         ]:
             self.incomplete = True
-            return 0
+            return 1
 
         individual = [
             self.respiratory_rate_score(),
@@ -77,6 +77,8 @@ class NEWS:
         possible = []
         if 3 in individual:
             possible.append(0.5)
+        possible.append(1 - lerp_clamp(5, 12, news_score))
+        return min(possible)
 
         if news_score == 0:
             possible.append(1)
@@ -86,7 +88,7 @@ class NEWS:
             possible.append(0.25)
         else:
             possible.append(0.0)
-            
+        print(possible)
         if not possible:
             return 0
         return min(possible)
