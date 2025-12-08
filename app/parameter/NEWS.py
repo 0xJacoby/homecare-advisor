@@ -62,7 +62,7 @@ class NEWS:
             self.temperature,
         ]:
             self.incomplete = True
-            return 0
+            return 1
 
         individual = [
             self.respiratory_rate_score(),
