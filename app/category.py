@@ -24,6 +24,7 @@ class Category:
 
     def combined_score(self) -> float:
         """Returns a score in the range [0, 1]"""
+        return min(map(Category.parameter_score, self.parameters))
         return reduce(operator.mul, map(Category.parameter_score, self.parameters), 1)
 
     def parameter_score(parameter: Tuple[Parameter, float]):
@@ -43,7 +44,7 @@ class Category:
         https://www.desmos.com/calculator/j0krldwn5u
         """
         score = parameter[0].calculate_score()
-        weight = 10 ** (parameter[1] - 1)
+        weight = 10 ** ((parameter[1] - 1) / 2)
 
         return score ** (weight**2)
         """TODO: Change the formula"""
