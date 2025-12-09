@@ -25,7 +25,6 @@ class Category:
     def combined_score(self) -> float:
         """Returns a score in the range [0, 1]"""
         return min(map(Category.parameter_score, self.parameters))
-        return reduce(operator.mul, map(Category.parameter_score, self.parameters), 1)
 
     def parameter_score(parameter: Tuple[Parameter, float]):
         """Possible formula: Outputs a float in range [0, 1]\n
