@@ -52,6 +52,34 @@
     .item:hover {
       background-color: #f0f0f0;  /* liknande hover som div */
     }
+    /* Panel för begrepp/förklaringar */
+.terms-panel {
+  width: 260px;
+  max-height: 80vh;
+  padding: 15px;
+  background: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  overflow-y: auto;           /* scroll om texten blir lång */
+  align-self: flex-start;     /* så den börjar högst upp */
+  font-size: 14px;
+}
+
+.terms-panel h2 {
+  margin-top: 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+.terms-panel dt {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.terms-panel dd {
+  margin: 0 0 5px 0;
+}
+
 
     /* Info-panel */
     .info-panel {
@@ -183,6 +211,25 @@
     <div class="list-title">Saknar underlag för beslut</div>
     <div id="list3" class="list-box"></div>
   </div>
+
+    <!-- Begrepp / förklaringar -->
+  <!-- Förklaringsruta -->
+  <div id="termsPanel" class="info-panel">
+    <h2>Förklaringar</h2>
+    <div>
+      <p><strong> "Kategori"</strong> – En inskrivningsorsak 
+      <p><strong>"Bör stanna på vårdavdelning"</strong> – Patientens tillstånd bedöms kräva fortsatt inneliggande vård på avdelningen.</p>
+      <p><strong>"Överväg NSVT"</strong> – Patientens tillstånd bedöms vara sådant att utskrivning kan övervägas,
+        men kräver klinisk bedömning.</p>
+      <p><strong>"Saknar underlag för beslut"</strong> – Den information som finns om patienten är otillräcklig för att programmet
+        tydligt ska kunna föreslå ett beslut.</p>
+      <p><strong>"Poäng/Betyg från programmet" </strong> – Ett sammanvägt mått baserat på de definierade kategorierna och parametrarna.
+        Används för att avgöra vilken lista patienten hamnar i. Poäng ligger mellan 0-100. 
+      <!-- Lägg till fler termer här -->
+    </div>
+  </div>
+
+
 
   <!-- Info-panel -->
   <div id="infoPanel" class="info-panel" style="display:none;">
@@ -395,6 +442,11 @@
   function updateInfo(patient) {
     const panel = document.getElementById("infoPanel");
     const infoDiv = document.getElementById("infoContent");
+    const termsPanel = document.getElementById("termsPanel");
+
+    if(termsPanel){
+      termsPanel.style.display = "none";
+    }
 
     const analysis = analyzeUncertainty(patient);
 
@@ -459,7 +511,14 @@
   }
 
   function toggleCollapse() {
-    document.getElementById("infoPanel").style.display = "none";
+    const infoPanel = document.getElementById("infoPanel"); 
+    const termsPanel = document.getElementById("termsPanel"); 
+
+    infoPanel.style.display ="none"; 
+
+    if(termsPanel){ 
+      termsPanel.style.display = "flex";
+    }
   }
 
   // =========================
