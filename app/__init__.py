@@ -81,6 +81,10 @@ class Application(Flask):
         def patient_panel():
             return render_template("patient_panel.html")
         
+        @self.route("/manual")
+        def manual():
+            return render_template("manual.html")
+        
     @staticmethod
     def person_score(ssn: str, extend_me={}):
         """

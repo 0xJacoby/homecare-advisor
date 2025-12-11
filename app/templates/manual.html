@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tom mittdiv — Enkel vy</title>
+
+    <style>
+      /* Basstil från din originallayout (färger/typsnitt/kortkänsla) */
+      :root{
+        --bg: #f6f6f6;
+        --card-bg: #ffffff;
+        --border: #000000;
+        --accent: #0077cc;
+      }
+
+      html,body{
+        height:100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        padding: 24px;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        box-sizing: border-box;
+      }
+
+      a.back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--card-bg);
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--border);
+      }
+
+      h1{
+        margin: 0 0 18px 0;
+        font-size: 20px;
+      }
+
+      /* Centrerad layout med ett stort kort i mitten */
+      .stage {
+        display: grid;
+        place-items: center;
+        min-height: calc(100vh - 120px);
+      }
+
+      .card {
+        width: min(1100px, 96vw);
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        padding: 28px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      }
+
+      .muted { color:#666; font-size:14px }
+
+      @media (max-width:600px){
+        .card{ padding:18px }
+        .empty-box { min-height:300px }
+      }
+    </style>
+  </head>
+
+  <body>
+    <a href="/" class="back-link">← Tillbaka</a>
+    <div class="stage">
+      <div class="card">
+        <h1 style="position-try: center;">Manual för beslutstödssystem</h1>
+        <strong>Syfte</strong><br>
+        <p style="border-bottom: 1px solid black; padding-bottom: 10px;">
+            Programmets syfte är att agera som ett stöd till personalen på nyttjande avdelning för att lättare avgöra om en
+            inneliggande patient möjligtvis kan få hjälp i hemmet eller om individen bör stanna på avdelningen. Med detta
+            i avseende så ger programmet endast rekomendationer och bör inte tolkas som slutgiliga beslut.
+        </p>
+        <strong>Kategorier</strong>
+        <p style="border-bottom: 1px solid black; padding-bottom: 10px;">
+            En kategori motsvarar inskrivningsorsak/diagons, och är i programmet bestående av valda parametrar.<br><br>
+            
+            För att skapa en ny kategori klicka på "Lägg till ny kategori", detta tar dig till en ny sida där
+            du kan skapa en ny kategori samt välja vilka parametrar som är viktiga i avgörandet kring om en patient bör 
+            stanna på avdelningen eller kan rekomenderas åka hem.<br><br>
+            
+            För att redigera en befintlig kategori klicka på "Redigera befintlig kategori", detta tar dig till en ny sida
+            där du kan redigera redan tillagda kategorier, du kan ta bort och lägga till parametrar samt justera deras vikt.<br>
+        </p>
+        <strong>Parametrar</strong>
+        <p style="border-bottom: 1px solid black; padding-bottom: 10px;">
+            Parametrar är de grundpelare som avgör det poäng en patient får. Kategorier är uppbyggda av valda parametrar
+            med en specificerad vikt, där parametern läser av relevanta journalfält och sedan räknar ut ett parameter poäng.
+            <!--Vikten appliceras på det beräknade parameterpoänget och SEBASTIAN LÖSER-->
+        </p>
+
+        <strong>Hämtning av patientdata</strong>
+        <p style="padding-bottom: 10px;">
+            Programmet har en databas med avdelningens inlagda patienter samt tillhörande journal och baserar rekomendationer
+            utifrån specificerade parameterar.
+            <br><br>
+            För att se patients programevaluerade betyg klicka på patienten i en av listorna.
+            <br><br>
+            För att se en mer information kring patientens programpoäng samt de individuella parameter poängen: dubbel klicka
+            på patienten och välj sedan en av kategorierna för att se parameter poäng, viktad poäng (parameter poäng efter applicerad vikt)
+            samt relaterad data från journalfälten.
+        </p>
+     </div>
+    </div>
+  </body>
+</html>
